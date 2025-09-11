@@ -400,20 +400,21 @@ export default function FinancialReports() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="w-1/4">รายการ</TableHead>
-                      {statements.map((statement) => (
-                        <TableHead key={statement.period} className="text-right" data-testid={`header-${statement.period}`}>
-                          {statement.period}
-                        </TableHead>
-                      ))}
-                    </TableRow>
-                  </TableHeader>
+                <div className="overflow-x-auto">
+                  <Table className="min-w-full">
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="sticky left-0 bg-background z-10 min-w-[200px] border-r">รายการ</TableHead>
+                        {statements.map((statement) => (
+                          <TableHead key={statement.period} className="text-right min-w-[120px]" data-testid={`header-${statement.period}`}>
+                            {statement.period}
+                          </TableHead>
+                        ))}
+                      </TableRow>
+                    </TableHeader>
                   <TableBody>
                     <TableRow>
-                      <TableCell className="font-medium">รายได้รวม</TableCell>
+                      <TableCell className="font-medium sticky left-0 bg-background z-10 border-r">รายได้รวม</TableCell>
                       {statements.map((statement) => (
                         <EditableCell
                           key={`${statement.id}-totalRevenue`}
@@ -426,7 +427,7 @@ export default function FinancialReports() {
                       ))}
                     </TableRow>
                     <TableRow>
-                      <TableCell className="font-medium">ต้นทุนขายสินค้า</TableCell>
+                      <TableCell className="font-medium sticky left-0 bg-background z-10 border-r">ต้นทุนขายสินค้า</TableCell>
                       {statements.map((statement) => (
                         <EditableCell
                           key={`${statement.id}-costOfGoodsSold`}
@@ -439,7 +440,7 @@ export default function FinancialReports() {
                       ))}
                     </TableRow>
                     <TableRow className="border-t-2 bg-blue-50 dark:bg-blue-950/20">
-                      <TableCell className="font-bold">กำไรขั้นต้น</TableCell>
+                      <TableCell className="font-bold sticky left-0 bg-background z-10 border-r">กำไรขั้นต้น</TableCell>
                       {statements.map((statement) => (
                         <EditableCell
                           key={`${statement.id}-grossProfit`}
@@ -453,7 +454,7 @@ export default function FinancialReports() {
                       ))}
                     </TableRow>
                     <TableRow>
-                      <TableCell className="font-medium">ค่าใช้จ่ายในการดำเนินงาน</TableCell>
+                      <TableCell className="font-medium sticky left-0 bg-background z-10 border-r">ค่าใช้จ่ายในการดำเนินงาน</TableCell>
                       {statements.map((statement) => (
                         <EditableCell
                           key={`${statement.id}-operatingExpenses`}
@@ -466,7 +467,7 @@ export default function FinancialReports() {
                       ))}
                     </TableRow>
                     <TableRow className="border-t-2 bg-green-50 dark:bg-green-950/20">
-                      <TableCell className="font-bold">กำไรจากการดำเนินงาน</TableCell>
+                      <TableCell className="font-bold sticky left-0 bg-background z-10 border-r">กำไรจากการดำเนินงาน</TableCell>
                       {statements.map((statement) => (
                         <EditableCell
                           key={`${statement.id}-operatingIncome`}
@@ -480,7 +481,7 @@ export default function FinancialReports() {
                       ))}
                     </TableRow>
                     <TableRow>
-                      <TableCell className="font-medium">รายได้อื่น</TableCell>
+                      <TableCell className="font-medium sticky left-0 bg-background z-10 border-r">รายได้อื่น</TableCell>
                       {statements.map((statement) => (
                         <EditableCell
                           key={`${statement.id}-otherIncome`}
@@ -493,7 +494,7 @@ export default function FinancialReports() {
                       ))}
                     </TableRow>
                     <TableRow>
-                      <TableCell className="font-medium">ค่าใช้จ่ายอื่น</TableCell>
+                      <TableCell className="font-medium sticky left-0 bg-background z-10 border-r">ค่าใช้จ่ายอื่น</TableCell>
                       {statements.map((statement) => (
                         <EditableCell
                           key={`${statement.id}-otherExpenses`}
@@ -506,7 +507,7 @@ export default function FinancialReports() {
                       ))}
                     </TableRow>
                     <TableRow className="border-t-2 bg-orange-50 dark:bg-orange-950/20">
-                      <TableCell className="font-bold">กำไรสุทธิก่อนภาษี</TableCell>
+                      <TableCell className="font-bold sticky left-0 bg-background z-10 border-r">กำไรสุทธิก่อนภาษี</TableCell>
                       {statements.map((statement) => (
                         <EditableCell
                           key={`${statement.id}-netIncomeBeforeTax`}
@@ -520,7 +521,7 @@ export default function FinancialReports() {
                       ))}
                     </TableRow>
                     <TableRow>
-                      <TableCell className="font-medium">ค่าใช้จ่ายภาษี</TableCell>
+                      <TableCell className="font-medium sticky left-0 bg-background z-10 border-r">ค่าใช้จ่ายภาษี</TableCell>
                       {statements.map((statement) => (
                         <EditableCell
                           key={`${statement.id}-taxExpense`}
@@ -533,7 +534,7 @@ export default function FinancialReports() {
                       ))}
                     </TableRow>
                     <TableRow className="border-t-4 bg-primary/10">
-                      <TableCell className="font-bold text-lg">กำไรสุทธิ</TableCell>
+                      <TableCell className="font-bold text-lg sticky left-0 bg-background z-10 border-r">กำไรสุทธิ</TableCell>
                       {statements.map((statement) => (
                         <EditableCell
                           key={`${statement.id}-netIncome`}
@@ -548,6 +549,7 @@ export default function FinancialReports() {
                     </TableRow>
                   </TableBody>
                 </Table>
+                </div>
               </CardContent>
             </Card>
           );
@@ -589,259 +591,241 @@ export default function FinancialReports() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                {/* Assets Table */}
-                <div>
-                  <h3 className="text-lg font-semibold mb-4">สินทรัพย์</h3>
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead className="w-1/3">รายการ</TableHead>
-                        {sheets.map((sheet) => (
-                          <TableHead key={sheet.period} className="text-right text-xs" data-testid={`header-assets-${sheet.period}`}>
-                            {sheet.period}
-                          </TableHead>
-                        ))}
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      <TableRow className="bg-muted/30">
-                        <TableCell className="font-semibold text-sm">สินทรัพย์หมุนเวียน</TableCell>
-                        {sheets.map((sheet) => (
-                          <EditableCell
-                            key={`${sheet.id}-currentAssets`}
-                            value={sheet.currentAssets}
-                            itemId={sheet.id}
-                            field="currentAssets"
-                            reportType="bs"
-                            isEditable={JSON.parse(sheet.isEditable || '{}').currentAssets}
-                            className="font-semibold"
-                          />
-                        ))}
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className="pl-6 text-sm">เงินสด</TableCell>
-                        {sheets.map((sheet) => (
-                          <EditableCell
-                            key={`${sheet.id}-cash`}
-                            value={sheet.cash}
-                            itemId={sheet.id}
-                            field="cash"
-                            reportType="bs"
-                            isEditable={JSON.parse(sheet.isEditable || '{}').cash}
-                          />
-                        ))}
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className="pl-6 text-sm">ลูกหนี้การค้า</TableCell>
-                        {sheets.map((sheet) => (
-                          <EditableCell
-                            key={`${sheet.id}-accountsReceivable`}
-                            value={sheet.accountsReceivable}
-                            itemId={sheet.id}
-                            field="accountsReceivable"
-                            reportType="bs"
-                            isEditable={JSON.parse(sheet.isEditable || '{}').accountsReceivable}
-                          />
-                        ))}
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className="pl-6 text-sm">สินค้าคงเหลือ</TableCell>
-                        {sheets.map((sheet) => (
-                          <EditableCell
-                            key={`${sheet.id}-inventory`}
-                            value={sheet.inventory}
-                            itemId={sheet.id}
-                            field="inventory"
-                            reportType="bs"
-                            isEditable={JSON.parse(sheet.isEditable || '{}').inventory}
-                          />
-                        ))}
-                      </TableRow>
-                      <TableRow className="bg-muted/30">
-                        <TableCell className="font-semibold text-sm">สินทรัพย์ไม่หมุนเวียน</TableCell>
-                        {sheets.map((sheet) => (
-                          <EditableCell
-                            key={`${sheet.id}-nonCurrentAssets`}
-                            value={sheet.nonCurrentAssets}
-                            itemId={sheet.id}
-                            field="nonCurrentAssets"
-                            reportType="bs"
-                            isEditable={JSON.parse(sheet.isEditable || '{}').nonCurrentAssets}
-                            className="font-semibold"
-                          />
-                        ))}
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className="pl-6 text-sm">ที่ดิน อาคาร อุปกรณ์</TableCell>
-                        {sheets.map((sheet) => (
-                          <EditableCell
-                            key={`${sheet.id}-propertyPlantEquipment`}
-                            value={sheet.propertyPlantEquipment}
-                            itemId={sheet.id}
-                            field="propertyPlantEquipment"
-                            reportType="bs"
-                            isEditable={JSON.parse(sheet.isEditable || '{}').propertyPlantEquipment}
-                          />
-                        ))}
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className="pl-6 text-sm">สินทรัพย์ไม่มีตัวตน</TableCell>
-                        {sheets.map((sheet) => (
-                          <EditableCell
-                            key={`${sheet.id}-intangibleAssets`}
-                            value={sheet.intangibleAssets}
-                            itemId={sheet.id}
-                            field="intangibleAssets"
-                            reportType="bs"
-                            isEditable={JSON.parse(sheet.isEditable || '{}').intangibleAssets}
-                          />
-                        ))}
-                      </TableRow>
-                      <TableRow className="border-t-4 bg-primary/10">
-                        <TableCell className="font-bold">สินทรัพย์รวม</TableCell>
-                        {sheets.map((sheet) => (
-                          <EditableCell
-                            key={`${sheet.id}-totalAssets`}
-                            value={sheet.totalAssets}
-                            itemId={sheet.id}
-                            field="totalAssets"
-                            reportType="bs"
-                            isEditable={JSON.parse(sheet.isEditable || '{}').totalAssets}
-                            className="font-bold"
-                          />
-                        ))}
-                      </TableRow>
-                    </TableBody>
-                  </Table>
-                </div>
-
-                {/* Liabilities & Equity Table */}
-                <div>
-                  <h3 className="text-lg font-semibold mb-4">หนี้สินและส่วนของเจ้าของ</h3>
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead className="w-1/3">รายการ</TableHead>
-                        {sheets.map((sheet) => (
-                          <TableHead key={sheet.period} className="text-right text-xs" data-testid={`header-liabilities-${sheet.period}`}>
-                            {sheet.period}
-                          </TableHead>
-                        ))}
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      <TableRow className="bg-muted/30">
-                        <TableCell className="font-semibold text-sm">หนี้สินหมุนเวียน</TableCell>
-                        {sheets.map((sheet) => (
-                          <EditableCell
-                            key={`${sheet.id}-currentLiabilities`}
-                            value={sheet.currentLiabilities}
-                            itemId={sheet.id}
-                            field="currentLiabilities"
-                            reportType="bs"
-                            isEditable={JSON.parse(sheet.isEditable || '{}').currentLiabilities}
-                            className="font-semibold"
-                          />
-                        ))}
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className="pl-6 text-sm">เจ้าหนี้การค้า</TableCell>
-                        {sheets.map((sheet) => (
-                          <EditableCell
-                            key={`${sheet.id}-accountsPayable`}
-                            value={sheet.accountsPayable}
-                            itemId={sheet.id}
-                            field="accountsPayable"
-                            reportType="bs"
-                            isEditable={JSON.parse(sheet.isEditable || '{}').accountsPayable}
-                          />
-                        ))}
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className="pl-6 text-sm">หนี้สินระยะสั้น</TableCell>
-                        {sheets.map((sheet) => (
-                          <EditableCell
-                            key={`${sheet.id}-shortTermDebt`}
-                            value={sheet.shortTermDebt}
-                            itemId={sheet.id}
-                            field="shortTermDebt"
-                            reportType="bs"
-                            isEditable={JSON.parse(sheet.isEditable || '{}').shortTermDebt}
-                          />
-                        ))}
-                      </TableRow>
-                      <TableRow className="bg-muted/30">
-                        <TableCell className="font-semibold text-sm">หนี้สินระยะยาว</TableCell>
-                        {sheets.map((sheet) => (
-                          <EditableCell
-                            key={`${sheet.id}-longTermLiabilities`}
-                            value={sheet.longTermLiabilities}
-                            itemId={sheet.id}
-                            field="longTermLiabilities"
-                            reportType="bs"
-                            isEditable={JSON.parse(sheet.isEditable || '{}').longTermLiabilities}
-                            className="font-semibold"
-                          />
-                        ))}
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className="pl-6 text-sm">หนี้สินระยะยาว</TableCell>
-                        {sheets.map((sheet) => (
-                          <EditableCell
-                            key={`${sheet.id}-longTermDebt`}
-                            value={sheet.longTermDebt}
-                            itemId={sheet.id}
-                            field="longTermDebt"
-                            reportType="bs"
-                            isEditable={JSON.parse(sheet.isEditable || '{}').longTermDebt}
-                          />
-                        ))}
-                      </TableRow>
-                      <TableRow className="border-t-2 bg-muted/30">
-                        <TableCell className="font-bold text-sm">หนี้สินรวม</TableCell>
-                        {sheets.map((sheet) => (
-                          <EditableCell
-                            key={`${sheet.id}-totalLiabilities`}
-                            value={sheet.totalLiabilities}
-                            itemId={sheet.id}
-                            field="totalLiabilities"
-                            reportType="bs"
-                            isEditable={JSON.parse(sheet.isEditable || '{}').totalLiabilities}
-                            className="font-bold"
-                          />
-                        ))}
-                      </TableRow>
-                      <TableRow className="bg-muted/30">
-                        <TableCell className="font-semibold text-sm">ส่วนของผู้ถือหุ้น</TableCell>
-                        {sheets.map((sheet) => (
-                          <EditableCell
-                            key={`${sheet.id}-shareholdersEquity`}
-                            value={sheet.shareholdersEquity}
-                            itemId={sheet.id}
-                            field="shareholdersEquity"
-                            reportType="bs"
-                            isEditable={JSON.parse(sheet.isEditable || '{}').shareholdersEquity}
-                            className="font-semibold"
-                          />
-                        ))}
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className="pl-6 text-sm">กำไรสะสม</TableCell>
-                        {sheets.map((sheet) => (
-                          <EditableCell
-                            key={`${sheet.id}-retainedEarnings`}
-                            value={sheet.retainedEarnings}
-                            itemId={sheet.id}
-                            field="retainedEarnings"
-                            reportType="bs"
-                            isEditable={JSON.parse(sheet.isEditable || '{}').retainedEarnings}
-                          />
-                        ))}
-                      </TableRow>
-                    </TableBody>
-                  </Table>
-                </div>
+              <div className="overflow-x-auto">
+                <Table className="min-w-full">
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="sticky left-0 bg-background z-10 min-w-[200px] border-r">รายการ</TableHead>
+                      {sheets.map((sheet) => (
+                        <TableHead key={sheet.period} className="text-right min-w-[120px]" data-testid={`header-${sheet.period}`}>
+                          {sheet.period}
+                        </TableHead>
+                      ))}
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {/* Assets Section */}
+                    <TableRow className="bg-blue-50 dark:bg-blue-950/20">
+                      <TableCell className="font-bold sticky left-0 bg-background z-10 border-r">สินทรัพย์หมุนเวียน</TableCell>
+                      {sheets.map((sheet) => (
+                        <EditableCell
+                          key={`${sheet.id}-currentAssets`}
+                          value={sheet.currentAssets}
+                          itemId={sheet.id}
+                          field="currentAssets"
+                          reportType="bs"
+                          isEditable={JSON.parse(sheet.isEditable || '{}').currentAssets}
+                          className="font-bold"
+                        />
+                      ))}
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-6">เงินสด</TableCell>
+                      {sheets.map((sheet) => (
+                        <EditableCell
+                          key={`${sheet.id}-cash`}
+                          value={sheet.cash}
+                          itemId={sheet.id}
+                          field="cash"
+                          reportType="bs"
+                          isEditable={JSON.parse(sheet.isEditable || '{}').cash}
+                        />
+                      ))}
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-6">ลูกหนี้การค้า</TableCell>
+                      {sheets.map((sheet) => (
+                        <EditableCell
+                          key={`${sheet.id}-accountsReceivable`}
+                          value={sheet.accountsReceivable}
+                          itemId={sheet.id}
+                          field="accountsReceivable"
+                          reportType="bs"
+                          isEditable={JSON.parse(sheet.isEditable || '{}').accountsReceivable}
+                        />
+                      ))}
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-6">สินค้าคงเหลือ</TableCell>
+                      {sheets.map((sheet) => (
+                        <EditableCell
+                          key={`${sheet.id}-inventory`}
+                          value={sheet.inventory}
+                          itemId={sheet.id}
+                          field="inventory"
+                          reportType="bs"
+                          isEditable={JSON.parse(sheet.isEditable || '{}').inventory}
+                        />
+                      ))}
+                    </TableRow>
+                    <TableRow className="bg-blue-50 dark:bg-blue-950/20">
+                      <TableCell className="font-bold sticky left-0 bg-background z-10 border-r">สินทรัพย์ไม่หมุนเวียน</TableCell>
+                      {sheets.map((sheet) => (
+                        <EditableCell
+                          key={`${sheet.id}-nonCurrentAssets`}
+                          value={sheet.nonCurrentAssets}
+                          itemId={sheet.id}
+                          field="nonCurrentAssets"
+                          reportType="bs"
+                          isEditable={JSON.parse(sheet.isEditable || '{}').nonCurrentAssets}
+                          className="font-bold"
+                        />
+                      ))}
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-6">ที่ดิน อาคาร อุปกรณ์</TableCell>
+                      {sheets.map((sheet) => (
+                        <EditableCell
+                          key={`${sheet.id}-propertyPlantEquipment`}
+                          value={sheet.propertyPlantEquipment}
+                          itemId={sheet.id}
+                          field="propertyPlantEquipment"
+                          reportType="bs"
+                          isEditable={JSON.parse(sheet.isEditable || '{}').propertyPlantEquipment}
+                        />
+                      ))}
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-6">สินทรัพย์ไม่มีตัวตน</TableCell>
+                      {sheets.map((sheet) => (
+                        <EditableCell
+                          key={`${sheet.id}-intangibleAssets`}
+                          value={sheet.intangibleAssets}
+                          itemId={sheet.id}
+                          field="intangibleAssets"
+                          reportType="bs"
+                          isEditable={JSON.parse(sheet.isEditable || '{}').intangibleAssets}
+                        />
+                      ))}
+                    </TableRow>
+                    <TableRow className="border-t-2 bg-green-50 dark:bg-green-950/20">
+                      <TableCell className="font-bold sticky left-0 bg-background z-10 border-r">สินทรัพย์รวม</TableCell>
+                      {sheets.map((sheet) => (
+                        <EditableCell
+                          key={`${sheet.id}-totalAssets`}
+                          value={sheet.totalAssets}
+                          itemId={sheet.id}
+                          field="totalAssets"
+                          reportType="bs"
+                          isEditable={JSON.parse(sheet.isEditable || '{}').totalAssets}
+                          className="font-bold"
+                        />
+                      ))}
+                    </TableRow>
+                    
+                    {/* Liabilities Section */}
+                    <TableRow className="bg-orange-50 dark:bg-orange-950/20">
+                      <TableCell className="font-bold sticky left-0 bg-background z-10 border-r">หนี้สินหมุนเวียน</TableCell>
+                      {sheets.map((sheet) => (
+                        <EditableCell
+                          key={`${sheet.id}-currentLiabilities`}
+                          value={sheet.currentLiabilities}
+                          itemId={sheet.id}
+                          field="currentLiabilities"
+                          reportType="bs"
+                          isEditable={JSON.parse(sheet.isEditable || '{}').currentLiabilities}
+                          className="font-bold"
+                        />
+                      ))}
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-6">เจ้าหนี้การค้า</TableCell>
+                      {sheets.map((sheet) => (
+                        <EditableCell
+                          key={`${sheet.id}-accountsPayable`}
+                          value={sheet.accountsPayable}
+                          itemId={sheet.id}
+                          field="accountsPayable"
+                          reportType="bs"
+                          isEditable={JSON.parse(sheet.isEditable || '{}').accountsPayable}
+                        />
+                      ))}
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-6">หนี้สินระยะสั้น</TableCell>
+                      {sheets.map((sheet) => (
+                        <EditableCell
+                          key={`${sheet.id}-shortTermDebt`}
+                          value={sheet.shortTermDebt}
+                          itemId={sheet.id}
+                          field="shortTermDebt"
+                          reportType="bs"
+                          isEditable={JSON.parse(sheet.isEditable || '{}').shortTermDebt}
+                        />
+                      ))}
+                    </TableRow>
+                    <TableRow className="bg-orange-50 dark:bg-orange-950/20">
+                      <TableCell className="font-bold sticky left-0 bg-background z-10 border-r">หนี้สินระยะยาว</TableCell>
+                      {sheets.map((sheet) => (
+                        <EditableCell
+                          key={`${sheet.id}-longTermLiabilities`}
+                          value={sheet.longTermLiabilities}
+                          itemId={sheet.id}
+                          field="longTermLiabilities"
+                          reportType="bs"
+                          isEditable={JSON.parse(sheet.isEditable || '{}').longTermLiabilities}
+                          className="font-bold"
+                        />
+                      ))}
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-6">หนี้สินระยะยาว</TableCell>
+                      {sheets.map((sheet) => (
+                        <EditableCell
+                          key={`${sheet.id}-longTermDebt`}
+                          value={sheet.longTermDebt}
+                          itemId={sheet.id}
+                          field="longTermDebt"
+                          reportType="bs"
+                          isEditable={JSON.parse(sheet.isEditable || '{}').longTermDebt}
+                        />
+                      ))}
+                    </TableRow>
+                    <TableRow className="border-t-2 bg-red-50 dark:bg-red-950/20">
+                      <TableCell className="font-bold sticky left-0 bg-background z-10 border-r">หนี้สินรวม</TableCell>
+                      {sheets.map((sheet) => (
+                        <EditableCell
+                          key={`${sheet.id}-totalLiabilities`}
+                          value={sheet.totalLiabilities}
+                          itemId={sheet.id}
+                          field="totalLiabilities"
+                          reportType="bs"
+                          isEditable={JSON.parse(sheet.isEditable || '{}').totalLiabilities}
+                          className="font-bold"
+                        />
+                      ))}
+                    </TableRow>
+                    
+                    {/* Equity Section */}
+                    <TableRow className="bg-purple-50 dark:bg-purple-950/20">
+                      <TableCell className="font-bold sticky left-0 bg-background z-10 border-r">ส่วนของผู้ถือหุ้น</TableCell>
+                      {sheets.map((sheet) => (
+                        <EditableCell
+                          key={`${sheet.id}-shareholdersEquity`}
+                          value={sheet.shareholdersEquity}
+                          itemId={sheet.id}
+                          field="shareholdersEquity"
+                          reportType="bs"
+                          isEditable={JSON.parse(sheet.isEditable || '{}').shareholdersEquity}
+                          className="font-bold"
+                        />
+                      ))}
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-6">กำไรสะสม</TableCell>
+                      {sheets.map((sheet) => (
+                        <EditableCell
+                          key={`${sheet.id}-retainedEarnings`}
+                          value={sheet.retainedEarnings}
+                          itemId={sheet.id}
+                          field="retainedEarnings"
+                          reportType="bs"
+                          isEditable={JSON.parse(sheet.isEditable || '{}').retainedEarnings}
+                        />
+                      ))}
+                    </TableRow>
+                  </TableBody>
+                </Table>
               </div>
             </CardContent>
           </Card>
@@ -883,20 +867,21 @@ export default function FinancialReports() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-1/4">รายการ</TableHead>
-                    {statements.map((statement) => (
-                      <TableHead key={statement.period} className="text-right" data-testid={`header-cf-${statement.period}`}>
-                        {statement.period}
-                      </TableHead>
-                    ))}
-                  </TableRow>
-                </TableHeader>
+              <div className="overflow-x-auto">
+                <Table className="min-w-full">
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="sticky left-0 bg-background z-10 min-w-[200px] border-r">รายการ</TableHead>
+                      {statements.map((statement) => (
+                        <TableHead key={statement.period} className="text-right min-w-[120px]" data-testid={`header-${statement.period}`}>
+                          {statement.period}
+                        </TableHead>
+                      ))}
+                    </TableRow>
+                  </TableHeader>
                 <TableBody>
                   <TableRow className="bg-blue-50 dark:bg-blue-950/20">
-                    <TableCell className="font-bold">กระแสเงินสดจากการดำเนินงาน</TableCell>
+                    <TableCell className="font-bold sticky left-0 bg-background z-10 border-r">กระแสเงินสดจากการดำเนินงาน</TableCell>
                     {statements.map((statement) => (
                       <EditableCell
                         key={`${statement.id}-operatingCashFlow`}
@@ -910,7 +895,7 @@ export default function FinancialReports() {
                     ))}
                   </TableRow>
                   <TableRow>
-                    <TableCell className="pl-8">กำไรสุทธิ</TableCell>
+                    <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-8">กำไรสุทธิ</TableCell>
                     {statements.map((statement) => (
                       <EditableCell
                         key={`${statement.id}-netIncome`}
@@ -923,7 +908,7 @@ export default function FinancialReports() {
                     ))}
                   </TableRow>
                   <TableRow>
-                    <TableCell className="pl-8">ค่าเสื่อมราคา</TableCell>
+                    <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-8">ค่าเสื่อมราคา</TableCell>
                     {statements.map((statement) => (
                       <EditableCell
                         key={`${statement.id}-depreciation`}
@@ -936,7 +921,7 @@ export default function FinancialReports() {
                     ))}
                   </TableRow>
                   <TableRow>
-                    <TableCell className="pl-8">การเปลี่ยนแปลงในเงินทุนหมุนเวียน</TableCell>
+                    <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-8">การเปลี่ยนแปลงในเงินทุนหมุนเวียน</TableCell>
                     {statements.map((statement) => (
                       <EditableCell
                         key={`${statement.id}-changeInWorkingCapital`}
@@ -949,7 +934,7 @@ export default function FinancialReports() {
                     ))}
                   </TableRow>
                   <TableRow className="bg-green-50 dark:bg-green-950/20">
-                    <TableCell className="font-bold">กระแสเงินสดจากการลงทุน</TableCell>
+                    <TableCell className="font-bold sticky left-0 bg-background z-10 border-r">กระแสเงินสดจากการลงทุน</TableCell>
                     {statements.map((statement) => (
                       <EditableCell
                         key={`${statement.id}-investingCashFlow`}
@@ -963,7 +948,7 @@ export default function FinancialReports() {
                     ))}
                   </TableRow>
                   <TableRow>
-                    <TableCell className="pl-8">การลงทุนในสินทรัพย์ถาวร</TableCell>
+                    <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-8">การลงทุนในสินทรัพย์ถาวร</TableCell>
                     {statements.map((statement) => (
                       <EditableCell
                         key={`${statement.id}-capitalExpenditures`}
@@ -976,7 +961,7 @@ export default function FinancialReports() {
                     ))}
                   </TableRow>
                   <TableRow>
-                    <TableCell className="pl-8">การซื้อกิจการ</TableCell>
+                    <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-8">การซื้อกิจการ</TableCell>
                     {statements.map((statement) => (
                       <EditableCell
                         key={`${statement.id}-acquisitions`}
@@ -989,7 +974,7 @@ export default function FinancialReports() {
                     ))}
                   </TableRow>
                   <TableRow className="bg-orange-50 dark:bg-orange-950/20">
-                    <TableCell className="font-bold">กระแสเงินสดจากการจัดหาเงิน</TableCell>
+                    <TableCell className="font-bold sticky left-0 bg-background z-10 border-r">กระแสเงินสดจากการจัดหาเงิน</TableCell>
                     {statements.map((statement) => (
                       <EditableCell
                         key={`${statement.id}-financingCashFlow`}
@@ -1003,7 +988,7 @@ export default function FinancialReports() {
                     ))}
                   </TableRow>
                   <TableRow>
-                    <TableCell className="pl-8">การกู้ยืมเงิน</TableCell>
+                    <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-8">การกู้ยืมเงิน</TableCell>
                     {statements.map((statement) => (
                       <EditableCell
                         key={`${statement.id}-debtIssuance`}
@@ -1016,7 +1001,7 @@ export default function FinancialReports() {
                     ))}
                   </TableRow>
                   <TableRow>
-                    <TableCell className="pl-8">การชำระคืนหนี้</TableCell>
+                    <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-8">การชำระคืนหนี้</TableCell>
                     {statements.map((statement) => (
                       <EditableCell
                         key={`${statement.id}-debtRepayment`}
@@ -1029,7 +1014,7 @@ export default function FinancialReports() {
                     ))}
                   </TableRow>
                   <TableRow>
-                    <TableCell className="pl-8">เงินปันผลที่จ่าย</TableCell>
+                    <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-8">เงินปันผลที่จ่าย</TableCell>
                     {statements.map((statement) => (
                       <EditableCell
                         key={`${statement.id}-dividendsPaid`}
@@ -1042,7 +1027,7 @@ export default function FinancialReports() {
                     ))}
                   </TableRow>
                   <TableRow className="border-t-4 bg-muted/50">
-                    <TableCell className="font-bold text-lg">การเปลี่ยนแปลงในเงินสดสุทธิ</TableCell>
+                    <TableCell className="font-bold text-lg sticky left-0 bg-background z-10 border-r">การเปลี่ยนแปลงในเงินสดสุทธิ</TableCell>
                     {statements.map((statement) => (
                       <EditableCell
                         key={`${statement.id}-netChangeInCash`}
@@ -1056,7 +1041,7 @@ export default function FinancialReports() {
                     ))}
                   </TableRow>
                   <TableRow>
-                    <TableCell className="font-medium">เงินสดต้นงวด</TableCell>
+                    <TableCell className="font-medium sticky left-0 bg-background z-10 border-r">เงินสดต้นงวด</TableCell>
                     {statements.map((statement) => (
                       <EditableCell
                         key={`${statement.id}-beginningCashBalance`}
@@ -1069,7 +1054,7 @@ export default function FinancialReports() {
                     ))}
                   </TableRow>
                   <TableRow className="border-t-2 bg-primary/10">
-                    <TableCell className="font-bold text-lg">เงินสดปลายงวด</TableCell>
+                    <TableCell className="font-bold text-lg sticky left-0 bg-background z-10 border-r">เงินสดปลายงวด</TableCell>
                     {statements.map((statement) => (
                       <EditableCell
                         key={`${statement.id}-endingCashBalance`}
@@ -1084,6 +1069,7 @@ export default function FinancialReports() {
                   </TableRow>
                 </TableBody>
               </Table>
+              </div>
             </CardContent>
           </Card>
         ))}
