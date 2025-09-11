@@ -29,6 +29,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import Navigation from "@/components/Navigation";
+import heroBackground from "@assets/generated_images/Gradient_mesh_hero_background_83768b02.png";
 import type { 
   ProfitLossStatement,
   BalanceSheet,
@@ -1154,11 +1155,11 @@ export default function FinancialReports() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-background to-muted/30">
       <Navigation />
-      
-      {/* Hero Section */}
-      <section className="py-24 bg-gradient-to-b from-background to-muted/20">
+        
+        {/* Hero Section */}
+        <section className="py-24 bg-gradient-to-b from-transparent to-muted/20">
         <div className="container mx-auto px-6">
           <div className="text-center space-y-6">
             <h1 className="text-4xl md:text-5xl font-black text-foreground mb-4" data-testid="page-title">
@@ -1181,160 +1182,15 @@ export default function FinancialReports() {
             </div>
           </div>
         </div>
-      </section>
+        </section>
 
-      <main className="container mx-auto px-6 py-12">
-        <div className="max-w-7xl mx-auto space-y-8">
-
-          {/* Enhanced Filters Section */}
-          <Card className="bg-card/95 backdrop-blur-sm border border-border/50 shadow-lg hover-elevate transition-all duration-300 mb-8">
-            <CardHeader className="pb-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-primary/10">
-                  <Filter className="h-5 w-5 text-primary" />
-                </div>
-                <div>
-                  <CardTitle className="text-lg font-semibold">Data Filters</CardTitle>
-                  <p className="text-sm text-muted-foreground">Select the data you want to view</p>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-foreground">Topic</label>
-                  <Select value={selectedTopic} onValueChange={setSelectedTopic}>
-                    <SelectTrigger className="w-full bg-background/80 border-muted focus:border-primary transition-colors" data-testid="select-topic">
-                      <SelectValue placeholder="Select topic" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all" data-testid="option-all-topics">All Topics</SelectItem>
-                      {uniqueTopics.map((topic) => (
-                        <SelectItem key={topic} value={topic} data-testid={`option-topic-${topic}`}>
-                          {topic}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-foreground">Start Period</label>
-                  <Select value={startPeriod} onValueChange={handleStartPeriodChange}>
-                    <SelectTrigger className="w-full bg-background/80 border-muted focus:border-primary transition-colors" data-testid="select-start-period">
-                      <SelectValue placeholder="Select start period" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="none" data-testid="option-no-start">Not specified</SelectItem>
-                      {uniquePeriods.map((period) => (
-                        <SelectItem key={period} value={period} data-testid={`option-start-${period}`}>
-                          {period}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-foreground">End Period</label>
-                  <Select value={endPeriod} onValueChange={handleEndPeriodChange}>
-                    <SelectTrigger className="w-full bg-background/80 border-muted focus:border-primary transition-colors" data-testid="select-end-period">
-                      <SelectValue placeholder="Select end period" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="none" data-testid="option-no-end">Not specified</SelectItem>
-                      {uniquePeriods.map((period) => (
-                        <SelectItem key={period} value={period} data-testid={`option-end-${period}`}>
-                          {period}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-foreground">Actions</label>
-                  {(selectedTopic && selectedTopic !== "all" || (startPeriod && startPeriod !== "none") || (endPeriod && endPeriod !== "none")) ? (
-                    <Button
-                      variant="outline"
-                      className="w-full border-muted-foreground/20 hover:border-primary hover:bg-primary/5 transition-all duration-200"
-                      onClick={() => {
-                        setSelectedTopic("all");
-                        setStartPeriod("none");
-                        setEndPeriod("none");
-                      }}
-                      data-testid="button-clear-filters"
-                    >
-                      Clear Filters
-                    </Button>
-                  ) : (
-                    <div className="h-10 flex items-center">
-                      <p className="text-sm text-muted-foreground">Use filters to search</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Enhanced Financial Reports Tabs */}
-          <div className="bg-gradient-to-r from-background/50 to-muted/30 rounded-2xl p-6 backdrop-blur-sm border border-border/50">
-            <div className="mb-6">
-              <h2 className="text-2xl font-bold text-foreground flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-primary/10">
-                  <FileText className="h-6 w-6 text-primary" />
-                </div>
-                Financial Reports
-              </h2>
-              <p className="text-muted-foreground mt-2">Select the type of report you want to view</p>
+        <main className="container mx-auto px-6 py-12 relative z-10">
+          <div className="max-w-7xl mx-auto space-y-8">
+            <div className="text-center p-8">
+              <h2 className="text-2xl font-bold">Financial Reports - Testing Minimal Structure</h2>
             </div>
-            
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
-              <TabsList className="grid w-full grid-cols-3 p-1 bg-muted/50 backdrop-blur-sm rounded-xl border border-border/30 shadow-lg" data-testid="tabs-list">
-                <TabsTrigger 
-                  value="pl" 
-                  className="flex items-center gap-3 px-6 py-4 text-sm font-medium rounded-lg transition-all duration-300 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg hover:bg-muted-foreground/10" 
-                  data-testid="tab-pl"
-                >
-                  <Calculator className="h-5 w-5" />
-                  <span className="hidden sm:inline">Profit & Loss</span>
-                  <span className="sm:hidden">P&L</span>
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="bs" 
-                  className="flex items-center gap-3 px-6 py-4 text-sm font-medium rounded-lg transition-all duration-300 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg hover:bg-muted-foreground/10" 
-                  data-testid="tab-bs"
-                >
-                  <BarChart3 className="h-5 w-5" />
-                  <span className="hidden sm:inline">Balance Sheet</span>
-                  <span className="sm:hidden">BS</span>
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="cf" 
-                  className="flex items-center gap-3 px-6 py-4 text-sm font-medium rounded-lg transition-all duration-300 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg hover:bg-muted-foreground/10" 
-                  data-testid="tab-cf"
-                >
-                  <TrendingUp className="h-5 w-5" />
-                  <span className="hidden sm:inline">Cash Flow</span>
-                  <span className="sm:hidden">CF</span>
-                </TabsTrigger>
-              </TabsList>
-
-            <TabsContent value="pl" data-testid="tab-content-pl">
-              <ProfitLossTable />
-            </TabsContent>
-
-            <TabsContent value="bs" data-testid="tab-content-bs">
-              <BalanceSheetTable />
-            </TabsContent>
-
-            <TabsContent value="cf" data-testid="tab-content-cf">
-              <CashFlowTable />
-            </TabsContent>
-          </Tabs>
-        </div>
-        </div>
-      </main>
+          </div> {/* closes .max-w-7xl */}
+        </main>
     </div>
   );
 }
