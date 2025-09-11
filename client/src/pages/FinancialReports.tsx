@@ -407,9 +407,9 @@ export default function FinancialReports() {
         <div className="p-12 text-center" data-testid="loading-pl">
           <div className="flex items-center justify-center gap-3 mb-4">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-            <span className="text-lg font-medium text-muted-foreground">กำลังโหลดข้อมูล...</span>
+            <span className="text-lg font-medium text-muted-foreground">Loading data...</span>
           </div>
-          <p className="text-sm text-muted-foreground">กรุณารอสักครู่</p>
+          <p className="text-sm text-muted-foreground">Please wait</p>
         </div>
       );
     }
@@ -444,7 +444,7 @@ export default function FinancialReports() {
                     <Calculator className="h-6 w-6 text-primary" />
                   </div>
                   <div>
-                    <span className="text-foreground">งบกำไรขาดทุน</span>
+                    <span className="text-foreground">Profit & Loss Statement</span>
                     <div className="text-sm font-normal text-muted-foreground">{topic}</div>
                   </div>
                 </CardTitle>
@@ -454,7 +454,7 @@ export default function FinancialReports() {
                   <Table className="min-w-full border-separate border-spacing-0">
                     <TableHeader>
                       <TableRow className="bg-gradient-to-r from-muted/50 to-muted/30 border-b-2 border-primary/20">
-                        <TableHead className="sticky left-0 bg-gradient-to-r from-muted/80 to-muted/60 z-10 min-w-[200px] border-r border-border/50 font-bold text-foreground p-4">รายการ</TableHead>
+                        <TableHead className="sticky left-0 bg-gradient-to-r from-muted/80 to-muted/60 z-10 min-w-[200px] border-r border-border/50 font-bold text-foreground p-4">Line Item</TableHead>
                         {statements.map((statement) => (
                           <TableHead key={statement.period} className="text-right min-w-[120px] font-semibold text-foreground p-4" data-testid={`header-${statement.period}`}>
                             {statement.period}
@@ -615,9 +615,9 @@ export default function FinancialReports() {
         <div className="p-12 text-center" data-testid="loading-bs">
           <div className="flex items-center justify-center gap-3 mb-4">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-            <span className="text-lg font-medium text-muted-foreground">กำลังโหลดข้อมูล...</span>
+            <span className="text-lg font-medium text-muted-foreground">Loading data...</span>
           </div>
-          <p className="text-sm text-muted-foreground">กรุณารอสักครู่</p>
+          <p className="text-sm text-muted-foreground">Please wait</p>
         </div>
       );
     }
@@ -648,7 +648,7 @@ export default function FinancialReports() {
                   <BarChart3 className="h-6 w-6 text-primary" />
                 </div>
                 <div>
-                  <span className="text-foreground">งบดุล</span>
+                  <span className="text-foreground">Balance Sheet</span>
                   <div className="text-sm font-normal text-muted-foreground">{topic}</div>
                 </div>
               </CardTitle>
@@ -669,7 +669,7 @@ export default function FinancialReports() {
                   <TableBody>
                     {/* Assets Section */}
                     <TableRow className="bg-blue-50 dark:bg-blue-950/20">
-                      <TableCell className="font-bold sticky left-0 bg-background z-10 border-r">สินทรัพย์หมุนเวียน</TableCell>
+                      <TableCell className="font-bold sticky left-0 bg-background z-10 border-r">Current Assets</TableCell>
                       {sheets.map((sheet) => (
                         <EditableCell
                           key={`${sheet.id}-currentAssets`}
@@ -683,7 +683,7 @@ export default function FinancialReports() {
                       ))}
                     </TableRow>
                     <TableRow>
-                      <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-6">เงินสด</TableCell>
+                      <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-6">Cash</TableCell>
                       {sheets.map((sheet) => (
                         <EditableCell
                           key={`${sheet.id}-cash`}
@@ -696,7 +696,7 @@ export default function FinancialReports() {
                       ))}
                     </TableRow>
                     <TableRow>
-                      <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-6">ลูกหนี้การค้า</TableCell>
+                      <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-6">Accounts Receivable</TableCell>
                       {sheets.map((sheet) => (
                         <EditableCell
                           key={`${sheet.id}-accountsReceivable`}
@@ -709,7 +709,7 @@ export default function FinancialReports() {
                       ))}
                     </TableRow>
                     <TableRow>
-                      <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-6">สินค้าคงเหลือ</TableCell>
+                      <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-6">Inventory</TableCell>
                       {sheets.map((sheet) => (
                         <EditableCell
                           key={`${sheet.id}-inventory`}
@@ -722,7 +722,7 @@ export default function FinancialReports() {
                       ))}
                     </TableRow>
                     <TableRow className="bg-blue-50 dark:bg-blue-950/20">
-                      <TableCell className="font-bold sticky left-0 bg-background z-10 border-r">สินทรัพย์ไม่หมุนเวียน</TableCell>
+                      <TableCell className="font-bold sticky left-0 bg-background z-10 border-r">Non-Current Assets</TableCell>
                       {sheets.map((sheet) => (
                         <EditableCell
                           key={`${sheet.id}-nonCurrentAssets`}
@@ -736,7 +736,7 @@ export default function FinancialReports() {
                       ))}
                     </TableRow>
                     <TableRow>
-                      <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-6">ที่ดิน อาคาร อุปกรณ์</TableCell>
+                      <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-6">Property, Plant & Equipment</TableCell>
                       {sheets.map((sheet) => (
                         <EditableCell
                           key={`${sheet.id}-propertyPlantEquipment`}
@@ -749,7 +749,7 @@ export default function FinancialReports() {
                       ))}
                     </TableRow>
                     <TableRow>
-                      <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-6">สินทรัพย์ไม่มีตัวตน</TableCell>
+                      <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-6">Intangible Assets</TableCell>
                       {sheets.map((sheet) => (
                         <EditableCell
                           key={`${sheet.id}-intangibleAssets`}
@@ -762,7 +762,7 @@ export default function FinancialReports() {
                       ))}
                     </TableRow>
                     <TableRow className="border-t-2 bg-green-50 dark:bg-green-950/20">
-                      <TableCell className="font-bold sticky left-0 bg-background z-10 border-r">สินทรัพย์รวม</TableCell>
+                      <TableCell className="font-bold sticky left-0 bg-background z-10 border-r">Total Assets</TableCell>
                       {sheets.map((sheet) => (
                         <EditableCell
                           key={`${sheet.id}-totalAssets`}
@@ -778,7 +778,7 @@ export default function FinancialReports() {
                     
                     {/* Liabilities Section */}
                     <TableRow className="bg-orange-50 dark:bg-orange-950/20">
-                      <TableCell className="font-bold sticky left-0 bg-background z-10 border-r">หนี้สินหมุนเวียน</TableCell>
+                      <TableCell className="font-bold sticky left-0 bg-background z-10 border-r">Current Liabilities</TableCell>
                       {sheets.map((sheet) => (
                         <EditableCell
                           key={`${sheet.id}-currentLiabilities`}
@@ -792,7 +792,7 @@ export default function FinancialReports() {
                       ))}
                     </TableRow>
                     <TableRow>
-                      <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-6">เจ้าหนี้การค้า</TableCell>
+                      <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-6">Accounts Payable</TableCell>
                       {sheets.map((sheet) => (
                         <EditableCell
                           key={`${sheet.id}-accountsPayable`}
@@ -805,7 +805,7 @@ export default function FinancialReports() {
                       ))}
                     </TableRow>
                     <TableRow>
-                      <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-6">หนี้สินระยะสั้น</TableCell>
+                      <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-6">Short-term Liabilities</TableCell>
                       {sheets.map((sheet) => (
                         <EditableCell
                           key={`${sheet.id}-shortTermDebt`}
@@ -818,7 +818,7 @@ export default function FinancialReports() {
                       ))}
                     </TableRow>
                     <TableRow className="bg-orange-50 dark:bg-orange-950/20">
-                      <TableCell className="font-bold sticky left-0 bg-background z-10 border-r">หนี้สินระยะยาว</TableCell>
+                      <TableCell className="font-bold sticky left-0 bg-background z-10 border-r">Long-term Liabilities</TableCell>
                       {sheets.map((sheet) => (
                         <EditableCell
                           key={`${sheet.id}-longTermLiabilities`}
@@ -832,7 +832,7 @@ export default function FinancialReports() {
                       ))}
                     </TableRow>
                     <TableRow>
-                      <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-6">หนี้สินระยะยาว</TableCell>
+                      <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-6">Long-term Debt</TableCell>
                       {sheets.map((sheet) => (
                         <EditableCell
                           key={`${sheet.id}-longTermDebt`}
@@ -845,7 +845,7 @@ export default function FinancialReports() {
                       ))}
                     </TableRow>
                     <TableRow className="border-t-2 bg-red-50 dark:bg-red-950/20">
-                      <TableCell className="font-bold sticky left-0 bg-background z-10 border-r">หนี้สินรวม</TableCell>
+                      <TableCell className="font-bold sticky left-0 bg-background z-10 border-r">Total Liabilities</TableCell>
                       {sheets.map((sheet) => (
                         <EditableCell
                           key={`${sheet.id}-totalLiabilities`}
@@ -861,7 +861,7 @@ export default function FinancialReports() {
                     
                     {/* Equity Section */}
                     <TableRow className="bg-purple-50 dark:bg-purple-950/20">
-                      <TableCell className="font-bold sticky left-0 bg-background z-10 border-r">ส่วนของผู้ถือหุ้น</TableCell>
+                      <TableCell className="font-bold sticky left-0 bg-background z-10 border-r">Shareholders' Equity</TableCell>
                       {sheets.map((sheet) => (
                         <EditableCell
                           key={`${sheet.id}-shareholdersEquity`}
@@ -875,7 +875,7 @@ export default function FinancialReports() {
                       ))}
                     </TableRow>
                     <TableRow>
-                      <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-6">กำไรสะสม</TableCell>
+                      <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-6">Retained Earnings</TableCell>
                       {sheets.map((sheet) => (
                         <EditableCell
                           key={`${sheet.id}-retainedEarnings`}
@@ -904,9 +904,9 @@ export default function FinancialReports() {
         <div className="p-12 text-center" data-testid="loading-cf">
           <div className="flex items-center justify-center gap-3 mb-4">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-            <span className="text-lg font-medium text-muted-foreground">กำลังโหลดข้อมูล...</span>
+            <span className="text-lg font-medium text-muted-foreground">Loading data...</span>
           </div>
-          <p className="text-sm text-muted-foreground">กรุณารอสักครู่</p>
+          <p className="text-sm text-muted-foreground">Please wait</p>
         </div>
       );
     }
@@ -937,7 +937,7 @@ export default function FinancialReports() {
                   <TrendingUp className="h-6 w-6 text-primary" />
                 </div>
                 <div>
-                  <span className="text-foreground">งบกระแสเงินสด</span>
+                  <span className="text-foreground">Cash Flow Statement</span>
                   <div className="text-sm font-normal text-muted-foreground">{topic}</div>
                 </div>
               </CardTitle>
@@ -957,7 +957,7 @@ export default function FinancialReports() {
                   </TableHeader>
                 <TableBody>
                   <TableRow className="bg-blue-50 dark:bg-blue-950/20">
-                    <TableCell className="font-bold sticky left-0 bg-background z-10 border-r">กระแสเงินสดจากการดำเนินงาน</TableCell>
+                    <TableCell className="font-bold sticky left-0 bg-background z-10 border-r">Operating Cash Flow</TableCell>
                     {statements.map((statement) => (
                       <EditableCell
                         key={`${statement.id}-operatingCashFlow`}
@@ -971,7 +971,7 @@ export default function FinancialReports() {
                     ))}
                   </TableRow>
                   <TableRow>
-                    <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-8">กำไรสุทธิ</TableCell>
+                    <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-8">Net Income</TableCell>
                     {statements.map((statement) => (
                       <EditableCell
                         key={`${statement.id}-netIncome`}
@@ -997,7 +997,7 @@ export default function FinancialReports() {
                     ))}
                   </TableRow>
                   <TableRow>
-                    <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-8">การเปลี่ยนแปลงในเงินทุนหมุนเวียน</TableCell>
+                    <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-8">Changes in Working Capital</TableCell>
                     {statements.map((statement) => (
                       <EditableCell
                         key={`${statement.id}-changeInWorkingCapital`}
@@ -1010,7 +1010,7 @@ export default function FinancialReports() {
                     ))}
                   </TableRow>
                   <TableRow className="bg-green-50 dark:bg-green-950/20">
-                    <TableCell className="font-bold sticky left-0 bg-background z-10 border-r">กระแสเงินสดจากการลงทุน</TableCell>
+                    <TableCell className="font-bold sticky left-0 bg-background z-10 border-r">Investing Cash Flow</TableCell>
                     {statements.map((statement) => (
                       <EditableCell
                         key={`${statement.id}-investingCashFlow`}
@@ -1024,7 +1024,7 @@ export default function FinancialReports() {
                     ))}
                   </TableRow>
                   <TableRow>
-                    <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-8">การลงทุนในสินทรัพย์ถาวร</TableCell>
+                    <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-8">Capital Expenditures</TableCell>
                     {statements.map((statement) => (
                       <EditableCell
                         key={`${statement.id}-capitalExpenditures`}
@@ -1050,7 +1050,7 @@ export default function FinancialReports() {
                     ))}
                   </TableRow>
                   <TableRow className="bg-orange-50 dark:bg-orange-950/20">
-                    <TableCell className="font-bold sticky left-0 bg-background z-10 border-r">กระแสเงินสดจากการจัดหาเงิน</TableCell>
+                    <TableCell className="font-bold sticky left-0 bg-background z-10 border-r">Financing Cash Flow</TableCell>
                     {statements.map((statement) => (
                       <EditableCell
                         key={`${statement.id}-financingCashFlow`}
@@ -1103,7 +1103,7 @@ export default function FinancialReports() {
                     ))}
                   </TableRow>
                   <TableRow className="border-t-4 bg-muted/50">
-                    <TableCell className="font-bold text-lg sticky left-0 bg-background z-10 border-r">การเปลี่ยนแปลงในเงินสดสุทธิ</TableCell>
+                    <TableCell className="font-bold text-lg sticky left-0 bg-background z-10 border-r">Net Change in Cash</TableCell>
                     {statements.map((statement) => (
                       <EditableCell
                         key={`${statement.id}-netChangeInCash`}
@@ -1117,7 +1117,7 @@ export default function FinancialReports() {
                     ))}
                   </TableRow>
                   <TableRow>
-                    <TableCell className="font-medium sticky left-0 bg-background z-10 border-r">เงินสดต้นงวด</TableCell>
+                    <TableCell className="font-medium sticky left-0 bg-background z-10 border-r">Beginning Cash Balance</TableCell>
                     {statements.map((statement) => (
                       <EditableCell
                         key={`${statement.id}-beginningCashBalance`}
@@ -1130,7 +1130,7 @@ export default function FinancialReports() {
                     ))}
                   </TableRow>
                   <TableRow className="border-t-2 bg-primary/10">
-                    <TableCell className="font-bold text-lg sticky left-0 bg-background z-10 border-r">เงินสดปลายงวด</TableCell>
+                    <TableCell className="font-bold text-lg sticky left-0 bg-background z-10 border-r">Ending Cash Balance</TableCell>
                     {statements.map((statement) => (
                       <EditableCell
                         key={`${statement.id}-endingCashBalance`}
@@ -1163,20 +1163,20 @@ export default function FinancialReports() {
           <div className="text-center space-y-6">
             <h1 className="text-5xl md:text-6xl font-bold text-foreground leading-tight flex items-center justify-center gap-4" data-testid="page-title">
               <FileText className="h-12 w-12 md:h-16 md:w-16 text-primary" />
-              รายงานการเงิน
+              Financial Reports
             </h1>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed" data-testid="page-description">
-              ดูและแก้ไขรายงานการเงิน รวมถึงงบกำไรขาดทุน งบดุล และงบกระแสเงินสด พร้อมการวิเคราะห์อัจฉริยะแบบเรียลไทม์
+              View and edit financial reports including Profit & Loss statements, Balance Sheets, and Cash Flow statements with real-time intelligent analysis
             </p>
             <div className="flex justify-center gap-4 text-sm text-muted-foreground">
               <Badge variant="outline" className="px-4 py-2">
-                <strong className="text-foreground">Live Data</strong> อัปเดตแล้ว
+                <strong className="text-foreground">Live Data</strong> Updated
               </Badge>
               <Badge variant="outline" className="px-4 py-2">
-                <strong className="text-foreground">AI-Powered</strong> การวิเคราะห์
+                <strong className="text-foreground">AI-Powered</strong> Analysis
               </Badge>
               <Badge variant="outline" className="px-4 py-2">
-                <strong className="text-foreground">Real-time</strong> แก้ไขได้
+                <strong className="text-foreground">Real-time</strong> Editable
               </Badge>
             </div>
           </div>
@@ -1194,21 +1194,21 @@ export default function FinancialReports() {
                   <Filter className="h-5 w-5 text-primary" />
                 </div>
                 <div>
-                  <CardTitle className="text-lg font-semibold">ตัวกรองข้อมูล</CardTitle>
-                  <p className="text-sm text-muted-foreground">เลือกข้อมูลที่ต้องการดู</p>
+                  <CardTitle className="text-lg font-semibold">Data Filters</CardTitle>
+                  <p className="text-sm text-muted-foreground">Select the data you want to view</p>
                 </div>
               </div>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-foreground">หัวข้อ</label>
+                  <label className="text-sm font-medium text-foreground">Topic</label>
                   <Select value={selectedTopic} onValueChange={setSelectedTopic}>
                     <SelectTrigger className="w-full bg-background/80 border-muted focus:border-primary transition-colors" data-testid="select-topic">
-                      <SelectValue placeholder="เลือกหัวข้อ" />
+                      <SelectValue placeholder="Select topic" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all" data-testid="option-all-topics">ทั้งหมด</SelectItem>
+                      <SelectItem value="all" data-testid="option-all-topics">All Topics</SelectItem>
                       {uniqueTopics.map((topic) => (
                         <SelectItem key={topic} value={topic} data-testid={`option-topic-${topic}`}>
                           {topic}
@@ -1219,13 +1219,13 @@ export default function FinancialReports() {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-foreground">งวดเริ่มต้น</label>
+                  <label className="text-sm font-medium text-foreground">Start Period</label>
                   <Select value={startPeriod} onValueChange={handleStartPeriodChange}>
                     <SelectTrigger className="w-full bg-background/80 border-muted focus:border-primary transition-colors" data-testid="select-start-period">
-                      <SelectValue placeholder="เลือกงวดเริ่มต้น" />
+                      <SelectValue placeholder="Select start period" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="none" data-testid="option-no-start">ไม่กำหนด</SelectItem>
+                      <SelectItem value="none" data-testid="option-no-start">Not specified</SelectItem>
                       {uniquePeriods.map((period) => (
                         <SelectItem key={period} value={period} data-testid={`option-start-${period}`}>
                           {period}
@@ -1236,13 +1236,13 @@ export default function FinancialReports() {
                 </div>
                 
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-foreground">งวดสิ้นสุด</label>
+                  <label className="text-sm font-medium text-foreground">End Period</label>
                   <Select value={endPeriod} onValueChange={handleEndPeriodChange}>
                     <SelectTrigger className="w-full bg-background/80 border-muted focus:border-primary transition-colors" data-testid="select-end-period">
-                      <SelectValue placeholder="เลือกงวดสิ้นสุด" />
+                      <SelectValue placeholder="Select end period" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="none" data-testid="option-no-end">ไม่กำหนด</SelectItem>
+                      <SelectItem value="none" data-testid="option-no-end">Not specified</SelectItem>
                       {uniquePeriods.map((period) => (
                         <SelectItem key={period} value={period} data-testid={`option-end-${period}`}>
                           {period}
@@ -1253,7 +1253,7 @@ export default function FinancialReports() {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-foreground">การดำเนินการ</label>
+                  <label className="text-sm font-medium text-foreground">Actions</label>
                   {(selectedTopic && selectedTopic !== "all" || (startPeriod && startPeriod !== "none") || (endPeriod && endPeriod !== "none")) ? (
                     <Button
                       variant="outline"
@@ -1265,11 +1265,11 @@ export default function FinancialReports() {
                       }}
                       data-testid="button-clear-filters"
                     >
-                      ล้างตัวกรอง
+                      Clear Filters
                     </Button>
                   ) : (
                     <div className="h-10 flex items-center">
-                      <p className="text-sm text-muted-foreground">ใช้ตัวกรองเพื่อค้นหา</p>
+                      <p className="text-sm text-muted-foreground">Use filters to search</p>
                     </div>
                   )}
                 </div>
@@ -1284,9 +1284,9 @@ export default function FinancialReports() {
                 <div className="p-2 rounded-lg bg-primary/10">
                   <FileText className="h-6 w-6 text-primary" />
                 </div>
-                รายงานการเงิน
+                Financial Reports
               </h2>
-              <p className="text-muted-foreground mt-2">เลือกประเภทรายงานที่ต้องการดู</p>
+              <p className="text-muted-foreground mt-2">Select the type of report you want to view</p>
             </div>
             
             <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
@@ -1297,7 +1297,7 @@ export default function FinancialReports() {
                   data-testid="tab-pl"
                 >
                   <Calculator className="h-5 w-5" />
-                  <span className="hidden sm:inline">งบกำไรขาดทุน</span>
+                  <span className="hidden sm:inline">Profit & Loss</span>
                   <span className="sm:hidden">P&L</span>
                 </TabsTrigger>
                 <TabsTrigger 
@@ -1306,7 +1306,7 @@ export default function FinancialReports() {
                   data-testid="tab-bs"
                 >
                   <BarChart3 className="h-5 w-5" />
-                  <span className="hidden sm:inline">งบดุล</span>
+                  <span className="hidden sm:inline">Balance Sheet</span>
                   <span className="sm:hidden">BS</span>
                 </TabsTrigger>
                 <TabsTrigger 
@@ -1315,7 +1315,7 @@ export default function FinancialReports() {
                   data-testid="tab-cf"
                 >
                   <TrendingUp className="h-5 w-5" />
-                  <span className="hidden sm:inline">งบกระแสเงินสด</span>
+                  <span className="hidden sm:inline">Cash Flow</span>
                   <span className="sm:hidden">CF</span>
                 </TabsTrigger>
               </TabsList>
