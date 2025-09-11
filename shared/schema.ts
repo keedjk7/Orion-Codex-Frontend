@@ -190,23 +190,81 @@ export const cashFlowStatement = pgTable("cash_flow_statement", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
-// Insert schemas for financial reports
+// Custom decimal validation schema
+const decimalSchema = z.string().refine((value) => {
+  // Allow empty or basic decimal format
+  if (!value || value.trim() === '') return false;
+  
+  const num = parseFloat(value);
+  if (isNaN(num) || num < 0) return false;
+  
+  // Check for valid decimal format (allow integers and decimals with max 2 places)
+  const decimalPattern = /^\d+(\.\d{1,2})?$/;
+  return decimalPattern.test(value.trim());
+}, {
+  message: "Must be a valid non-negative decimal number with max 2 decimal places"
+});
+
+// Insert schemas for financial reports with proper validation
 export const insertProfitLossStatementSchema = createInsertSchema(profitLossStatement).omit({
   id: true,
   createdAt: true,
   updatedAt: true,
+}).extend({
+  totalRevenue: decimalSchema,
+  costOfGoodsSold: decimalSchema,
+  grossProfit: decimalSchema,
+  operatingExpenses: decimalSchema,
+  operatingIncome: decimalSchema,
+  otherIncome: decimalSchema,
+  otherExpenses: decimalSchema,
+  netIncomeBeforeTax: decimalSchema,
+  taxExpense: decimalSchema,
+  netIncome: decimalSchema,
 });
 
 export const insertBalanceSheetSchema = createInsertSchema(balanceSheet).omit({
   id: true,
   createdAt: true,
   updatedAt: true,
+}).extend({
+  currentAssets: decimalSchema,
+  cash: decimalSchema,
+  accountsReceivable: decimalSchema,
+  inventory: decimalSchema,
+  nonCurrentAssets: decimalSchema,
+  propertyPlantEquipment: decimalSchema,
+  intangibleAssets: decimalSchema,
+  totalAssets: decimalSchema,
+  currentLiabilities: decimalSchema,
+  accountsPayable: decimalSchema,
+  shortTermDebt: decimalSchema,
+  longTermLiabilities: decimalSchema,
+  longTermDebt: decimalSchema,
+  totalLiabilities: decimalSchema,
+  shareholdersEquity: decimalSchema,
+  retainedEarnings: decimalSchema,
 });
 
 export const insertCashFlowStatementSchema = createInsertSchema(cashFlowStatement).omit({
   id: true,
   createdAt: true,
   updatedAt: true,
+}).extend({
+  operatingCashFlow: decimalSchema,
+  netIncome: decimalSchema,
+  depreciation: decimalSchema,
+  changeInWorkingCapital: decimalSchema,
+  investingCashFlow: decimalSchema,
+  capitalExpenditures: decimalSchema,
+  acquisitions: decimalSchema,
+  financingCashFlow: decimalSchema,
+  debtIssuance: decimalSchema,
+  debtRepayment: decimalSchema,
+  dividendsPaid: decimalSchema,
+  netChangeInCash: decimalSchema,
+  beginningCashBalance: decimalSchema,
+  endingCashBalance: decimalSchema,
 });
 
 // Types for financial reports

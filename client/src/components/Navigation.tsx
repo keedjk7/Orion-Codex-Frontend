@@ -107,7 +107,7 @@ export default function Navigation() {
                     <div>
                       <div className="text-xs font-semibold text-muted-foreground dark:text-slate-400 uppercase tracking-wide mb-2">Financial</div>
                       <div className="space-y-1">
-                        <DropdownMenuItem className="text-foreground dark:text-white hover:bg-muted dark:hover:bg-slate-700" data-testid="menu-financial-reports" onSelect={() => handleNavigation('/dashboard')}>
+                        <DropdownMenuItem className="text-foreground dark:text-white hover:bg-muted dark:hover:bg-slate-700" data-testid="menu-financial-reports" onSelect={() => handleNavigation('/financial-reports')}>
                           Financial Reports
                         </DropdownMenuItem>
                         <DropdownMenuItem className="text-foreground dark:text-white hover:bg-muted dark:hover:bg-slate-700" data-testid="menu-budget-reports" onSelect={() => handleNavigation('/dashboard')}>

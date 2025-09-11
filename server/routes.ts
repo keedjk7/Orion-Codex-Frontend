@@ -6,6 +6,12 @@ import {
   insertBalanceSheetSchema,
   insertCashFlowStatementSchema
 } from "@shared/schema";
+import { ZodError } from "zod";
+
+// Partial schemas for updates - only allow known fields to be updated
+const updateProfitLossStatementSchema = insertProfitLossStatementSchema.partial();
+const updateBalanceSheetSchema = insertBalanceSheetSchema.partial();
+const updateCashFlowStatementSchema = insertCashFlowStatementSchema.partial();
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Dashboard API routes
@@ -109,8 +115,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.put("/api/profit-loss/:id", async (req, res) => {
     try {
       const { id } = req.params;
-      const updates = req.body;
       
+      // Validate request body using Zod schema
+      const validationResult = updateProfitLossStatementSchema.safeParse(req.body);
+      
+      if (!validationResult.success) {
+        return res.status(400).json({ 
+          message: "Invalid data", 
+          errors: validationResult.error.errors 
+        });
+      }
+      
+      const updates = validationResult.data;
       const updatedStatement = await storage.updateProfitLossStatement(id, updates);
       
       if (!updatedStatement) {
@@ -119,6 +135,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       res.json(updatedStatement);
     } catch (error) {
+      if (error instanceof ZodError) {
+        return res.status(400).json({ 
+          message: "Validation failed", 
+          errors: error.errors 
+        });
+      }
+      console.error("Error updating P&L statement:", error);
       res.status(500).json({ message: "Failed to update profit & loss statement" });
     }
   });
@@ -147,8 +170,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.put("/api/balance-sheet/:id", async (req, res) => {
     try {
       const { id } = req.params;
-      const updates = req.body;
       
+      // Validate request body using Zod schema
+      const validationResult = updateBalanceSheetSchema.safeParse(req.body);
+      
+      if (!validationResult.success) {
+        return res.status(400).json({ 
+          message: "Invalid data", 
+          errors: validationResult.error.errors 
+        });
+      }
+      
+      const updates = validationResult.data;
       const updatedSheet = await storage.updateBalanceSheet(id, updates);
       
       if (!updatedSheet) {
@@ -157,6 +190,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       res.json(updatedSheet);
     } catch (error) {
+      if (error instanceof ZodError) {
+        return res.status(400).json({ 
+          message: "Validation failed", 
+          errors: error.errors 
+        });
+      }
+      console.error("Error updating balance sheet:", error);
       res.status(500).json({ message: "Failed to update balance sheet" });
     }
   });
@@ -185,8 +225,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.put("/api/cash-flow/:id", async (req, res) => {
     try {
       const { id } = req.params;
-      const updates = req.body;
       
+      // Validate request body using Zod schema
+      const validationResult = updateCashFlowStatementSchema.safeParse(req.body);
+      
+      if (!validationResult.success) {
+        return res.status(400).json({ 
+          message: "Invalid data", 
+          errors: validationResult.error.errors 
+        });
+      }
+      
+      const updates = validationResult.data;
       const updatedStatement = await storage.updateCashFlowStatement(id, updates);
       
       if (!updatedStatement) {
@@ -195,6 +245,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       res.json(updatedStatement);
     } catch (error) {
+      if (error instanceof ZodError) {
+        return res.status(400).json({ 
+          message: "Validation failed", 
+          errors: error.errors 
+        });
+      }
+      console.error("Error updating cash flow statement:", error);
       res.status(500).json({ message: "Failed to update cash flow statement" });
     }
   });
