@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Navigation from "@/components/Navigation";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -22,8 +24,30 @@ import {
   Target,
   PieChart,
   FileText,
-  Calendar
+  Calendar,
+  Zap,
+  Heart,
+  Shield,
+  Search,
+  Filter,
+  Grid,
+  List
 } from "lucide-react";
+import {
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  PieChart as RechartsPieChart,
+  Cell,
+  LineChart,
+  Line,
+  Area,
+  AreaChart
+} from "recharts";
 import heroBackground from "@assets/generated_images/Gradient_mesh_hero_background_83768b02.png";
 
 // Define types for better type safety
@@ -186,7 +210,16 @@ const TopicFocusContent = ({ selectedTopic, setSelectedTopic }: TopicFocusConten
 export default function Dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [selectedTopic, setSelectedTopic] = useState("performance");
-
+  const [isLoading, setIsLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedFilter, setSelectedFilter] = useState("all");
+  const [viewMode, setViewMode] = useState("grid");
+  
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 1000);
+    return () => clearTimeout(timer);
+  }, []);
+  
   // Mock internal business data for company overview
   const departmentData = [
     { 
@@ -339,54 +372,55 @@ export default function Dashboard() {
       risk: "None"
     }
   ];
+  
+  // Filter data based on search and filter selections
+  const filteredDepartments = useMemo(() => {
+    if (selectedFilter === 'projects' || selectedFilter === 'updates') return [];
+    
+    return departmentData.filter(dept => {
+      const matchesSearch = searchTerm === '' || 
+        dept.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        dept.summary.toLowerCase().includes(searchTerm.toLowerCase());
+      
+      const matchesFilter = selectedFilter === 'all' || selectedFilter === 'departments' ||
+        (selectedFilter === 'high-priority' && (dept.status === 'Over Budget' || dept.performance.includes('-')));
+        
+      return matchesSearch && matchesFilter;
+    });
+  }, [searchTerm, selectedFilter]);
+  
+  const filteredUpdates = useMemo(() => {
+    if (selectedFilter === 'departments' || selectedFilter === 'projects') return [];
+    
+    return companyUpdates.filter(update => {
+      const matchesSearch = searchTerm === '' || 
+        update.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        update.summary.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        update.category.toLowerCase().includes(searchTerm.toLowerCase());
+      
+      const matchesFilter = selectedFilter === 'all' || selectedFilter === 'updates' ||
+        (selectedFilter === 'high-priority' && update.importance === 'high');
+        
+      return matchesSearch && matchesFilter;
+    });
+  }, [searchTerm, selectedFilter]);
+  
+  const filteredProjects = useMemo(() => {
+    if (selectedFilter === 'departments' || selectedFilter === 'updates') return [];
+    
+    return activeProjects.filter(project => {
+      const matchesSearch = searchTerm === '' || 
+        project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        project.team.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        project.summary.toLowerCase().includes(searchTerm.toLowerCase());
+      
+      const matchesFilter = selectedFilter === 'all' || selectedFilter === 'projects' ||
+        (selectedFilter === 'high-priority' && project.risk === 'High');
+        
+      return matchesSearch && matchesFilter;
+    });
+  }, [searchTerm, selectedFilter]);
 
-  const keyMetrics = [
-    { 
-      id: "1", 
-      name: "Monthly Revenue", 
-      period: "November 2024",
-      value: "$2.8M",
-      change: "+15%",
-      target: "$2.4M",
-      summary: "Strong enterprise sales and product adoption driving revenue growth above targets."
-    },
-    { 
-      id: "2", 
-      name: "Customer Acquisition", 
-      period: "This Month",
-      value: "284 new customers",
-      change: "+22%",
-      target: "250",
-      summary: "Marketing campaigns and product improvements attracting higher quality leads."
-    },
-    { 
-      id: "3", 
-      name: "Employee Satisfaction", 
-      period: "Q4 2024",
-      value: "4.6/5",
-      change: "+8%",
-      target: "4.3/5",
-      summary: "New benefits package and flexible work policy boosting team morale significantly."
-    },
-    { 
-      id: "4", 
-      name: "Project Completion Rate", 
-      period: "Current Quarter",
-      value: "89%",
-      change: "+12%",
-      target: "85%",
-      summary: "Improved project management processes and clear priorities accelerating delivery."
-    },
-    { 
-      id: "5", 
-      name: "Customer Retention", 
-      period: "Last 30 Days",
-      value: "94.2%",
-      change: "+3%",
-      target: "92%",
-      summary: "Customer success initiatives and product stability improvements reducing churn."
-    }
-  ];
 
   const formatCurrency = (value: string) => {
     const num = parseFloat(value);
@@ -450,10 +484,185 @@ export default function Dashboard() {
         </div>
 
         {/* Main Content Area */}
-        <div className="flex-1 p-6 pt-20 lg:pt-6">
+        <div className={`flex-1 p-6 pt-20 lg:pt-6 transition-opacity duration-1000 ${isLoading ? 'opacity-0' : 'opacity-100'}`}>
           <div className="max-w-6xl mx-auto space-y-6">
+            {/* Loading Overlay */}
+            {isLoading && (
+              <div className="fixed inset-0 bg-background/50 backdrop-blur-sm flex items-center justify-center z-50">
+                <div className="bg-card p-8 rounded-lg shadow-xl">
+                  <div className="flex items-center space-x-4">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                    <div className="text-lg font-semibold">Loading Dashboard...</div>
+                  </div>
+                </div>
+              </div>
+            )}
+            {/* Search and Filter Controls */}
+            <Card className="bg-card/95 backdrop-blur-sm shadow-lg transition-all duration-300 border-0 mb-6">
+              <CardContent className="p-4">
+                <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
+                  <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+                    <div className="relative w-full sm:w-64">
+                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                      <Input
+                        placeholder="Search projects, departments..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="pl-10 w-full"
+                        data-testid="search-input"
+                      />
+                    </div>
+                    <Select value={selectedFilter} onValueChange={setSelectedFilter}>
+                      <SelectTrigger className="w-full sm:w-48" data-testid="filter-select">
+                        <Filter className="w-4 h-4 mr-2" />
+                        <SelectValue placeholder="Filter by..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Items</SelectItem>
+                        <SelectItem value="departments">Departments Only</SelectItem>
+                        <SelectItem value="projects">Projects Only</SelectItem>
+                        <SelectItem value="updates">Updates Only</SelectItem>
+                        <SelectItem value="high-priority">High Priority</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      variant={viewMode === 'grid' ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => setViewMode('grid')}
+                      data-testid="grid-view-btn"
+                    >
+                      <Grid className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      variant={viewMode === 'list' ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => setViewMode('list')}
+                      data-testid="list-view-btn"
+                    >
+                      <List className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            
+            {/* Key Performance Metrics */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6">
+              <Card className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950/50 dark:to-blue-900/50 border-blue-200 dark:border-blue-800 hover:shadow-lg transition-all duration-300 cursor-pointer hover:scale-105">
+                <CardContent className="p-3 md:p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-xs md:text-sm font-medium text-blue-700 dark:text-blue-300">Total Revenue</p>
+                      <p className="text-xl md:text-2xl font-bold text-blue-900 dark:text-blue-100">$2.8M</p>
+                      <p className="text-xs text-blue-600 dark:text-blue-400 flex items-center mt-1">
+                        <TrendingUp className="w-3 h-3 mr-1" />
+                        <span className="hidden sm:inline">+15% from last month</span>
+                        <span className="sm:hidden">+15%</span>
+                      </p>
+                    </div>
+                    <div className="h-10 w-10 md:h-12 md:w-12 bg-blue-200 dark:bg-blue-800 rounded-full flex items-center justify-center">
+                      <DollarSign className="h-5 w-5 md:h-6 md:w-6 text-blue-700 dark:text-blue-300" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950/50 dark:to-green-900/50 border-green-200 dark:border-green-800 hover:shadow-lg transition-all duration-300 cursor-pointer hover:scale-105">
+                <CardContent className="p-3 md:p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-xs md:text-sm font-medium text-green-700 dark:text-green-300">Active Projects</p>
+                      <p className="text-xl md:text-2xl font-bold text-green-900 dark:text-green-100">24</p>
+                      <p className="text-xs text-green-600 dark:text-green-400 flex items-center mt-1">
+                        <Target className="w-3 h-3 mr-1" />
+                        <span className="hidden sm:inline">89% success rate</span>
+                        <span className="sm:hidden">89%</span>
+                      </p>
+                    </div>
+                    <div className="h-10 w-10 md:h-12 md:w-12 bg-green-200 dark:bg-green-800 rounded-full flex items-center justify-center">
+                      <BarChart3 className="h-5 w-5 md:h-6 md:w-6 text-green-700 dark:text-green-300" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950/50 dark:to-purple-900/50 border-purple-200 dark:border-purple-800 hover:shadow-lg transition-all duration-300 cursor-pointer hover:scale-105">
+                <CardContent className="p-3 md:p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-xs md:text-sm font-medium text-purple-700 dark:text-purple-300">Team Members</p>
+                      <p className="text-xl md:text-2xl font-bold text-purple-900 dark:text-purple-100">156</p>
+                      <p className="text-xs text-purple-600 dark:text-purple-400 flex items-center mt-1">
+                        <Users className="w-3 h-3 mr-1" />
+                        <span className="hidden sm:inline">94% satisfaction</span>
+                        <span className="sm:hidden">94%</span>
+                      </p>
+                    </div>
+                    <div className="h-10 w-10 md:h-12 md:w-12 bg-purple-200 dark:bg-purple-800 rounded-full flex items-center justify-center">
+                      <Users className="h-5 w-5 md:h-6 md:w-6 text-purple-700 dark:text-purple-300" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card className="bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-950/50 dark:to-orange-900/50 border-orange-200 dark:border-orange-800 hover:shadow-lg transition-all duration-300 cursor-pointer hover:scale-105">
+                <CardContent className="p-3 md:p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-xs md:text-sm font-medium text-orange-700 dark:text-orange-300">System Health</p>
+                      <p className="text-xl md:text-2xl font-bold text-orange-900 dark:text-orange-100">99.8%</p>
+                      <p className="text-xs text-orange-600 dark:text-orange-400 flex items-center mt-1">
+                        <Shield className="w-3 h-3 mr-1" />
+                        <span className="hidden sm:inline">All systems online</span>
+                        <span className="sm:hidden">Online</span>
+                      </p>
+                    </div>
+                    <div className="h-10 w-10 md:h-12 md:w-12 bg-orange-200 dark:bg-orange-800 rounded-full flex items-center justify-center">
+                      <Activity className="h-5 w-5 md:h-6 md:w-6 text-orange-700 dark:text-orange-300" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+            
+            {/* Revenue Chart */}
+            <Card className="bg-card/95 backdrop-blur-sm hover:bg-card shadow-lg hover:shadow-xl transition-all duration-300 border-0 mb-6">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <BarChart3 className="w-5 h-5" />
+                  Revenue Trends
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="h-64">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart
+                      data={[
+                        { month: 'Jan', revenue: 2200000, target: 2000000 },
+                        { month: 'Feb', revenue: 2350000, target: 2100000 },
+                        { month: 'Mar', revenue: 2100000, target: 2200000 },
+                        { month: 'Apr', revenue: 2600000, target: 2300000 },
+                        { month: 'May', revenue: 2750000, target: 2400000 },
+                        { month: 'Jun', revenue: 2800000, target: 2500000 }
+                      ]}
+                      margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
+                      <XAxis dataKey="month" className="text-xs" />
+                      <YAxis tickFormatter={(value) => `$${(value/1000000).toFixed(1)}M`} className="text-xs" />
+                      <Tooltip formatter={(value: any) => [`$${(value/1000000).toFixed(2)}M`, 'Amount']} />
+                      <Area type="monotone" dataKey="revenue" stroke="hsl(var(--primary))" fill="hsl(var(--primary))" fillOpacity={0.3} />
+                      <Area type="monotone" dataKey="target" stroke="hsl(var(--muted-foreground))" fill="transparent" strokeDasharray="5 5" />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </div>
+              </CardContent>
+            </Card>
+            
             {/* Department Overview */}
-            <Card className="bg-card/95 backdrop-blur-sm" data-testid="department-overview-card">
+            <Card className="bg-card/95 backdrop-blur-sm hover:bg-card shadow-lg hover:shadow-xl transition-all duration-300 border-0" data-testid="department-overview-card">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Building2 className="w-5 h-5" />
@@ -461,12 +670,23 @@ export default function Dashboard() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {departmentData.map((dept) => (
-                    <div key={dept.id} className="p-4 border rounded-lg hover:bg-muted/50 transition-colors bg-card/50 backdrop-blur-sm" data-testid={`dept-${dept.name.toLowerCase()}`}>
+                <div className={viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4' : 'space-y-4'}>
+                  {filteredDepartments.length === 0 ? (
+                    <div className="col-span-full text-center py-8 text-muted-foreground">
+                      <Building2 className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                      <p>No departments found matching your criteria</p>
+                    </div>
+                  ) : (
+                    filteredDepartments.map((dept, index) => (
+                    <div 
+                      key={dept.id} 
+                      className="p-4 border rounded-lg hover:bg-muted/50 hover:shadow-lg hover:scale-[1.02] transition-all duration-300 ease-in-out bg-card/50 backdrop-blur-sm group cursor-pointer transform" 
+                      data-testid={`dept-${dept.name.toLowerCase()}`}
+                      style={{ animationDelay: `${index * 100}ms` }}
+                    >
                       <div className="flex justify-between items-start mb-3">
-                        <div>
-                          <div className="font-semibold">{dept.name}</div>
+                        <div className="group-hover:translate-x-1 transition-transform duration-300">
+                          <div className="font-semibold text-foreground group-hover:text-primary transition-colors duration-300">{dept.name}</div>
                           <div className="text-sm text-muted-foreground">{dept.spent} / {dept.budget}</div>
                         </div>
                         <div className="text-right">
@@ -497,14 +717,72 @@ export default function Dashboard() {
                         </span>
                       </div>
                     </div>
-                  ))}
+                    ))
+                  )}
                 </div>
               </CardContent>
             </Card>
 
+            {/* Department Budget Distribution Chart */}
+            <Card className="bg-card/95 backdrop-blur-sm hover:bg-card shadow-lg hover:shadow-xl transition-all duration-300 border-0 mb-6">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <PieChart className="w-5 h-5" />
+                  Budget Distribution by Department
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="h-64">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <RechartsPieChart
+                      data={[
+                        { name: 'Engineering', value: 2800000, color: '#3b82f6' },
+                        { name: 'Marketing', value: 1200000, color: '#10b981' },
+                        { name: 'Sales', value: 1800000, color: '#8b5cf6' },
+                        { name: 'Operations', value: 950000, color: '#f59e0b' },
+                        { name: 'HR', value: 650000, color: '#ef4444' }
+                      ]}
+                      cx="50%"
+                      cy="50%"
+                      outerRadius={80}
+                      dataKey="value"
+                    >
+                      {[
+                        { name: 'Engineering', value: 2800000, color: '#3b82f6' },
+                        { name: 'Marketing', value: 1200000, color: '#10b981' },
+                        { name: 'Sales', value: 1800000, color: '#8b5cf6' },
+                        { name: 'Operations', value: 950000, color: '#f59e0b' },
+                        { name: 'HR', value: 650000, color: '#ef4444' }
+                      ].map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                      <Tooltip formatter={(value: any) => [`$${(value/1000000).toFixed(2)}M`, 'Budget']} />
+                    </RechartsPieChart>
+                  </ResponsiveContainer>
+                </div>
+                <div className="flex flex-wrap gap-2 mt-4">
+                  {[
+                    { name: 'Engineering', color: '#3b82f6' },
+                    { name: 'Marketing', color: '#10b981' },
+                    { name: 'Sales', color: '#8b5cf6' },
+                    { name: 'Operations', color: '#f59e0b' },
+                    { name: 'HR', color: '#ef4444' }
+                  ].map((item) => (
+                    <div key={item.name} className="flex items-center gap-2">
+                      <div 
+                        className="w-3 h-3 rounded-full" 
+                        style={{ backgroundColor: item.color }}
+                      />
+                      <span className="text-sm text-muted-foreground">{item.name}</span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+            
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Company Updates */}
-              <Card className="bg-card/95 backdrop-blur-sm" data-testid="company-updates-card">
+              <Card className="bg-card/95 backdrop-blur-sm hover:bg-card shadow-lg hover:shadow-xl transition-all duration-300 border-0" data-testid="company-updates-card">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Clock className="w-5 h-5" />
@@ -514,8 +792,14 @@ export default function Dashboard() {
                 <CardContent>
                   <ScrollArea className="h-80">
                     <div className="space-y-4">
-                      {companyUpdates.map((update) => (
-                        <div key={update.id} className="pb-4 border-b last:border-b-0" data-testid={`update-${update.id}`}>
+                      {filteredUpdates.length === 0 ? (
+                        <div className="text-center py-8 text-muted-foreground">
+                          <Clock className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                          <p>No updates found matching your criteria</p>
+                        </div>
+                      ) : (
+                        filteredUpdates.map((update) => (
+                        <div key={update.id} className="pb-4 border-b last:border-b-0 hover:bg-muted/30 rounded-lg p-2 -m-2 transition-all duration-200 cursor-pointer" data-testid={`update-${update.id}`}>
                           <div className="flex items-start gap-3">
                             <div className="flex-1">
                               <div className="flex items-center gap-2 mb-2">
@@ -540,14 +824,15 @@ export default function Dashboard() {
                             </div>
                           </div>
                         </div>
-                      ))}
+                        ))
+                      )}
                     </div>
                   </ScrollArea>
                 </CardContent>
               </Card>
 
               {/* Active Projects */}
-              <Card className="bg-card/95 backdrop-blur-sm" data-testid="active-projects-card">
+              <Card className="bg-card/95 backdrop-blur-sm hover:bg-card shadow-lg hover:shadow-xl transition-all duration-300 border-0" data-testid="active-projects-card">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Target className="w-5 h-5" />
@@ -557,8 +842,14 @@ export default function Dashboard() {
                 <CardContent>
                   <ScrollArea className="h-80">
                     <div className="space-y-4">
-                      {activeProjects.map((project) => (
-                        <div key={project.id} className="p-4 border rounded-lg bg-card/50 backdrop-blur-sm" data-testid={`project-${project.id}`}>
+                      {filteredProjects.length === 0 ? (
+                        <div className="text-center py-8 text-muted-foreground">
+                          <Target className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                          <p>No projects found matching your criteria</p>
+                        </div>
+                      ) : (
+                        filteredProjects.map((project) => (
+                        <div key={project.id} className="p-4 border rounded-lg bg-card/50 backdrop-blur-sm hover:bg-card/80 hover:shadow-md hover:scale-[1.01] transition-all duration-200 cursor-pointer" data-testid={`project-${project.id}`}>
                           <div className="flex justify-between items-start mb-3">
                             <div>
                               <h4 className="font-semibold">{project.name}</h4>
@@ -596,7 +887,8 @@ export default function Dashboard() {
                             {project.summary}
                           </div>
                         </div>
-                      ))}
+                        ))
+                      )}
                     </div>
                   </ScrollArea>
                 </CardContent>
