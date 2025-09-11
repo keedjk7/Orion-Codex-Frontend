@@ -489,7 +489,7 @@ export default function FinancialReports() {
                         />
                       ))}
                     </TableRow>
-                    <TableRow className="border-t-2 bg-blue-50 dark:bg-blue-950/20">
+                    <TableRow className="border-t-2 bg-muted/30 dark:bg-muted/20">
                       <TableCell className="font-bold sticky left-0 bg-muted/50 z-10 border-r border-border/50">Gross Profit</TableCell>
                       {statements.map((statement) => (
                         <EditableCell
@@ -516,7 +516,7 @@ export default function FinancialReports() {
                         />
                       ))}
                     </TableRow>
-                    <TableRow className="border-t-2 bg-green-50 dark:bg-green-950/20">
+                    <TableRow className="border-t-2 bg-muted/30 dark:bg-muted/20">
                       <TableCell className="font-bold sticky left-0 bg-muted/50 z-10 border-r border-border/50">Operating Income</TableCell>
                       {statements.map((statement) => (
                         <EditableCell
@@ -556,7 +556,7 @@ export default function FinancialReports() {
                         />
                       ))}
                     </TableRow>
-                    <TableRow className="border-t-2 bg-orange-50 dark:bg-orange-950/20">
+                    <TableRow className="border-t-2 bg-muted/30 dark:bg-muted/20">
                       <TableCell className="font-bold sticky left-0 bg-muted/50 z-10 border-r border-border/50">Income Before Tax</TableCell>
                       {statements.map((statement) => (
                         <EditableCell
@@ -642,7 +642,7 @@ export default function FinancialReports() {
       <div className="space-y-6">
         {Object.entries(groupedSheets).map(([topic, sheets]) => (
           <Card key={topic} className="bg-card/95 backdrop-blur-sm border border-border/50 shadow-lg hover-elevate transition-all duration-300" data-testid={`bs-comparative-${topic}`}>
-            <CardHeader className="bg-gradient-to-r from-primary/10 to-primary/20 border-b border-primary/30">
+            <CardHeader className="bg-muted/50 border-b border-border/50">
               <CardTitle className="flex items-center gap-3 text-xl font-bold">
                 <div className="p-2 rounded-lg bg-primary/10 border border-primary/20">
                   <BarChart3 className="h-6 w-6 text-primary" />
@@ -655,7 +655,7 @@ export default function FinancialReports() {
             </CardHeader>
             <CardContent className="p-0">
               <div className="overflow-x-auto">
-                <Table className="min-w-full border-separate border-spacing-0">
+                <Table className="min-w-full border-separate border-spacing-0 rounded-xl overflow-hidden">
                   <TableHeader>
                     <TableRow className="bg-muted/50 border-b border-border/50">
                       <TableHead className="sticky left-0 bg-muted/50 z-10 min-w-[200px] border-r border-border/50 font-bold text-foreground p-4">Line Item</TableHead>
@@ -668,7 +668,7 @@ export default function FinancialReports() {
                   </TableHeader>
                   <TableBody>
                     {/* Assets Section */}
-                    <TableRow className="bg-blue-50 dark:bg-blue-950/20">
+                    <TableRow className="bg-muted/30 dark:bg-muted/20">
                       <TableCell className="font-bold sticky left-0 bg-muted/50 z-10 border-r border-border/50">Current Assets</TableCell>
                       {sheets.map((sheet) => (
                         <EditableCell
@@ -683,7 +683,7 @@ export default function FinancialReports() {
                       ))}
                     </TableRow>
                     <TableRow>
-                      <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-6">Cash</TableCell>
+                      <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50 pl-6">Cash</TableCell>
                       {sheets.map((sheet) => (
                         <EditableCell
                           key={`${sheet.id}-cash`}
@@ -696,7 +696,7 @@ export default function FinancialReports() {
                       ))}
                     </TableRow>
                     <TableRow>
-                      <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-6">Accounts Receivable</TableCell>
+                      <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50 pl-6">Accounts Receivable</TableCell>
                       {sheets.map((sheet) => (
                         <EditableCell
                           key={`${sheet.id}-accountsReceivable`}
@@ -709,7 +709,7 @@ export default function FinancialReports() {
                       ))}
                     </TableRow>
                     <TableRow>
-                      <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-6">Inventory</TableCell>
+                      <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50 pl-6">Inventory</TableCell>
                       {sheets.map((sheet) => (
                         <EditableCell
                           key={`${sheet.id}-inventory`}
@@ -721,7 +721,7 @@ export default function FinancialReports() {
                         />
                       ))}
                     </TableRow>
-                    <TableRow className="bg-blue-50 dark:bg-blue-950/20">
+                    <TableRow className="bg-muted/30 dark:bg-muted/20">
                       <TableCell className="font-bold sticky left-0 bg-muted/50 z-10 border-r border-border/50">Non-Current Assets</TableCell>
                       {sheets.map((sheet) => (
                         <EditableCell
@@ -736,7 +736,7 @@ export default function FinancialReports() {
                       ))}
                     </TableRow>
                     <TableRow>
-                      <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-6">Property, Plant & Equipment</TableCell>
+                      <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50 pl-6">Property, Plant & Equipment</TableCell>
                       {sheets.map((sheet) => (
                         <EditableCell
                           key={`${sheet.id}-propertyPlantEquipment`}
@@ -749,7 +749,7 @@ export default function FinancialReports() {
                       ))}
                     </TableRow>
                     <TableRow>
-                      <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-6">Intangible Assets</TableCell>
+                      <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50 pl-6">Intangible Assets</TableCell>
                       {sheets.map((sheet) => (
                         <EditableCell
                           key={`${sheet.id}-intangibleAssets`}
@@ -761,7 +761,7 @@ export default function FinancialReports() {
                         />
                       ))}
                     </TableRow>
-                    <TableRow className="border-t-2 bg-green-50 dark:bg-green-950/20">
+                    <TableRow className="border-t-2 bg-muted/30 dark:bg-muted/20">
                       <TableCell className="font-bold sticky left-0 bg-muted/50 z-10 border-r border-border/50">Total Assets</TableCell>
                       {sheets.map((sheet) => (
                         <EditableCell
@@ -777,7 +777,7 @@ export default function FinancialReports() {
                     </TableRow>
                     
                     {/* Liabilities Section */}
-                    <TableRow className="bg-orange-50 dark:bg-orange-950/20">
+                    <TableRow className="bg-muted/30 dark:bg-muted/20">
                       <TableCell className="font-bold sticky left-0 bg-muted/50 z-10 border-r border-border/50">Current Liabilities</TableCell>
                       {sheets.map((sheet) => (
                         <EditableCell
@@ -792,7 +792,7 @@ export default function FinancialReports() {
                       ))}
                     </TableRow>
                     <TableRow>
-                      <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-6">Accounts Payable</TableCell>
+                      <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50 pl-6">Accounts Payable</TableCell>
                       {sheets.map((sheet) => (
                         <EditableCell
                           key={`${sheet.id}-accountsPayable`}
@@ -805,7 +805,7 @@ export default function FinancialReports() {
                       ))}
                     </TableRow>
                     <TableRow>
-                      <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-6">Short-term Liabilities</TableCell>
+                      <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50 pl-6">Short-term Liabilities</TableCell>
                       {sheets.map((sheet) => (
                         <EditableCell
                           key={`${sheet.id}-shortTermDebt`}
@@ -817,7 +817,7 @@ export default function FinancialReports() {
                         />
                       ))}
                     </TableRow>
-                    <TableRow className="bg-orange-50 dark:bg-orange-950/20">
+                    <TableRow className="bg-muted/30 dark:bg-muted/20">
                       <TableCell className="font-bold sticky left-0 bg-muted/50 z-10 border-r border-border/50">Long-term Liabilities</TableCell>
                       {sheets.map((sheet) => (
                         <EditableCell
@@ -832,7 +832,7 @@ export default function FinancialReports() {
                       ))}
                     </TableRow>
                     <TableRow>
-                      <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-6">Long-term Debt</TableCell>
+                      <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50 pl-6">Long-term Debt</TableCell>
                       {sheets.map((sheet) => (
                         <EditableCell
                           key={`${sheet.id}-longTermDebt`}
@@ -844,7 +844,7 @@ export default function FinancialReports() {
                         />
                       ))}
                     </TableRow>
-                    <TableRow className="border-t-2 bg-red-50 dark:bg-red-950/20">
+                    <TableRow className="border-t-2 bg-muted/30 dark:bg-muted/20">
                       <TableCell className="font-bold sticky left-0 bg-muted/50 z-10 border-r border-border/50">Total Liabilities</TableCell>
                       {sheets.map((sheet) => (
                         <EditableCell
@@ -860,7 +860,7 @@ export default function FinancialReports() {
                     </TableRow>
                     
                     {/* Equity Section */}
-                    <TableRow className="bg-purple-50 dark:bg-purple-950/20">
+                    <TableRow className="bg-muted/30 dark:bg-muted/20">
                       <TableCell className="font-bold sticky left-0 bg-muted/50 z-10 border-r border-border/50">Shareholders' Equity</TableCell>
                       {sheets.map((sheet) => (
                         <EditableCell
@@ -875,7 +875,7 @@ export default function FinancialReports() {
                       ))}
                     </TableRow>
                     <TableRow>
-                      <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-6">Retained Earnings</TableCell>
+                      <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50 pl-6">Retained Earnings</TableCell>
                       {sheets.map((sheet) => (
                         <EditableCell
                           key={`${sheet.id}-retainedEarnings`}
@@ -931,7 +931,7 @@ export default function FinancialReports() {
       <div className="space-y-6">
         {Object.entries(groupedStatements).map(([topic, statements]) => (
           <Card key={topic} className="bg-card/95 backdrop-blur-sm border border-border/50 shadow-lg hover-elevate transition-all duration-300" data-testid={`cf-comparative-${topic}`}>
-            <CardHeader className="bg-gradient-to-r from-primary/10 to-primary/20 border-b border-primary/30">
+            <CardHeader className="bg-muted/50 border-b border-border/50">
               <CardTitle className="flex items-center gap-3 text-xl font-bold">
                 <div className="p-2 rounded-lg bg-primary/10 border border-primary/20">
                   <TrendingUp className="h-6 w-6 text-primary" />
@@ -944,7 +944,7 @@ export default function FinancialReports() {
             </CardHeader>
             <CardContent className="p-0">
               <div className="overflow-x-auto">
-                <Table className="min-w-full border-separate border-spacing-0">
+                <Table className="min-w-full border-separate border-spacing-0 rounded-xl overflow-hidden">
                   <TableHeader>
                     <TableRow className="bg-muted/50 border-b border-border/50">
                       <TableHead className="sticky left-0 bg-muted/50 z-10 min-w-[200px] border-r border-border/50 font-bold text-foreground p-4">Line Item</TableHead>
@@ -956,8 +956,8 @@ export default function FinancialReports() {
                     </TableRow>
                   </TableHeader>
                 <TableBody>
-                  <TableRow className="bg-blue-50 dark:bg-blue-950/20">
-                    <TableCell className="font-bold sticky left-0 bg-background z-10 border-r">Operating Cash Flow</TableCell>
+                  <TableRow className="bg-muted/30 dark:bg-muted/20">
+                    <TableCell className="font-bold sticky left-0 bg-muted/50 z-10 border-r border-border/50">Operating Cash Flow</TableCell>
                     {statements.map((statement) => (
                       <EditableCell
                         key={`${statement.id}-operatingCashFlow`}
@@ -971,7 +971,7 @@ export default function FinancialReports() {
                     ))}
                   </TableRow>
                   <TableRow>
-                    <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-8">Net Income</TableCell>
+                    <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50 pl-8">Net Income</TableCell>
                     {statements.map((statement) => (
                       <EditableCell
                         key={`${statement.id}-netIncome`}
@@ -984,7 +984,7 @@ export default function FinancialReports() {
                     ))}
                   </TableRow>
                   <TableRow>
-                    <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-8">Depreciation</TableCell>
+                    <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50 pl-8">Depreciation</TableCell>
                     {statements.map((statement) => (
                       <EditableCell
                         key={`${statement.id}-depreciation`}
@@ -997,7 +997,7 @@ export default function FinancialReports() {
                     ))}
                   </TableRow>
                   <TableRow>
-                    <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-8">Changes in Working Capital</TableCell>
+                    <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50 pl-8">Changes in Working Capital</TableCell>
                     {statements.map((statement) => (
                       <EditableCell
                         key={`${statement.id}-changeInWorkingCapital`}
@@ -1009,8 +1009,8 @@ export default function FinancialReports() {
                       />
                     ))}
                   </TableRow>
-                  <TableRow className="bg-green-50 dark:bg-green-950/20">
-                    <TableCell className="font-bold sticky left-0 bg-background z-10 border-r">Investing Cash Flow</TableCell>
+                  <TableRow className="bg-muted/30 dark:bg-muted/20">
+                    <TableCell className="font-bold sticky left-0 bg-muted/50 z-10 border-r border-border/50">Investing Cash Flow</TableCell>
                     {statements.map((statement) => (
                       <EditableCell
                         key={`${statement.id}-investingCashFlow`}
@@ -1024,7 +1024,7 @@ export default function FinancialReports() {
                     ))}
                   </TableRow>
                   <TableRow>
-                    <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-8">Capital Expenditures</TableCell>
+                    <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50 pl-8">Capital Expenditures</TableCell>
                     {statements.map((statement) => (
                       <EditableCell
                         key={`${statement.id}-capitalExpenditures`}
@@ -1037,7 +1037,7 @@ export default function FinancialReports() {
                     ))}
                   </TableRow>
                   <TableRow>
-                    <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-8">Business Acquisitions</TableCell>
+                    <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50 pl-8">Business Acquisitions</TableCell>
                     {statements.map((statement) => (
                       <EditableCell
                         key={`${statement.id}-acquisitions`}
@@ -1049,8 +1049,8 @@ export default function FinancialReports() {
                       />
                     ))}
                   </TableRow>
-                  <TableRow className="bg-orange-50 dark:bg-orange-950/20">
-                    <TableCell className="font-bold sticky left-0 bg-background z-10 border-r">Financing Cash Flow</TableCell>
+                  <TableRow className="bg-muted/30 dark:bg-muted/20">
+                    <TableCell className="font-bold sticky left-0 bg-muted/50 z-10 border-r border-border/50">Financing Cash Flow</TableCell>
                     {statements.map((statement) => (
                       <EditableCell
                         key={`${statement.id}-financingCashFlow`}
@@ -1064,7 +1064,7 @@ export default function FinancialReports() {
                     ))}
                   </TableRow>
                   <TableRow>
-                    <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-8">Loan Proceeds</TableCell>
+                    <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50 pl-8">Loan Proceeds</TableCell>
                     {statements.map((statement) => (
                       <EditableCell
                         key={`${statement.id}-debtIssuance`}
@@ -1077,7 +1077,7 @@ export default function FinancialReports() {
                     ))}
                   </TableRow>
                   <TableRow>
-                    <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-8">Debt Repayments</TableCell>
+                    <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50 pl-8">Debt Repayments</TableCell>
                     {statements.map((statement) => (
                       <EditableCell
                         key={`${statement.id}-debtRepayment`}
@@ -1090,7 +1090,7 @@ export default function FinancialReports() {
                     ))}
                   </TableRow>
                   <TableRow>
-                    <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-8">Dividends Paid</TableCell>
+                    <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50 pl-8">Dividends Paid</TableCell>
                     {statements.map((statement) => (
                       <EditableCell
                         key={`${statement.id}-dividendsPaid`}
@@ -1103,7 +1103,7 @@ export default function FinancialReports() {
                     ))}
                   </TableRow>
                   <TableRow className="border-t-2 bg-muted/30 dark:bg-muted/20">
-                    <TableCell className="font-bold text-lg sticky left-0 bg-background z-10 border-r">Net Change in Cash</TableCell>
+                    <TableCell className="font-bold text-lg sticky left-0 bg-muted/50 z-10 border-r border-border/50">Net Change in Cash</TableCell>
                     {statements.map((statement) => (
                       <EditableCell
                         key={`${statement.id}-netChangeInCash`}
@@ -1117,7 +1117,7 @@ export default function FinancialReports() {
                     ))}
                   </TableRow>
                   <TableRow>
-                    <TableCell className="font-medium sticky left-0 bg-background z-10 border-r">Beginning Cash Balance</TableCell>
+                    <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50">Beginning Cash Balance</TableCell>
                     {statements.map((statement) => (
                       <EditableCell
                         key={`${statement.id}-beginningCashBalance`}
@@ -1129,8 +1129,8 @@ export default function FinancialReports() {
                       />
                     ))}
                   </TableRow>
-                  <TableRow className="border-t-2 bg-primary/10">
-                    <TableCell className="font-bold text-lg sticky left-0 bg-background z-10 border-r">Ending Cash Balance</TableCell>
+                  <TableRow className="border-t-2 bg-muted/30 dark:bg-muted/20">
+                    <TableCell className="font-bold text-lg sticky left-0 bg-muted/50 z-10 border-r border-border/50">Ending Cash Balance</TableCell>
                     {statements.map((statement) => (
                       <EditableCell
                         key={`${statement.id}-endingCashBalance`}
