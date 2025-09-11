@@ -456,8 +456,8 @@ export default function Dashboard() {
       
       <div className="relative z-10 flex pt-20">
         {/* Desktop Sidebar */}
-        <div className="hidden lg:block w-80 bg-card/95 backdrop-blur-sm border-r border-border/20 flex-shrink-0">
-          <ScrollArea className="h-screen">
+        <div className="hidden lg:block w-80 bg-card backdrop-blur-sm border-r border-border/20 flex-shrink-0 fixed left-0 top-20 bottom-0 z-40">
+          <ScrollArea className="h-full">
             <TopicFocusContent selectedTopic={selectedTopic} setSelectedTopic={setSelectedTopic} />
           </ScrollArea>
         </div>
@@ -484,7 +484,7 @@ export default function Dashboard() {
         </div>
 
         {/* Main Content Area */}
-        <div className={`flex-1 p-6 pt-20 lg:pt-6 transition-opacity duration-1000 ${isLoading ? 'opacity-0' : 'opacity-100'}`}>
+        <div className={`flex-1 p-6 pt-20 lg:pt-6 lg:ml-80 transition-opacity duration-1000 ${isLoading ? 'opacity-0' : 'opacity-100'}`}>
           <div className="max-w-6xl mx-auto space-y-6">
             {/* Loading Overlay */}
             {isLoading && (
