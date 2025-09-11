@@ -658,7 +658,7 @@ export default function FinancialReports() {
                 <Table className="min-w-full border-separate border-spacing-0">
                   <TableHeader>
                     <TableRow className="bg-gradient-to-r from-muted/50 to-muted/30 border-b-2 border-primary/20">
-                      <TableHead className="sticky left-0 bg-gradient-to-r from-muted/80 to-muted/60 z-10 min-w-[200px] border-r border-border/50 font-bold text-foreground p-4">รายการ</TableHead>
+                      <TableHead className="sticky left-0 bg-gradient-to-r from-muted/80 to-muted/60 z-10 min-w-[200px] border-r border-border/50 font-bold text-foreground p-4">Line Item</TableHead>
                       {sheets.map((sheet) => (
                         <TableHead key={sheet.period} className="text-right min-w-[120px] font-semibold text-foreground p-4" data-testid={`header-${sheet.period}`}>
                           {sheet.period}
@@ -947,7 +947,7 @@ export default function FinancialReports() {
                 <Table className="min-w-full border-separate border-spacing-0">
                   <TableHeader>
                     <TableRow className="bg-gradient-to-r from-muted/50 to-muted/30 border-b-2 border-primary/20">
-                      <TableHead className="sticky left-0 bg-gradient-to-r from-muted/80 to-muted/60 z-10 min-w-[200px] border-r border-border/50 font-bold text-foreground p-4">รายการ</TableHead>
+                      <TableHead className="sticky left-0 bg-gradient-to-r from-muted/80 to-muted/60 z-10 min-w-[200px] border-r border-border/50 font-bold text-foreground p-4">Line Item</TableHead>
                       {statements.map((statement) => (
                         <TableHead key={statement.period} className="text-right min-w-[120px] font-semibold text-foreground p-4" data-testid={`header-${statement.period}`}>
                           {statement.period}
@@ -984,7 +984,7 @@ export default function FinancialReports() {
                     ))}
                   </TableRow>
                   <TableRow>
-                    <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-8">ค่าเสื่อมราคา</TableCell>
+                    <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-8">Depreciation</TableCell>
                     {statements.map((statement) => (
                       <EditableCell
                         key={`${statement.id}-depreciation`}
@@ -1037,7 +1037,7 @@ export default function FinancialReports() {
                     ))}
                   </TableRow>
                   <TableRow>
-                    <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-8">การซื้อกิจการ</TableCell>
+                    <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-8">Business Acquisitions</TableCell>
                     {statements.map((statement) => (
                       <EditableCell
                         key={`${statement.id}-acquisitions`}
@@ -1064,7 +1064,7 @@ export default function FinancialReports() {
                     ))}
                   </TableRow>
                   <TableRow>
-                    <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-8">การกู้ยืมเงิน</TableCell>
+                    <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-8">Loan Proceeds</TableCell>
                     {statements.map((statement) => (
                       <EditableCell
                         key={`${statement.id}-debtIssuance`}
@@ -1077,7 +1077,7 @@ export default function FinancialReports() {
                     ))}
                   </TableRow>
                   <TableRow>
-                    <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-8">การชำระคืนหนี้</TableCell>
+                    <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-8">Debt Repayments</TableCell>
                     {statements.map((statement) => (
                       <EditableCell
                         key={`${statement.id}-debtRepayment`}
@@ -1090,7 +1090,7 @@ export default function FinancialReports() {
                     ))}
                   </TableRow>
                   <TableRow>
-                    <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-8">เงินปันผลที่จ่าย</TableCell>
+                    <TableCell className="font-medium sticky left-0 bg-background z-10 border-r pl-8">Dividends Paid</TableCell>
                     {statements.map((statement) => (
                       <EditableCell
                         key={`${statement.id}-dividendsPaid`}
