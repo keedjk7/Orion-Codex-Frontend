@@ -1147,70 +1147,93 @@ export default function FinancialReports() {
       <main className="container mx-auto px-6 py-12">
         <div className="max-w-7xl mx-auto space-y-8">
 
-          {/* Filters */}
-          <Card className="mb-6">
-            <CardContent className="pt-6">
-              <div className="flex flex-wrap items-center gap-4">
-                <div className="flex items-center gap-2">
-                  <Filter className="h-4 w-4" />
-                  <span className="text-sm font-medium">กรองข้อมูล:</span>
+          {/* Enhanced Filters Section */}
+          <Card className="border-0 bg-gradient-to-r from-card/80 to-card/95 backdrop-blur-sm shadow-xl mb-8">
+            <CardHeader className="pb-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-primary/10">
+                  <Filter className="h-5 w-5 text-primary" />
+                </div>
+                <div>
+                  <CardTitle className="text-lg font-semibold">ตัวกรองข้อมูล</CardTitle>
+                  <p className="text-sm text-muted-foreground">เลือกข้อมูลที่ต้องการดู</p>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-foreground">หัวข้อ</label>
+                  <Select value={selectedTopic} onValueChange={setSelectedTopic}>
+                    <SelectTrigger className="w-full bg-background/80 border-muted focus:border-primary transition-colors" data-testid="select-topic">
+                      <SelectValue placeholder="เลือกหัวข้อ" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all" data-testid="option-all-topics">ทั้งหมด</SelectItem>
+                      {uniqueTopics.map((topic) => (
+                        <SelectItem key={topic} value={topic} data-testid={`option-topic-${topic}`}>
+                          {topic}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-foreground">งวดเริ่มต้น</label>
+                  <Select value={startPeriod} onValueChange={handleStartPeriodChange}>
+                    <SelectTrigger className="w-full bg-background/80 border-muted focus:border-primary transition-colors" data-testid="select-start-period">
+                      <SelectValue placeholder="เลือกงวดเริ่มต้น" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none" data-testid="option-no-start">ไม่กำหนด</SelectItem>
+                      {uniquePeriods.map((period) => (
+                        <SelectItem key={period} value={period} data-testid={`option-start-${period}`}>
+                          {period}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
                 
-                <Select value={selectedTopic} onValueChange={setSelectedTopic}>
-                  <SelectTrigger className="w-[200px]" data-testid="select-topic">
-                    <SelectValue placeholder="เลือกหัวข้อ" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all" data-testid="option-all-topics">ทั้งหมด</SelectItem>
-                    {uniqueTopics.map((topic) => (
-                      <SelectItem key={topic} value={topic} data-testid={`option-topic-${topic}`}>
-                        {topic}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-foreground">งวดสิ้นสุด</label>
+                  <Select value={endPeriod} onValueChange={handleEndPeriodChange}>
+                    <SelectTrigger className="w-full bg-background/80 border-muted focus:border-primary transition-colors" data-testid="select-end-period">
+                      <SelectValue placeholder="เลือกงวดสิ้นสุด" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none" data-testid="option-no-end">ไม่กำหนด</SelectItem>
+                      {uniquePeriods.map((period) => (
+                        <SelectItem key={period} value={period} data-testid={`option-end-${period}`}>
+                          {period}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
 
-                <Select value={startPeriod} onValueChange={handleStartPeriodChange}>
-                  <SelectTrigger className="w-[200px]" data-testid="select-start-period">
-                    <SelectValue placeholder="Start Period" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="none" data-testid="option-no-start">No Start</SelectItem>
-                    {uniquePeriods.map((period) => (
-                      <SelectItem key={period} value={period} data-testid={`option-start-${period}`}>
-                        {period}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                
-                <Select value={endPeriod} onValueChange={handleEndPeriodChange}>
-                  <SelectTrigger className="w-[200px]" data-testid="select-end-period">
-                    <SelectValue placeholder="End Period" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="none" data-testid="option-no-end">No End</SelectItem>
-                    {uniquePeriods.map((period) => (
-                      <SelectItem key={period} value={period} data-testid={`option-end-${period}`}>
-                        {period}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-
-                {(selectedTopic && selectedTopic !== "all" || (startPeriod && startPeriod !== "none") || (endPeriod && endPeriod !== "none")) && (
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      setSelectedTopic("all");
-                      setStartPeriod("none");
-                      setEndPeriod("none");
-                    }}
-                    data-testid="button-clear-filters"
-                  >
-                    Clear Filters
-                  </Button>
-                )}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-foreground">การดำเนินการ</label>
+                  {(selectedTopic && selectedTopic !== "all" || (startPeriod && startPeriod !== "none") || (endPeriod && endPeriod !== "none")) ? (
+                    <Button
+                      variant="outline"
+                      className="w-full border-muted-foreground/20 hover:border-primary hover:bg-primary/5 transition-all duration-200"
+                      onClick={() => {
+                        setSelectedTopic("all");
+                        setStartPeriod("none");
+                        setEndPeriod("none");
+                      }}
+                      data-testid="button-clear-filters"
+                    >
+                      ล้างตัวกรอง
+                    </Button>
+                  ) : (
+                    <div className="h-10 flex items-center">
+                      <p className="text-sm text-muted-foreground">ใช้ตัวกรองเพื่อค้นหา</p>
+                    </div>
+                  )}
+                </div>
               </div>
             </CardContent>
           </Card>
