@@ -437,8 +437,8 @@ export default function FinancialReports() {
           const editableFields = JSON.parse(firstStatement?.isEditable || '{}');
 
           return (
-            <Card key={topic} className="border-0 bg-gradient-to-br from-primary/5 to-primary/15 backdrop-blur-sm shadow-2xl hover:shadow-3xl hover-elevate transition-all duration-300" data-testid={`pl-comparative-${topic}`}>
-              <CardHeader className="bg-gradient-to-r from-primary/10 to-primary/20 border-b border-primary/30">
+            <Card key={topic} className="bg-card/95 backdrop-blur-sm border border-border/50 shadow-lg hover-elevate transition-all duration-300" data-testid={`pl-comparative-${topic}`}>
+              <CardHeader className="bg-muted/50 border-b border-border/50">
                 <CardTitle className="flex items-center gap-3 text-xl font-bold">
                   <div className="p-2 rounded-lg bg-primary/10 border border-primary/20">
                     <Calculator className="h-6 w-6 text-primary" />
@@ -451,10 +451,10 @@ export default function FinancialReports() {
               </CardHeader>
               <CardContent className="p-0">
                 <div className="overflow-x-auto">
-                  <Table className="min-w-full border-separate border-spacing-0">
+                  <Table className="min-w-full border-separate border-spacing-0 rounded-xl overflow-hidden">
                     <TableHeader>
-                      <TableRow className="bg-gradient-to-r from-muted/50 to-muted/30 border-b-2 border-primary/20">
-                        <TableHead className="sticky left-0 bg-gradient-to-r from-muted/80 to-muted/60 z-10 min-w-[200px] border-r border-border/50 font-bold text-foreground p-4">Line Item</TableHead>
+                      <TableRow className="bg-muted/50 border-b border-border/50">
+                        <TableHead className="sticky left-0 bg-muted/50 z-10 min-w-[200px] border-r border-border/50 font-bold text-foreground p-4">Line Item</TableHead>
                         {statements.map((statement) => (
                           <TableHead key={statement.period} className="text-right min-w-[120px] font-semibold text-foreground p-4" data-testid={`header-${statement.period}`}>
                             {statement.period}
@@ -464,7 +464,7 @@ export default function FinancialReports() {
                     </TableHeader>
                   <TableBody>
                     <TableRow>
-                      <TableCell className="font-medium sticky left-0 bg-gradient-to-r from-muted/80 to-muted/60 z-10 border-r border-border/50">Total Revenue</TableCell>
+                      <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50">Total Revenue</TableCell>
                       {statements.map((statement) => (
                         <EditableCell
                           key={`${statement.id}-totalRevenue`}
@@ -477,7 +477,7 @@ export default function FinancialReports() {
                       ))}
                     </TableRow>
                     <TableRow>
-                      <TableCell className="font-medium sticky left-0 bg-gradient-to-r from-muted/80 to-muted/60 z-10 border-r border-border/50">Cost of Goods Sold</TableCell>
+                      <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50">Cost of Goods Sold</TableCell>
                       {statements.map((statement) => (
                         <EditableCell
                           key={`${statement.id}-costOfGoodsSold`}
@@ -490,7 +490,7 @@ export default function FinancialReports() {
                       ))}
                     </TableRow>
                     <TableRow className="border-t-2 bg-blue-50 dark:bg-blue-950/20">
-                      <TableCell className="font-bold sticky left-0 bg-gradient-to-r from-muted/80 to-muted/60 z-10 border-r border-border/50">Gross Profit</TableCell>
+                      <TableCell className="font-bold sticky left-0 bg-muted/50 z-10 border-r border-border/50">Gross Profit</TableCell>
                       {statements.map((statement) => (
                         <EditableCell
                           key={`${statement.id}-grossProfit`}
@@ -504,7 +504,7 @@ export default function FinancialReports() {
                       ))}
                     </TableRow>
                     <TableRow>
-                      <TableCell className="font-medium sticky left-0 bg-gradient-to-r from-muted/80 to-muted/60 z-10 border-r border-border/50">Operating Expenses</TableCell>
+                      <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50">Operating Expenses</TableCell>
                       {statements.map((statement) => (
                         <EditableCell
                           key={`${statement.id}-operatingExpenses`}
@@ -517,7 +517,7 @@ export default function FinancialReports() {
                       ))}
                     </TableRow>
                     <TableRow className="border-t-2 bg-green-50 dark:bg-green-950/20">
-                      <TableCell className="font-bold sticky left-0 bg-gradient-to-r from-muted/80 to-muted/60 z-10 border-r border-border/50">Operating Income</TableCell>
+                      <TableCell className="font-bold sticky left-0 bg-muted/50 z-10 border-r border-border/50">Operating Income</TableCell>
                       {statements.map((statement) => (
                         <EditableCell
                           key={`${statement.id}-operatingIncome`}
@@ -531,7 +531,7 @@ export default function FinancialReports() {
                       ))}
                     </TableRow>
                     <TableRow>
-                      <TableCell className="font-medium sticky left-0 bg-gradient-to-r from-muted/80 to-muted/60 z-10 border-r border-border/50">Other Income</TableCell>
+                      <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50">Other Income</TableCell>
                       {statements.map((statement) => (
                         <EditableCell
                           key={`${statement.id}-otherIncome`}
@@ -544,7 +544,7 @@ export default function FinancialReports() {
                       ))}
                     </TableRow>
                     <TableRow>
-                      <TableCell className="font-medium sticky left-0 bg-gradient-to-r from-muted/80 to-muted/60 z-10 border-r border-border/50">Other Expenses</TableCell>
+                      <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50">Other Expenses</TableCell>
                       {statements.map((statement) => (
                         <EditableCell
                           key={`${statement.id}-otherExpenses`}
@@ -557,7 +557,7 @@ export default function FinancialReports() {
                       ))}
                     </TableRow>
                     <TableRow className="border-t-2 bg-orange-50 dark:bg-orange-950/20">
-                      <TableCell className="font-bold sticky left-0 bg-gradient-to-r from-muted/80 to-muted/60 z-10 border-r border-border/50">Income Before Tax</TableCell>
+                      <TableCell className="font-bold sticky left-0 bg-muted/50 z-10 border-r border-border/50">Income Before Tax</TableCell>
                       {statements.map((statement) => (
                         <EditableCell
                           key={`${statement.id}-netIncomeBeforeTax`}
@@ -571,7 +571,7 @@ export default function FinancialReports() {
                       ))}
                     </TableRow>
                     <TableRow>
-                      <TableCell className="font-medium sticky left-0 bg-gradient-to-r from-muted/80 to-muted/60 z-10 border-r border-border/50">Tax Expense</TableCell>
+                      <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50">Tax Expense</TableCell>
                       {statements.map((statement) => (
                         <EditableCell
                           key={`${statement.id}-taxExpense`}
@@ -583,8 +583,8 @@ export default function FinancialReports() {
                         />
                       ))}
                     </TableRow>
-                    <TableRow className="border-t-4 bg-primary/10">
-                      <TableCell className="font-bold text-lg sticky left-0 bg-gradient-to-r from-muted/80 to-muted/60 z-10 border-r border-border/50">Net Income</TableCell>
+                    <TableRow className="border-t-2 bg-muted/30 dark:bg-muted/20">
+                      <TableCell className="font-bold text-lg sticky left-0 bg-muted/50 z-10 border-r border-border/50">Net Income</TableCell>
                       {statements.map((statement) => (
                         <EditableCell
                           key={`${statement.id}-netIncome`}
@@ -641,7 +641,7 @@ export default function FinancialReports() {
     return (
       <div className="space-y-6">
         {Object.entries(groupedSheets).map(([topic, sheets]) => (
-          <Card key={topic} className="border-0 bg-gradient-to-br from-primary/5 to-primary/15 backdrop-blur-sm shadow-2xl hover:shadow-3xl hover-elevate transition-all duration-300" data-testid={`bs-comparative-${topic}`}>
+          <Card key={topic} className="bg-card/95 backdrop-blur-sm border border-border/50 shadow-lg hover-elevate transition-all duration-300" data-testid={`bs-comparative-${topic}`}>
             <CardHeader className="bg-gradient-to-r from-primary/10 to-primary/20 border-b border-primary/30">
               <CardTitle className="flex items-center gap-3 text-xl font-bold">
                 <div className="p-2 rounded-lg bg-primary/10 border border-primary/20">
@@ -657,8 +657,8 @@ export default function FinancialReports() {
               <div className="overflow-x-auto">
                 <Table className="min-w-full border-separate border-spacing-0">
                   <TableHeader>
-                    <TableRow className="bg-gradient-to-r from-muted/50 to-muted/30 border-b-2 border-primary/20">
-                      <TableHead className="sticky left-0 bg-gradient-to-r from-muted/80 to-muted/60 z-10 min-w-[200px] border-r border-border/50 font-bold text-foreground p-4">Line Item</TableHead>
+                    <TableRow className="bg-muted/50 border-b border-border/50">
+                      <TableHead className="sticky left-0 bg-muted/50 z-10 min-w-[200px] border-r border-border/50 font-bold text-foreground p-4">Line Item</TableHead>
                       {sheets.map((sheet) => (
                         <TableHead key={sheet.period} className="text-right min-w-[120px] font-semibold text-foreground p-4" data-testid={`header-${sheet.period}`}>
                           {sheet.period}
@@ -669,7 +669,7 @@ export default function FinancialReports() {
                   <TableBody>
                     {/* Assets Section */}
                     <TableRow className="bg-blue-50 dark:bg-blue-950/20">
-                      <TableCell className="font-bold sticky left-0 bg-gradient-to-r from-muted/80 to-muted/60 z-10 border-r border-border/50">Current Assets</TableCell>
+                      <TableCell className="font-bold sticky left-0 bg-muted/50 z-10 border-r border-border/50">Current Assets</TableCell>
                       {sheets.map((sheet) => (
                         <EditableCell
                           key={`${sheet.id}-currentAssets`}
@@ -722,7 +722,7 @@ export default function FinancialReports() {
                       ))}
                     </TableRow>
                     <TableRow className="bg-blue-50 dark:bg-blue-950/20">
-                      <TableCell className="font-bold sticky left-0 bg-gradient-to-r from-muted/80 to-muted/60 z-10 border-r border-border/50">Non-Current Assets</TableCell>
+                      <TableCell className="font-bold sticky left-0 bg-muted/50 z-10 border-r border-border/50">Non-Current Assets</TableCell>
                       {sheets.map((sheet) => (
                         <EditableCell
                           key={`${sheet.id}-nonCurrentAssets`}
@@ -762,7 +762,7 @@ export default function FinancialReports() {
                       ))}
                     </TableRow>
                     <TableRow className="border-t-2 bg-green-50 dark:bg-green-950/20">
-                      <TableCell className="font-bold sticky left-0 bg-gradient-to-r from-muted/80 to-muted/60 z-10 border-r border-border/50">Total Assets</TableCell>
+                      <TableCell className="font-bold sticky left-0 bg-muted/50 z-10 border-r border-border/50">Total Assets</TableCell>
                       {sheets.map((sheet) => (
                         <EditableCell
                           key={`${sheet.id}-totalAssets`}
@@ -778,7 +778,7 @@ export default function FinancialReports() {
                     
                     {/* Liabilities Section */}
                     <TableRow className="bg-orange-50 dark:bg-orange-950/20">
-                      <TableCell className="font-bold sticky left-0 bg-gradient-to-r from-muted/80 to-muted/60 z-10 border-r border-border/50">Current Liabilities</TableCell>
+                      <TableCell className="font-bold sticky left-0 bg-muted/50 z-10 border-r border-border/50">Current Liabilities</TableCell>
                       {sheets.map((sheet) => (
                         <EditableCell
                           key={`${sheet.id}-currentLiabilities`}
@@ -818,7 +818,7 @@ export default function FinancialReports() {
                       ))}
                     </TableRow>
                     <TableRow className="bg-orange-50 dark:bg-orange-950/20">
-                      <TableCell className="font-bold sticky left-0 bg-gradient-to-r from-muted/80 to-muted/60 z-10 border-r border-border/50">Long-term Liabilities</TableCell>
+                      <TableCell className="font-bold sticky left-0 bg-muted/50 z-10 border-r border-border/50">Long-term Liabilities</TableCell>
                       {sheets.map((sheet) => (
                         <EditableCell
                           key={`${sheet.id}-longTermLiabilities`}
@@ -845,7 +845,7 @@ export default function FinancialReports() {
                       ))}
                     </TableRow>
                     <TableRow className="border-t-2 bg-red-50 dark:bg-red-950/20">
-                      <TableCell className="font-bold sticky left-0 bg-gradient-to-r from-muted/80 to-muted/60 z-10 border-r border-border/50">Total Liabilities</TableCell>
+                      <TableCell className="font-bold sticky left-0 bg-muted/50 z-10 border-r border-border/50">Total Liabilities</TableCell>
                       {sheets.map((sheet) => (
                         <EditableCell
                           key={`${sheet.id}-totalLiabilities`}
@@ -861,7 +861,7 @@ export default function FinancialReports() {
                     
                     {/* Equity Section */}
                     <TableRow className="bg-purple-50 dark:bg-purple-950/20">
-                      <TableCell className="font-bold sticky left-0 bg-gradient-to-r from-muted/80 to-muted/60 z-10 border-r border-border/50">Shareholders' Equity</TableCell>
+                      <TableCell className="font-bold sticky left-0 bg-muted/50 z-10 border-r border-border/50">Shareholders' Equity</TableCell>
                       {sheets.map((sheet) => (
                         <EditableCell
                           key={`${sheet.id}-shareholdersEquity`}
@@ -930,7 +930,7 @@ export default function FinancialReports() {
     return (
       <div className="space-y-6">
         {Object.entries(groupedStatements).map(([topic, statements]) => (
-          <Card key={topic} className="border-0 bg-gradient-to-br from-primary/5 to-primary/15 backdrop-blur-sm shadow-2xl hover:shadow-3xl hover-elevate transition-all duration-300" data-testid={`cf-comparative-${topic}`}>
+          <Card key={topic} className="bg-card/95 backdrop-blur-sm border border-border/50 shadow-lg hover-elevate transition-all duration-300" data-testid={`cf-comparative-${topic}`}>
             <CardHeader className="bg-gradient-to-r from-primary/10 to-primary/20 border-b border-primary/30">
               <CardTitle className="flex items-center gap-3 text-xl font-bold">
                 <div className="p-2 rounded-lg bg-primary/10 border border-primary/20">
@@ -946,8 +946,8 @@ export default function FinancialReports() {
               <div className="overflow-x-auto">
                 <Table className="min-w-full border-separate border-spacing-0">
                   <TableHeader>
-                    <TableRow className="bg-gradient-to-r from-muted/50 to-muted/30 border-b-2 border-primary/20">
-                      <TableHead className="sticky left-0 bg-gradient-to-r from-muted/80 to-muted/60 z-10 min-w-[200px] border-r border-border/50 font-bold text-foreground p-4">Line Item</TableHead>
+                    <TableRow className="bg-muted/50 border-b border-border/50">
+                      <TableHead className="sticky left-0 bg-muted/50 z-10 min-w-[200px] border-r border-border/50 font-bold text-foreground p-4">Line Item</TableHead>
                       {statements.map((statement) => (
                         <TableHead key={statement.period} className="text-right min-w-[120px] font-semibold text-foreground p-4" data-testid={`header-${statement.period}`}>
                           {statement.period}
@@ -1102,7 +1102,7 @@ export default function FinancialReports() {
                       />
                     ))}
                   </TableRow>
-                  <TableRow className="border-t-4 bg-muted/50">
+                  <TableRow className="border-t-2 bg-muted/30 dark:bg-muted/20">
                     <TableCell className="font-bold text-lg sticky left-0 bg-background z-10 border-r">Net Change in Cash</TableCell>
                     {statements.map((statement) => (
                       <EditableCell
@@ -1154,16 +1154,16 @@ export default function FinancialReports() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background/98 to-primary/8">
+    <div className="min-h-screen bg-background">
       <Navigation />
       
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-b from-background to-muted/10 border-b">
-        <div className="container mx-auto px-6 py-16">
+      <section className="py-24 bg-gradient-to-b from-background to-muted/20">
+        <div className="container mx-auto px-6">
           <div className="text-center space-y-6">
-            <h1 className="text-5xl md:text-6xl font-bold text-foreground leading-tight flex items-center justify-center gap-4" data-testid="page-title">
-              <FileText className="h-12 w-12 md:h-16 md:w-16 text-primary" />
+            <h1 className="text-4xl md:text-5xl font-black text-foreground mb-4" data-testid="page-title">
               Financial Reports
+              <span className="bg-gradient-to-r from-chart-1 to-chart-2 bg-clip-text text-transparent"> Suite</span>
             </h1>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed" data-testid="page-description">
               View and edit financial reports including Profit & Loss statements, Balance Sheets, and Cash Flow statements with real-time intelligent analysis
@@ -1187,7 +1187,7 @@ export default function FinancialReports() {
         <div className="max-w-7xl mx-auto space-y-8">
 
           {/* Enhanced Filters Section */}
-          <Card className="border-0 bg-gradient-to-r from-primary/5 to-primary/15 backdrop-blur-sm shadow-xl hover-elevate transition-all duration-300 mb-8">
+          <Card className="bg-card/95 backdrop-blur-sm border border-border/50 shadow-lg hover-elevate transition-all duration-300 mb-8">
             <CardHeader className="pb-4">
               <div className="flex items-center gap-3">
                 <div className="p-2 rounded-lg bg-primary/10">
