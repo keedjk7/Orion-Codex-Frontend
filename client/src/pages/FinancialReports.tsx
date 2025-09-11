@@ -403,7 +403,15 @@ export default function FinancialReports() {
   // Profit & Loss Table Component - Comparative View
   const ProfitLossTable = () => {
     if (plLoading) {
-      return <div className="p-8 text-center" data-testid="loading-pl">Loading data...</div>;
+      return (
+        <div className="p-12 text-center" data-testid="loading-pl">
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            <span className="text-lg font-medium text-muted-foreground">กำลังโหลดข้อมูล...</span>
+          </div>
+          <p className="text-sm text-muted-foreground">กรุณารอสักครู่</p>
+        </div>
+      );
     }
 
     if (plStatements.length === 0) {
@@ -429,21 +437,26 @@ export default function FinancialReports() {
           const editableFields = JSON.parse(firstStatement?.isEditable || '{}');
 
           return (
-            <Card key={topic} data-testid={`pl-comparative-${topic}`}>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Calculator className="h-5 w-5" />
-                  Profit & Loss Statement - {topic}
+            <Card key={topic} className="border-0 bg-gradient-to-br from-card/90 to-card/95 backdrop-blur-sm shadow-2xl hover:shadow-3xl transition-all duration-300" data-testid={`pl-comparative-${topic}`}>
+              <CardHeader className="bg-gradient-to-r from-primary/5 to-primary/10 border-b border-border/50">
+                <CardTitle className="flex items-center gap-3 text-xl font-bold">
+                  <div className="p-2 rounded-lg bg-primary/10 border border-primary/20">
+                    <Calculator className="h-6 w-6 text-primary" />
+                  </div>
+                  <div>
+                    <span className="text-foreground">งบกำไรขาดทุน</span>
+                    <div className="text-sm font-normal text-muted-foreground">{topic}</div>
+                  </div>
                 </CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-0">
                 <div className="overflow-x-auto">
-                  <Table className="min-w-full">
+                  <Table className="min-w-full border-separate border-spacing-0">
                     <TableHeader>
-                      <TableRow>
-                        <TableHead className="sticky left-0 bg-background z-10 min-w-[200px] border-r">Line Item</TableHead>
+                      <TableRow className="bg-gradient-to-r from-muted/50 to-muted/30 border-b-2 border-primary/20">
+                        <TableHead className="sticky left-0 bg-gradient-to-r from-muted/80 to-muted/60 z-10 min-w-[200px] border-r border-border/50 font-bold text-foreground p-4">รายการ</TableHead>
                         {statements.map((statement) => (
-                          <TableHead key={statement.period} className="text-right min-w-[120px]" data-testid={`header-${statement.period}`}>
+                          <TableHead key={statement.period} className="text-right min-w-[120px] font-semibold text-foreground p-4" data-testid={`header-${statement.period}`}>
                             {statement.period}
                           </TableHead>
                         ))}
@@ -598,7 +611,15 @@ export default function FinancialReports() {
   // Balance Sheet Table Component - Comparative View
   const BalanceSheetTable = () => {
     if (bsLoading) {
-      return <div className="p-8 text-center" data-testid="loading-bs">Loading data...</div>;
+      return (
+        <div className="p-12 text-center" data-testid="loading-bs">
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            <span className="text-lg font-medium text-muted-foreground">กำลังโหลดข้อมูล...</span>
+          </div>
+          <p className="text-sm text-muted-foreground">กรุณารอสักครู่</p>
+        </div>
+      );
     }
 
     if (balanceSheets.length === 0) {
@@ -620,21 +641,26 @@ export default function FinancialReports() {
     return (
       <div className="space-y-6">
         {Object.entries(groupedSheets).map(([topic, sheets]) => (
-          <Card key={topic} data-testid={`bs-comparative-${topic}`}>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <BarChart3 className="h-5 w-5" />
-                Balance Sheet - {topic}
+          <Card key={topic} className="border-0 bg-gradient-to-br from-card/90 to-card/95 backdrop-blur-sm shadow-2xl hover:shadow-3xl transition-all duration-300" data-testid={`bs-comparative-${topic}`}>
+            <CardHeader className="bg-gradient-to-r from-primary/5 to-primary/10 border-b border-border/50">
+              <CardTitle className="flex items-center gap-3 text-xl font-bold">
+                <div className="p-2 rounded-lg bg-primary/10 border border-primary/20">
+                  <BarChart3 className="h-6 w-6 text-primary" />
+                </div>
+                <div>
+                  <span className="text-foreground">งบดุล</span>
+                  <div className="text-sm font-normal text-muted-foreground">{topic}</div>
+                </div>
               </CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-0">
               <div className="overflow-x-auto">
-                <Table className="min-w-full">
+                <Table className="min-w-full border-separate border-spacing-0">
                   <TableHeader>
-                    <TableRow>
-                      <TableHead className="sticky left-0 bg-background z-10 min-w-[200px] border-r">รายการ</TableHead>
+                    <TableRow className="bg-gradient-to-r from-muted/50 to-muted/30 border-b-2 border-primary/20">
+                      <TableHead className="sticky left-0 bg-gradient-to-r from-muted/80 to-muted/60 z-10 min-w-[200px] border-r border-border/50 font-bold text-foreground p-4">รายการ</TableHead>
                       {sheets.map((sheet) => (
-                        <TableHead key={sheet.period} className="text-right min-w-[120px]" data-testid={`header-${sheet.period}`}>
+                        <TableHead key={sheet.period} className="text-right min-w-[120px] font-semibold text-foreground p-4" data-testid={`header-${sheet.period}`}>
                           {sheet.period}
                         </TableHead>
                       ))}
@@ -874,7 +900,15 @@ export default function FinancialReports() {
   // Cash Flow Table Component - Comparative View
   const CashFlowTable = () => {
     if (cfLoading) {
-      return <div className="p-8 text-center" data-testid="loading-cf">Loading data...</div>;
+      return (
+        <div className="p-12 text-center" data-testid="loading-cf">
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            <span className="text-lg font-medium text-muted-foreground">กำลังโหลดข้อมูล...</span>
+          </div>
+          <p className="text-sm text-muted-foreground">กรุณารอสักครู่</p>
+        </div>
+      );
     }
 
     if (cashFlowStatements.length === 0) {
@@ -896,21 +930,26 @@ export default function FinancialReports() {
     return (
       <div className="space-y-6">
         {Object.entries(groupedStatements).map(([topic, statements]) => (
-          <Card key={topic} data-testid={`cf-comparative-${topic}`}>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <TrendingUp className="h-5 w-5" />
-                Cash Flow Statement - {topic}
+          <Card key={topic} className="border-0 bg-gradient-to-br from-card/90 to-card/95 backdrop-blur-sm shadow-2xl hover:shadow-3xl transition-all duration-300" data-testid={`cf-comparative-${topic}`}>
+            <CardHeader className="bg-gradient-to-r from-primary/5 to-primary/10 border-b border-border/50">
+              <CardTitle className="flex items-center gap-3 text-xl font-bold">
+                <div className="p-2 rounded-lg bg-primary/10 border border-primary/20">
+                  <TrendingUp className="h-6 w-6 text-primary" />
+                </div>
+                <div>
+                  <span className="text-foreground">งบกระแสเงินสด</span>
+                  <div className="text-sm font-normal text-muted-foreground">{topic}</div>
+                </div>
               </CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-0">
               <div className="overflow-x-auto">
-                <Table className="min-w-full">
+                <Table className="min-w-full border-separate border-spacing-0">
                   <TableHeader>
-                    <TableRow>
-                      <TableHead className="sticky left-0 bg-background z-10 min-w-[200px] border-r">รายการ</TableHead>
+                    <TableRow className="bg-gradient-to-r from-muted/50 to-muted/30 border-b-2 border-primary/20">
+                      <TableHead className="sticky left-0 bg-gradient-to-r from-muted/80 to-muted/60 z-10 min-w-[200px] border-r border-border/50 font-bold text-foreground p-4">รายการ</TableHead>
                       {statements.map((statement) => (
-                        <TableHead key={statement.period} className="text-right min-w-[120px]" data-testid={`header-${statement.period}`}>
+                        <TableHead key={statement.period} className="text-right min-w-[120px] font-semibold text-foreground p-4" data-testid={`header-${statement.period}`}>
                           {statement.period}
                         </TableHead>
                       ))}
