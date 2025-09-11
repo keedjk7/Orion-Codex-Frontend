@@ -29,6 +29,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import Navigation from "@/components/Navigation";
+import heroBackground from "@assets/generated_images/Gradient_mesh_hero_background_83768b02.png";
 import type { 
   ProfitLossStatement,
   BalanceSheet,
@@ -1154,11 +1155,19 @@ export default function FinancialReports() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navigation />
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Background */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url(${heroBackground})` }}
+      />
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-background/60 to-background/80" />
       
-      {/* Hero Section */}
-      <section className="py-24 bg-gradient-to-b from-background to-muted/20">
+      <div className="relative z-10">
+        <Navigation />
+        
+        {/* Hero Section */}
+        <section className="py-24">
         <div className="container mx-auto px-6">
           <div className="text-center space-y-6">
             <h1 className="text-4xl md:text-5xl font-black text-foreground mb-4" data-testid="page-title">
@@ -1335,6 +1344,7 @@ export default function FinancialReports() {
         </div>
         </div>
       </main>
+      </div>
     </div>
   );
 }
