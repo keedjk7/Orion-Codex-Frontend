@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -121,9 +122,11 @@ export default function Hero() {
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
-          <Button size="lg" className="text-lg px-8 py-4 hover-elevate active-elevate-2" data-testid="button-get-started">
-            Get Started →
-          </Button>
+          <Link href="/dashboard">
+            <Button size="lg" className="text-lg px-8 py-4 hover-elevate active-elevate-2" data-testid="button-get-started">
+              Get Started →
+            </Button>
+          </Link>
           <Button 
             variant="outline" 
             size="lg" 
