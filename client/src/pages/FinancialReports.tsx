@@ -1115,23 +1115,37 @@ export default function FinancialReports() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
       <Navigation />
       
-      <div className="container mx-auto px-6 py-8 pt-24">
-        <div className="max-w-7xl mx-auto">
-          {/* Header */}
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h1 className="text-3xl font-bold text-foreground flex items-center gap-3" data-testid="page-title">
-                <FileText className="h-8 w-8" />
-                รายงานการเงิน
-              </h1>
-              <p className="text-muted-foreground mt-2">
-                ดูและแก้ไขรายงานการเงิน รวมถึงงบกำไรขาดทุน งบดุล และงบกระแสเงินสด
-              </p>
+      {/* Hero Section */}
+      <section className="relative bg-gradient-to-b from-background to-muted/10 border-b">
+        <div className="container mx-auto px-6 py-16">
+          <div className="text-center space-y-6">
+            <h1 className="text-5xl md:text-6xl font-bold text-foreground leading-tight flex items-center justify-center gap-4" data-testid="page-title">
+              <FileText className="h-12 w-12 md:h-16 md:w-16 text-primary" />
+              รายงานการเงิน
+            </h1>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed" data-testid="page-description">
+              ดูและแก้ไขรายงานการเงิน รวมถึงงบกำไรขาดทุน งบดุล และงบกระแสเงินสด พร้อมการวิเคราะห์อัจฉริยะแบบเรียลไทม์
+            </p>
+            <div className="flex justify-center gap-4 text-sm text-muted-foreground">
+              <Badge variant="outline" className="px-4 py-2">
+                <strong className="text-foreground">Live Data</strong> อัปเดตแล้ว
+              </Badge>
+              <Badge variant="outline" className="px-4 py-2">
+                <strong className="text-foreground">AI-Powered</strong> การวิเคราะห์
+              </Badge>
+              <Badge variant="outline" className="px-4 py-2">
+                <strong className="text-foreground">Real-time</strong> แก้ไขได้
+              </Badge>
             </div>
           </div>
+        </div>
+      </section>
+
+      <main className="container mx-auto px-6 py-12">
+        <div className="max-w-7xl mx-auto space-y-8">
 
           {/* Filters */}
           <Card className="mb-6">
@@ -1231,7 +1245,7 @@ export default function FinancialReports() {
             </TabsContent>
           </Tabs>
         </div>
-      </div>
+      </main>
     </div>
   );
 }
