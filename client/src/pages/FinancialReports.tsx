@@ -363,142 +363,188 @@ export default function FinancialReports() {
     );
   };
 
-  // Profit & Loss Table Component
+  // Profit & Loss Table Component - Comparative View
   const ProfitLossTable = () => {
     if (plLoading) {
       return <div className="p-8 text-center" data-testid="loading-pl">กำลังโหลดข้อมูล...</div>;
     }
 
+    if (plStatements.length === 0) {
+      return <div className="p-8 text-center text-muted-foreground">ไม่มีข้อมูลงบกำไรขาดทุน</div>;
+    }
+
+    // Group statements by topic and sort periods
+    const groupedStatements = plStatements.reduce((acc, statement) => {
+      if (!acc[statement.topic]) acc[statement.topic] = [];
+      acc[statement.topic].push(statement);
+      return acc;
+    }, {} as Record<string, ProfitLossStatement[]>);
+
+    // Sort periods for each topic
+    Object.keys(groupedStatements).forEach(topic => {
+      groupedStatements[topic].sort((a, b) => a.period.localeCompare(b.period));
+    });
+
     return (
-      <div className="space-y-4">
-        {plStatements.map((statement) => {
-          const editableFields = JSON.parse(statement.isEditable || '{}');
-          
+      <div className="space-y-6">
+        {Object.entries(groupedStatements).map(([topic, statements]) => {
+          const firstStatement = statements[0];
+          const editableFields = JSON.parse(firstStatement?.isEditable || '{}');
+
           return (
-            <Card key={statement.id} data-testid={`pl-statement-${statement.id}`}>
+            <Card key={topic} data-testid={`pl-comparative-${topic}`}>
               <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle className="flex items-center gap-2">
-                    <Calculator className="h-5 w-5" />
-                    งบกำไรขาดทุน - {statement.topic}
-                  </CardTitle>
-                  <Badge variant="secondary" data-testid={`period-badge-${statement.period}`}>
-                    {statement.period}
-                  </Badge>
-                </div>
+                <CardTitle className="flex items-center gap-2">
+                  <Calculator className="h-5 w-5" />
+                  งบกำไรขาดทุน - {topic}
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>รายการ</TableHead>
-                      <TableHead className="text-right">จำนวนเงิน (บาท)</TableHead>
+                      <TableHead className="w-1/4">รายการ</TableHead>
+                      {statements.map((statement) => (
+                        <TableHead key={statement.period} className="text-right" data-testid={`header-${statement.period}`}>
+                          {statement.period}
+                        </TableHead>
+                      ))}
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     <TableRow>
                       <TableCell className="font-medium">รายได้รวม</TableCell>
-                      <EditableCell
-                        value={statement.totalRevenue}
-                        itemId={statement.id}
-                        field="totalRevenue"
-                        reportType="pl"
-                        isEditable={editableFields.totalRevenue}
-                      />
+                      {statements.map((statement) => (
+                        <EditableCell
+                          key={`${statement.id}-totalRevenue`}
+                          value={statement.totalRevenue}
+                          itemId={statement.id}
+                          field="totalRevenue"
+                          reportType="pl"
+                          isEditable={JSON.parse(statement.isEditable || '{}').totalRevenue}
+                        />
+                      ))}
                     </TableRow>
                     <TableRow>
                       <TableCell className="font-medium">ต้นทุนขายสินค้า</TableCell>
-                      <EditableCell
-                        value={statement.costOfGoodsSold}
-                        itemId={statement.id}
-                        field="costOfGoodsSold"
-                        reportType="pl"
-                        isEditable={editableFields.costOfGoodsSold}
-                      />
+                      {statements.map((statement) => (
+                        <EditableCell
+                          key={`${statement.id}-costOfGoodsSold`}
+                          value={statement.costOfGoodsSold}
+                          itemId={statement.id}
+                          field="costOfGoodsSold"
+                          reportType="pl"
+                          isEditable={JSON.parse(statement.isEditable || '{}').costOfGoodsSold}
+                        />
+                      ))}
                     </TableRow>
-                    <TableRow className="border-t-2">
+                    <TableRow className="border-t-2 bg-blue-50 dark:bg-blue-950/20">
                       <TableCell className="font-bold">กำไรขั้นต้น</TableCell>
-                      <EditableCell
-                        value={statement.grossProfit}
-                        itemId={statement.id}
-                        field="grossProfit"
-                        reportType="pl"
-                        isEditable={editableFields.grossProfit}
-                        className="font-bold"
-                      />
+                      {statements.map((statement) => (
+                        <EditableCell
+                          key={`${statement.id}-grossProfit`}
+                          value={statement.grossProfit}
+                          itemId={statement.id}
+                          field="grossProfit"
+                          reportType="pl"
+                          isEditable={JSON.parse(statement.isEditable || '{}').grossProfit}
+                          className="font-bold"
+                        />
+                      ))}
                     </TableRow>
                     <TableRow>
                       <TableCell className="font-medium">ค่าใช้จ่ายในการดำเนินงาน</TableCell>
-                      <EditableCell
-                        value={statement.operatingExpenses}
-                        itemId={statement.id}
-                        field="operatingExpenses"
-                        reportType="pl"
-                        isEditable={editableFields.operatingExpenses}
-                      />
+                      {statements.map((statement) => (
+                        <EditableCell
+                          key={`${statement.id}-operatingExpenses`}
+                          value={statement.operatingExpenses}
+                          itemId={statement.id}
+                          field="operatingExpenses"
+                          reportType="pl"
+                          isEditable={JSON.parse(statement.isEditable || '{}').operatingExpenses}
+                        />
+                      ))}
                     </TableRow>
-                    <TableRow className="border-t-2">
+                    <TableRow className="border-t-2 bg-green-50 dark:bg-green-950/20">
                       <TableCell className="font-bold">กำไรจากการดำเนินงาน</TableCell>
-                      <EditableCell
-                        value={statement.operatingIncome}
-                        itemId={statement.id}
-                        field="operatingIncome"
-                        reportType="pl"
-                        isEditable={editableFields.operatingIncome}
-                        className="font-bold"
-                      />
+                      {statements.map((statement) => (
+                        <EditableCell
+                          key={`${statement.id}-operatingIncome`}
+                          value={statement.operatingIncome}
+                          itemId={statement.id}
+                          field="operatingIncome"
+                          reportType="pl"
+                          isEditable={JSON.parse(statement.isEditable || '{}').operatingIncome}
+                          className="font-bold"
+                        />
+                      ))}
                     </TableRow>
                     <TableRow>
                       <TableCell className="font-medium">รายได้อื่น</TableCell>
-                      <EditableCell
-                        value={statement.otherIncome}
-                        itemId={statement.id}
-                        field="otherIncome"
-                        reportType="pl"
-                        isEditable={editableFields.otherIncome}
-                      />
+                      {statements.map((statement) => (
+                        <EditableCell
+                          key={`${statement.id}-otherIncome`}
+                          value={statement.otherIncome}
+                          itemId={statement.id}
+                          field="otherIncome"
+                          reportType="pl"
+                          isEditable={JSON.parse(statement.isEditable || '{}').otherIncome}
+                        />
+                      ))}
                     </TableRow>
                     <TableRow>
                       <TableCell className="font-medium">ค่าใช้จ่ายอื่น</TableCell>
-                      <EditableCell
-                        value={statement.otherExpenses}
-                        itemId={statement.id}
-                        field="otherExpenses"
-                        reportType="pl"
-                        isEditable={editableFields.otherExpenses}
-                      />
+                      {statements.map((statement) => (
+                        <EditableCell
+                          key={`${statement.id}-otherExpenses`}
+                          value={statement.otherExpenses}
+                          itemId={statement.id}
+                          field="otherExpenses"
+                          reportType="pl"
+                          isEditable={JSON.parse(statement.isEditable || '{}').otherExpenses}
+                        />
+                      ))}
                     </TableRow>
-                    <TableRow className="border-t-2">
+                    <TableRow className="border-t-2 bg-orange-50 dark:bg-orange-950/20">
                       <TableCell className="font-bold">กำไรสุทธิก่อนภาษี</TableCell>
-                      <EditableCell
-                        value={statement.netIncomeBeforeTax}
-                        itemId={statement.id}
-                        field="netIncomeBeforeTax"
-                        reportType="pl"
-                        isEditable={editableFields.netIncomeBeforeTax}
-                        className="font-bold"
-                      />
+                      {statements.map((statement) => (
+                        <EditableCell
+                          key={`${statement.id}-netIncomeBeforeTax`}
+                          value={statement.netIncomeBeforeTax}
+                          itemId={statement.id}
+                          field="netIncomeBeforeTax"
+                          reportType="pl"
+                          isEditable={JSON.parse(statement.isEditable || '{}').netIncomeBeforeTax}
+                          className="font-bold"
+                        />
+                      ))}
                     </TableRow>
                     <TableRow>
                       <TableCell className="font-medium">ค่าใช้จ่ายภาษี</TableCell>
-                      <EditableCell
-                        value={statement.taxExpense}
-                        itemId={statement.id}
-                        field="taxExpense"
-                        reportType="pl"
-                        isEditable={editableFields.taxExpense}
-                      />
+                      {statements.map((statement) => (
+                        <EditableCell
+                          key={`${statement.id}-taxExpense`}
+                          value={statement.taxExpense}
+                          itemId={statement.id}
+                          field="taxExpense"
+                          reportType="pl"
+                          isEditable={JSON.parse(statement.isEditable || '{}').taxExpense}
+                        />
+                      ))}
                     </TableRow>
-                    <TableRow className="border-t-4 bg-muted/50">
+                    <TableRow className="border-t-4 bg-primary/10">
                       <TableCell className="font-bold text-lg">กำไรสุทธิ</TableCell>
-                      <EditableCell
-                        value={statement.netIncome}
-                        itemId={statement.id}
-                        field="netIncome"
-                        reportType="pl"
-                        isEditable={editableFields.netIncome}
-                        className="font-bold text-lg"
-                      />
+                      {statements.map((statement) => (
+                        <EditableCell
+                          key={`${statement.id}-netIncome`}
+                          value={statement.netIncome}
+                          itemId={statement.id}
+                          field="netIncome"
+                          reportType="pl"
+                          isEditable={JSON.parse(statement.isEditable || '{}').netIncome}
+                          className="font-bold text-lg"
+                        />
+                      ))}
                     </TableRow>
                   </TableBody>
                 </Table>
@@ -510,409 +556,537 @@ export default function FinancialReports() {
     );
   };
 
-  // Balance Sheet Table Component
+  // Balance Sheet Table Component - Comparative View
   const BalanceSheetTable = () => {
     if (bsLoading) {
       return <div className="p-8 text-center" data-testid="loading-bs">กำลังโหลดข้อมูล...</div>;
     }
 
+    if (balanceSheets.length === 0) {
+      return <div className="p-8 text-center text-muted-foreground">ไม่มีข้อมูลงบดุล</div>;
+    }
+
+    // Group statements by topic and sort periods
+    const groupedSheets = balanceSheets.reduce((acc, sheet) => {
+      if (!acc[sheet.topic]) acc[sheet.topic] = [];
+      acc[sheet.topic].push(sheet);
+      return acc;
+    }, {} as Record<string, BalanceSheet[]>);
+
+    // Sort periods for each topic
+    Object.keys(groupedSheets).forEach(topic => {
+      groupedSheets[topic].sort((a, b) => a.period.localeCompare(b.period));
+    });
+
     return (
-      <div className="space-y-4">
-        {balanceSheets.map((sheet) => {
-          const editableFields = JSON.parse(sheet.isEditable || '{}');
-          
-          return (
-            <Card key={sheet.id} data-testid={`balance-sheet-${sheet.id}`}>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle className="flex items-center gap-2">
-                    <BarChart3 className="h-5 w-5" />
-                    งบดุล - {sheet.topic}
-                  </CardTitle>
-                  <Badge variant="secondary" data-testid={`period-badge-${sheet.period}`}>
-                    {sheet.period}
-                  </Badge>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                  {/* Assets */}
-                  <div>
-                    <h3 className="text-lg font-semibold mb-4">สินทรัพย์</h3>
-                    <Table>
-                      <TableBody>
-                        <TableRow className="bg-muted/30">
-                          <TableCell className="font-semibold">สินทรัพย์หมุนเวียน</TableCell>
+      <div className="space-y-6">
+        {Object.entries(groupedSheets).map(([topic, sheets]) => (
+          <Card key={topic} data-testid={`bs-comparative-${topic}`}>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <BarChart3 className="h-5 w-5" />
+                งบดุล - {topic}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {/* Assets Table */}
+                <div>
+                  <h3 className="text-lg font-semibold mb-4">สินทรัพย์</h3>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="w-1/3">รายการ</TableHead>
+                        {sheets.map((sheet) => (
+                          <TableHead key={sheet.period} className="text-right text-xs" data-testid={`header-assets-${sheet.period}`}>
+                            {sheet.period}
+                          </TableHead>
+                        ))}
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      <TableRow className="bg-muted/30">
+                        <TableCell className="font-semibold text-sm">สินทรัพย์หมุนเวียน</TableCell>
+                        {sheets.map((sheet) => (
                           <EditableCell
+                            key={`${sheet.id}-currentAssets`}
                             value={sheet.currentAssets}
                             itemId={sheet.id}
                             field="currentAssets"
                             reportType="bs"
-                            isEditable={editableFields.currentAssets}
+                            isEditable={JSON.parse(sheet.isEditable || '{}').currentAssets}
                             className="font-semibold"
                           />
-                        </TableRow>
-                        <TableRow>
-                          <TableCell className="pl-8">เงินสด</TableCell>
+                        ))}
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className="pl-6 text-sm">เงินสด</TableCell>
+                        {sheets.map((sheet) => (
                           <EditableCell
+                            key={`${sheet.id}-cash`}
                             value={sheet.cash}
                             itemId={sheet.id}
                             field="cash"
                             reportType="bs"
-                            isEditable={editableFields.cash}
+                            isEditable={JSON.parse(sheet.isEditable || '{}').cash}
                           />
-                        </TableRow>
-                        <TableRow>
-                          <TableCell className="pl-8">ลูกหนี้การค้า</TableCell>
+                        ))}
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className="pl-6 text-sm">ลูกหนี้การค้า</TableCell>
+                        {sheets.map((sheet) => (
                           <EditableCell
+                            key={`${sheet.id}-accountsReceivable`}
                             value={sheet.accountsReceivable}
                             itemId={sheet.id}
                             field="accountsReceivable"
                             reportType="bs"
-                            isEditable={editableFields.accountsReceivable}
+                            isEditable={JSON.parse(sheet.isEditable || '{}').accountsReceivable}
                           />
-                        </TableRow>
-                        <TableRow>
-                          <TableCell className="pl-8">สินค้าคงเหลือ</TableCell>
+                        ))}
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className="pl-6 text-sm">สินค้าคงเหลือ</TableCell>
+                        {sheets.map((sheet) => (
                           <EditableCell
+                            key={`${sheet.id}-inventory`}
                             value={sheet.inventory}
                             itemId={sheet.id}
                             field="inventory"
                             reportType="bs"
-                            isEditable={editableFields.inventory}
+                            isEditable={JSON.parse(sheet.isEditable || '{}').inventory}
                           />
-                        </TableRow>
-                        <TableRow className="bg-muted/30">
-                          <TableCell className="font-semibold">สินทรัพย์ไม่หมุนเวียน</TableCell>
+                        ))}
+                      </TableRow>
+                      <TableRow className="bg-muted/30">
+                        <TableCell className="font-semibold text-sm">สินทรัพย์ไม่หมุนเวียน</TableCell>
+                        {sheets.map((sheet) => (
                           <EditableCell
+                            key={`${sheet.id}-nonCurrentAssets`}
                             value={sheet.nonCurrentAssets}
                             itemId={sheet.id}
                             field="nonCurrentAssets"
                             reportType="bs"
-                            isEditable={editableFields.nonCurrentAssets}
+                            isEditable={JSON.parse(sheet.isEditable || '{}').nonCurrentAssets}
                             className="font-semibold"
                           />
-                        </TableRow>
-                        <TableRow>
-                          <TableCell className="pl-8">ที่ดิน อาคาร อุปกรณ์</TableCell>
+                        ))}
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className="pl-6 text-sm">ที่ดิน อาคาร อุปกรณ์</TableCell>
+                        {sheets.map((sheet) => (
                           <EditableCell
+                            key={`${sheet.id}-propertyPlantEquipment`}
                             value={sheet.propertyPlantEquipment}
                             itemId={sheet.id}
                             field="propertyPlantEquipment"
                             reportType="bs"
-                            isEditable={editableFields.propertyPlantEquipment}
+                            isEditable={JSON.parse(sheet.isEditable || '{}').propertyPlantEquipment}
                           />
-                        </TableRow>
-                        <TableRow>
-                          <TableCell className="pl-8">สินทรัพย์ไม่มีตัวตน</TableCell>
+                        ))}
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className="pl-6 text-sm">สินทรัพย์ไม่มีตัวตน</TableCell>
+                        {sheets.map((sheet) => (
                           <EditableCell
+                            key={`${sheet.id}-intangibleAssets`}
                             value={sheet.intangibleAssets}
                             itemId={sheet.id}
                             field="intangibleAssets"
                             reportType="bs"
-                            isEditable={editableFields.intangibleAssets}
+                            isEditable={JSON.parse(sheet.isEditable || '{}').intangibleAssets}
                           />
-                        </TableRow>
-                        <TableRow className="border-t-4 bg-primary/10">
-                          <TableCell className="font-bold text-lg">สินทรัพย์รวม</TableCell>
+                        ))}
+                      </TableRow>
+                      <TableRow className="border-t-4 bg-primary/10">
+                        <TableCell className="font-bold">สินทรัพย์รวม</TableCell>
+                        {sheets.map((sheet) => (
                           <EditableCell
+                            key={`${sheet.id}-totalAssets`}
                             value={sheet.totalAssets}
                             itemId={sheet.id}
                             field="totalAssets"
                             reportType="bs"
-                            isEditable={editableFields.totalAssets}
-                            className="font-bold text-lg"
+                            isEditable={JSON.parse(sheet.isEditable || '{}').totalAssets}
+                            className="font-bold"
                           />
-                        </TableRow>
-                      </TableBody>
-                    </Table>
-                  </div>
+                        ))}
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </div>
 
-                  {/* Liabilities & Equity */}
-                  <div>
-                    <h3 className="text-lg font-semibold mb-4">หนี้สินและส่วนของเจ้าของ</h3>
-                    <Table>
-                      <TableBody>
-                        <TableRow className="bg-muted/30">
-                          <TableCell className="font-semibold">หนี้สินหมุนเวียน</TableCell>
+                {/* Liabilities & Equity Table */}
+                <div>
+                  <h3 className="text-lg font-semibold mb-4">หนี้สินและส่วนของเจ้าของ</h3>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="w-1/3">รายการ</TableHead>
+                        {sheets.map((sheet) => (
+                          <TableHead key={sheet.period} className="text-right text-xs" data-testid={`header-liabilities-${sheet.period}`}>
+                            {sheet.period}
+                          </TableHead>
+                        ))}
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      <TableRow className="bg-muted/30">
+                        <TableCell className="font-semibold text-sm">หนี้สินหมุนเวียน</TableCell>
+                        {sheets.map((sheet) => (
                           <EditableCell
+                            key={`${sheet.id}-currentLiabilities`}
                             value={sheet.currentLiabilities}
                             itemId={sheet.id}
                             field="currentLiabilities"
                             reportType="bs"
-                            isEditable={editableFields.currentLiabilities}
+                            isEditable={JSON.parse(sheet.isEditable || '{}').currentLiabilities}
                             className="font-semibold"
                           />
-                        </TableRow>
-                        <TableRow>
-                          <TableCell className="pl-8">เจ้าหนี้การค้า</TableCell>
+                        ))}
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className="pl-6 text-sm">เจ้าหนี้การค้า</TableCell>
+                        {sheets.map((sheet) => (
                           <EditableCell
+                            key={`${sheet.id}-accountsPayable`}
                             value={sheet.accountsPayable}
                             itemId={sheet.id}
                             field="accountsPayable"
                             reportType="bs"
-                            isEditable={editableFields.accountsPayable}
+                            isEditable={JSON.parse(sheet.isEditable || '{}').accountsPayable}
                           />
-                        </TableRow>
-                        <TableRow>
-                          <TableCell className="pl-8">หนี้สินระยะสั้น</TableCell>
+                        ))}
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className="pl-6 text-sm">หนี้สินระยะสั้น</TableCell>
+                        {sheets.map((sheet) => (
                           <EditableCell
+                            key={`${sheet.id}-shortTermDebt`}
                             value={sheet.shortTermDebt}
                             itemId={sheet.id}
                             field="shortTermDebt"
                             reportType="bs"
-                            isEditable={editableFields.shortTermDebt}
+                            isEditable={JSON.parse(sheet.isEditable || '{}').shortTermDebt}
                           />
-                        </TableRow>
-                        <TableRow className="bg-muted/30">
-                          <TableCell className="font-semibold">หนี้สินระยะยาว</TableCell>
+                        ))}
+                      </TableRow>
+                      <TableRow className="bg-muted/30">
+                        <TableCell className="font-semibold text-sm">หนี้สินระยะยาว</TableCell>
+                        {sheets.map((sheet) => (
                           <EditableCell
+                            key={`${sheet.id}-longTermLiabilities`}
                             value={sheet.longTermLiabilities}
                             itemId={sheet.id}
                             field="longTermLiabilities"
                             reportType="bs"
-                            isEditable={editableFields.longTermLiabilities}
+                            isEditable={JSON.parse(sheet.isEditable || '{}').longTermLiabilities}
                             className="font-semibold"
                           />
-                        </TableRow>
-                        <TableRow>
-                          <TableCell className="pl-8">หนี้สินระยะยาว</TableCell>
+                        ))}
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className="pl-6 text-sm">หนี้สินระยะยาว</TableCell>
+                        {sheets.map((sheet) => (
                           <EditableCell
+                            key={`${sheet.id}-longTermDebt`}
                             value={sheet.longTermDebt}
                             itemId={sheet.id}
                             field="longTermDebt"
                             reportType="bs"
-                            isEditable={editableFields.longTermDebt}
+                            isEditable={JSON.parse(sheet.isEditable || '{}').longTermDebt}
                           />
-                        </TableRow>
-                        <TableRow className="border-t-2 bg-muted/30">
-                          <TableCell className="font-bold">หนี้สินรวม</TableCell>
+                        ))}
+                      </TableRow>
+                      <TableRow className="border-t-2 bg-muted/30">
+                        <TableCell className="font-bold text-sm">หนี้สินรวม</TableCell>
+                        {sheets.map((sheet) => (
                           <EditableCell
+                            key={`${sheet.id}-totalLiabilities`}
                             value={sheet.totalLiabilities}
                             itemId={sheet.id}
                             field="totalLiabilities"
                             reportType="bs"
-                            isEditable={editableFields.totalLiabilities}
+                            isEditable={JSON.parse(sheet.isEditable || '{}').totalLiabilities}
                             className="font-bold"
                           />
-                        </TableRow>
-                        <TableRow className="bg-muted/30">
-                          <TableCell className="font-semibold">ส่วนของผู้ถือหุ้น</TableCell>
+                        ))}
+                      </TableRow>
+                      <TableRow className="bg-muted/30">
+                        <TableCell className="font-semibold text-sm">ส่วนของผู้ถือหุ้น</TableCell>
+                        {sheets.map((sheet) => (
                           <EditableCell
+                            key={`${sheet.id}-shareholdersEquity`}
                             value={sheet.shareholdersEquity}
                             itemId={sheet.id}
                             field="shareholdersEquity"
                             reportType="bs"
-                            isEditable={editableFields.shareholdersEquity}
+                            isEditable={JSON.parse(sheet.isEditable || '{}').shareholdersEquity}
                             className="font-semibold"
                           />
-                        </TableRow>
-                        <TableRow>
-                          <TableCell className="pl-8">กำไรสะสม</TableCell>
+                        ))}
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className="pl-6 text-sm">กำไรสะสม</TableCell>
+                        {sheets.map((sheet) => (
                           <EditableCell
+                            key={`${sheet.id}-retainedEarnings`}
                             value={sheet.retainedEarnings}
                             itemId={sheet.id}
                             field="retainedEarnings"
                             reportType="bs"
-                            isEditable={editableFields.retainedEarnings}
+                            isEditable={JSON.parse(sheet.isEditable || '{}').retainedEarnings}
                           />
-                        </TableRow>
-                      </TableBody>
-                    </Table>
-                  </div>
+                        ))}
+                      </TableRow>
+                    </TableBody>
+                  </Table>
                 </div>
-              </CardContent>
-            </Card>
-          );
-        })}
+              </div>
+            </CardContent>
+          </Card>
+        ))}
       </div>
     );
   };
 
-  // Cash Flow Table Component  
+  // Cash Flow Table Component - Comparative View
   const CashFlowTable = () => {
     if (cfLoading) {
       return <div className="p-8 text-center" data-testid="loading-cf">กำลังโหลดข้อมูล...</div>;
     }
 
+    if (cashFlowStatements.length === 0) {
+      return <div className="p-8 text-center text-muted-foreground">ไม่มีข้อมูลงบกระแสเงินสด</div>;
+    }
+
+    // Group statements by topic and sort periods
+    const groupedStatements = cashFlowStatements.reduce((acc, statement) => {
+      if (!acc[statement.topic]) acc[statement.topic] = [];
+      acc[statement.topic].push(statement);
+      return acc;
+    }, {} as Record<string, CashFlowStatement[]>);
+
+    // Sort periods for each topic
+    Object.keys(groupedStatements).forEach(topic => {
+      groupedStatements[topic].sort((a, b) => a.period.localeCompare(b.period));
+    });
+
     return (
-      <div className="space-y-4">
-        {cashFlowStatements.map((statement) => {
-          const editableFields = JSON.parse(statement.isEditable || '{}');
-          
-          return (
-            <Card key={statement.id} data-testid={`cash-flow-${statement.id}`}>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle className="flex items-center gap-2">
-                    <TrendingUp className="h-5 w-5" />
-                    งบกระแสเงินสด - {statement.topic}
-                  </CardTitle>
-                  <Badge variant="secondary" data-testid={`period-badge-${statement.period}`}>
-                    {statement.period}
-                  </Badge>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>รายการ</TableHead>
-                      <TableHead className="text-right">จำนวนเงิน (บาท)</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    <TableRow className="bg-blue-50 dark:bg-blue-950/20">
-                      <TableCell className="font-bold">กระแสเงินสดจากการดำเนินงาน</TableCell>
+      <div className="space-y-6">
+        {Object.entries(groupedStatements).map(([topic, statements]) => (
+          <Card key={topic} data-testid={`cf-comparative-${topic}`}>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <TrendingUp className="h-5 w-5" />
+                งบกระแสเงินสด - {topic}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-1/4">รายการ</TableHead>
+                    {statements.map((statement) => (
+                      <TableHead key={statement.period} className="text-right" data-testid={`header-cf-${statement.period}`}>
+                        {statement.period}
+                      </TableHead>
+                    ))}
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <TableRow className="bg-blue-50 dark:bg-blue-950/20">
+                    <TableCell className="font-bold">กระแสเงินสดจากการดำเนินงาน</TableCell>
+                    {statements.map((statement) => (
                       <EditableCell
+                        key={`${statement.id}-operatingCashFlow`}
                         value={statement.operatingCashFlow}
                         itemId={statement.id}
                         field="operatingCashFlow"
                         reportType="cf"
-                        isEditable={editableFields.operatingCashFlow}
+                        isEditable={JSON.parse(statement.isEditable || '{}').operatingCashFlow}
                         className="font-bold"
                       />
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="pl-8">กำไรสุทธิ</TableCell>
+                    ))}
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="pl-8">กำไรสุทธิ</TableCell>
+                    {statements.map((statement) => (
                       <EditableCell
+                        key={`${statement.id}-netIncome`}
                         value={statement.netIncome}
                         itemId={statement.id}
                         field="netIncome"
                         reportType="cf"
-                        isEditable={editableFields.netIncome}
+                        isEditable={JSON.parse(statement.isEditable || '{}').netIncome}
                       />
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="pl-8">ค่าเสื่อมราคา</TableCell>
+                    ))}
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="pl-8">ค่าเสื่อมราคา</TableCell>
+                    {statements.map((statement) => (
                       <EditableCell
+                        key={`${statement.id}-depreciation`}
                         value={statement.depreciation}
                         itemId={statement.id}
                         field="depreciation"
                         reportType="cf"
-                        isEditable={editableFields.depreciation}
+                        isEditable={JSON.parse(statement.isEditable || '{}').depreciation}
                       />
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="pl-8">การเปลี่ยนแปลงในเงินทุนหมุนเวียน</TableCell>
+                    ))}
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="pl-8">การเปลี่ยนแปลงในเงินทุนหมุนเวียน</TableCell>
+                    {statements.map((statement) => (
                       <EditableCell
+                        key={`${statement.id}-changeInWorkingCapital`}
                         value={statement.changeInWorkingCapital}
                         itemId={statement.id}
                         field="changeInWorkingCapital"
                         reportType="cf"
-                        isEditable={editableFields.changeInWorkingCapital}
+                        isEditable={JSON.parse(statement.isEditable || '{}').changeInWorkingCapital}
                       />
-                    </TableRow>
-                    <TableRow className="bg-green-50 dark:bg-green-950/20">
-                      <TableCell className="font-bold">กระแสเงินสดจากการลงทุน</TableCell>
+                    ))}
+                  </TableRow>
+                  <TableRow className="bg-green-50 dark:bg-green-950/20">
+                    <TableCell className="font-bold">กระแสเงินสดจากการลงทุน</TableCell>
+                    {statements.map((statement) => (
                       <EditableCell
+                        key={`${statement.id}-investingCashFlow`}
                         value={statement.investingCashFlow}
                         itemId={statement.id}
                         field="investingCashFlow"
                         reportType="cf"
-                        isEditable={editableFields.investingCashFlow}
+                        isEditable={JSON.parse(statement.isEditable || '{}').investingCashFlow}
                         className="font-bold"
                       />
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="pl-8">การลงทุนในสินทรัพย์ถาวร</TableCell>
+                    ))}
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="pl-8">การลงทุนในสินทรัพย์ถาวร</TableCell>
+                    {statements.map((statement) => (
                       <EditableCell
+                        key={`${statement.id}-capitalExpenditures`}
                         value={statement.capitalExpenditures}
                         itemId={statement.id}
                         field="capitalExpenditures"
                         reportType="cf"
-                        isEditable={editableFields.capitalExpenditures}
+                        isEditable={JSON.parse(statement.isEditable || '{}').capitalExpenditures}
                       />
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="pl-8">การซื้อกิจการ</TableCell>
+                    ))}
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="pl-8">การซื้อกิจการ</TableCell>
+                    {statements.map((statement) => (
                       <EditableCell
+                        key={`${statement.id}-acquisitions`}
                         value={statement.acquisitions}
                         itemId={statement.id}
                         field="acquisitions"
                         reportType="cf"
-                        isEditable={editableFields.acquisitions}
+                        isEditable={JSON.parse(statement.isEditable || '{}').acquisitions}
                       />
-                    </TableRow>
-                    <TableRow className="bg-orange-50 dark:bg-orange-950/20">
-                      <TableCell className="font-bold">กระแสเงินสดจากการจัดหาเงิน</TableCell>
+                    ))}
+                  </TableRow>
+                  <TableRow className="bg-orange-50 dark:bg-orange-950/20">
+                    <TableCell className="font-bold">กระแสเงินสดจากการจัดหาเงิน</TableCell>
+                    {statements.map((statement) => (
                       <EditableCell
+                        key={`${statement.id}-financingCashFlow`}
                         value={statement.financingCashFlow}
                         itemId={statement.id}
                         field="financingCashFlow"
                         reportType="cf"
-                        isEditable={editableFields.financingCashFlow}
+                        isEditable={JSON.parse(statement.isEditable || '{}').financingCashFlow}
                         className="font-bold"
                       />
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="pl-8">การกู้ยืมเงิน</TableCell>
+                    ))}
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="pl-8">การกู้ยืมเงิน</TableCell>
+                    {statements.map((statement) => (
                       <EditableCell
+                        key={`${statement.id}-debtIssuance`}
                         value={statement.debtIssuance}
                         itemId={statement.id}
                         field="debtIssuance"
                         reportType="cf"
-                        isEditable={editableFields.debtIssuance}
+                        isEditable={JSON.parse(statement.isEditable || '{}').debtIssuance}
                       />
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="pl-8">การชำระคืนหนี้</TableCell>
+                    ))}
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="pl-8">การชำระคืนหนี้</TableCell>
+                    {statements.map((statement) => (
                       <EditableCell
+                        key={`${statement.id}-debtRepayment`}
                         value={statement.debtRepayment}
                         itemId={statement.id}
                         field="debtRepayment"
                         reportType="cf"
-                        isEditable={editableFields.debtRepayment}
+                        isEditable={JSON.parse(statement.isEditable || '{}').debtRepayment}
                       />
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="pl-8">เงินปันผลที่จ่าย</TableCell>
+                    ))}
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="pl-8">เงินปันผลที่จ่าย</TableCell>
+                    {statements.map((statement) => (
                       <EditableCell
+                        key={`${statement.id}-dividendsPaid`}
                         value={statement.dividendsPaid}
                         itemId={statement.id}
                         field="dividendsPaid"
                         reportType="cf"
-                        isEditable={editableFields.dividendsPaid}
+                        isEditable={JSON.parse(statement.isEditable || '{}').dividendsPaid}
                       />
-                    </TableRow>
-                    <TableRow className="border-t-4 bg-muted/50">
-                      <TableCell className="font-bold text-lg">การเปลี่ยนแปลงในเงินสดสุทธิ</TableCell>
+                    ))}
+                  </TableRow>
+                  <TableRow className="border-t-4 bg-muted/50">
+                    <TableCell className="font-bold text-lg">การเปลี่ยนแปลงในเงินสดสุทธิ</TableCell>
+                    {statements.map((statement) => (
                       <EditableCell
+                        key={`${statement.id}-netChangeInCash`}
                         value={statement.netChangeInCash}
                         itemId={statement.id}
                         field="netChangeInCash"
                         reportType="cf"
-                        isEditable={editableFields.netChangeInCash}
+                        isEditable={JSON.parse(statement.isEditable || '{}').netChangeInCash}
                         className="font-bold text-lg"
                       />
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="font-medium">เงินสดต้นงวด</TableCell>
+                    ))}
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-medium">เงินสดต้นงวด</TableCell>
+                    {statements.map((statement) => (
                       <EditableCell
+                        key={`${statement.id}-beginningCashBalance`}
                         value={statement.beginningCashBalance}
                         itemId={statement.id}
                         field="beginningCashBalance"
                         reportType="cf"
-                        isEditable={editableFields.beginningCashBalance}
+                        isEditable={JSON.parse(statement.isEditable || '{}').beginningCashBalance}
                       />
-                    </TableRow>
-                    <TableRow className="border-t-2 bg-primary/10">
-                      <TableCell className="font-bold text-lg">เงินสดปลายงวด</TableCell>
+                    ))}
+                  </TableRow>
+                  <TableRow className="border-t-2 bg-primary/10">
+                    <TableCell className="font-bold text-lg">เงินสดปลายงวด</TableCell>
+                    {statements.map((statement) => (
                       <EditableCell
+                        key={`${statement.id}-endingCashBalance`}
                         value={statement.endingCashBalance}
                         itemId={statement.id}
                         field="endingCashBalance"
                         reportType="cf"
-                        isEditable={editableFields.endingCashBalance}
+                        isEditable={JSON.parse(statement.isEditable || '{}').endingCashBalance}
                         className="font-bold text-lg"
                       />
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </CardContent>
-            </Card>
-          );
-        })}
+                    ))}
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        ))}
       </div>
     );
   };
