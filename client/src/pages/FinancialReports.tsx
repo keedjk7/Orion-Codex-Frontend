@@ -37,7 +37,8 @@ import type {
 
 export default function FinancialReports() {
   const [selectedTopic, setSelectedTopic] = useState<string>("all");
-  const [selectedPeriod, setSelectedPeriod] = useState<string>("all");
+  const [startPeriod, setStartPeriod] = useState<string>("none");
+  const [endPeriod, setEndPeriod] = useState<string>("none");
   const [activeTab, setActiveTab] = useState<string>("pl");
   const [editingCells, setEditingCells] = useState<Record<string, any>>({});
   const queryClient = useQueryClient();
@@ -46,11 +47,12 @@ export default function FinancialReports() {
 
   // Fetch financial reports data
   const { data: plStatements = [], isLoading: plLoading } = useQuery({
-    queryKey: ['/api/profit-loss', selectedTopic, selectedPeriod],
+    queryKey: ['/api/profit-loss', selectedTopic, startPeriod, endPeriod],
     queryFn: async () => {
       const params = new URLSearchParams();
       if (selectedTopic && selectedTopic !== 'all') params.append('topic', selectedTopic);
-      if (selectedPeriod && selectedPeriod !== 'all') params.append('period', selectedPeriod);
+      if (startPeriod && startPeriod !== 'none') params.append('startPeriod', startPeriod);
+      if (endPeriod && endPeriod !== 'none') params.append('endPeriod', endPeriod);
       
       const response = await fetch(`/api/profit-loss?${params}`);
       if (!response.ok) throw new Error('Failed to fetch P&L statements');
@@ -59,11 +61,12 @@ export default function FinancialReports() {
   });
 
   const { data: balanceSheets = [], isLoading: bsLoading } = useQuery({
-    queryKey: ['/api/balance-sheet', selectedTopic, selectedPeriod],
+    queryKey: ['/api/balance-sheet', selectedTopic, startPeriod, endPeriod],
     queryFn: async () => {
       const params = new URLSearchParams();
       if (selectedTopic && selectedTopic !== 'all') params.append('topic', selectedTopic);
-      if (selectedPeriod && selectedPeriod !== 'all') params.append('period', selectedPeriod);
+      if (startPeriod && startPeriod !== 'none') params.append('startPeriod', startPeriod);
+      if (endPeriod && endPeriod !== 'none') params.append('endPeriod', endPeriod);
       
       const response = await fetch(`/api/balance-sheet?${params}`);
       if (!response.ok) throw new Error('Failed to fetch balance sheets');
@@ -72,11 +75,12 @@ export default function FinancialReports() {
   });
 
   const { data: cashFlowStatements = [], isLoading: cfLoading } = useQuery({
-    queryKey: ['/api/cash-flow', selectedTopic, selectedPeriod],
+    queryKey: ['/api/cash-flow', selectedTopic, startPeriod, endPeriod],
     queryFn: async () => {
       const params = new URLSearchParams();
       if (selectedTopic && selectedTopic !== 'all') params.append('topic', selectedTopic);
-      if (selectedPeriod && selectedPeriod !== 'all') params.append('period', selectedPeriod);
+      if (startPeriod && startPeriod !== 'none') params.append('startPeriod', startPeriod);
+      if (endPeriod && endPeriod !== 'none') params.append('endPeriod', endPeriod);
       
       const response = await fetch(`/api/cash-flow?${params}`);
       if (!response.ok) throw new Error('Failed to fetch cash flow statements');
@@ -92,8 +96,42 @@ export default function FinancialReports() {
 
   const uniquePeriods = useMemo(() => {
     const allData = [...plStatements, ...balanceSheets, ...cashFlowStatements];
-    return Array.from(new Set(allData.map(item => item.period))).sort().reverse();
+    const periods = Array.from(new Set(allData.map(item => item.period)));
+    // Sort periods properly for YYYY-MM format, then reverse for newest first
+    return periods.sort((a, b) => {
+      // Handle 'none' values
+      if (a === 'none') return 1;
+      if (b === 'none') return -1;
+      // Standard string comparison works for YYYY-MM format
+      return a.localeCompare(b);
+    }).reverse();
   }, [plStatements, balanceSheets, cashFlowStatements]);
+
+  // Date range validation
+  const validateDateRange = (start: string, end: string): boolean => {
+    if (start === 'none' || end === 'none') return true;
+    if (start > end) {
+      toast({
+        description: "Start period must be before or equal to end period",
+        variant: "destructive"
+      });
+      return false;
+    }
+    return true;
+  };
+
+  // Enhanced period change handlers with validation
+  const handleStartPeriodChange = (value: string) => {
+    if (validateDateRange(value, endPeriod)) {
+      setStartPeriod(value);
+    }
+  };
+
+  const handleEndPeriodChange = (value: string) => {
+    if (validateDateRange(startPeriod, value)) {
+      setEndPeriod(value);
+    }
+  };
 
   // Validation helper function
   const validateNumericInput = (value: string): string | null => {
@@ -101,7 +139,6 @@ export default function FinancialReports() {
     
     const num = parseFloat(value);
     if (isNaN(num)) return 'Must be a valid number';
-    if (num < 0) return 'Must not be negative';
     
     // Check decimal places
     if (value.includes('.') && value.split('.')[1].length > 2) {
@@ -119,16 +156,16 @@ export default function FinancialReports() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/profit-loss'] });
-      toast({ description: "รายการขาดทุนถูกอัปเดตเรียบร้อยแล้ว" });
+      toast({ description: "Profit & Loss statement updated successfully" });
     },
     onError: (error: any) => {
       console.error('P&L update error:', error);
-      let errorMessage = "เกิดข้อผิดพลาดในการอัปเดต";
+      let errorMessage = "An error occurred while updating";
       
       if (error.message.includes('400')) {
-        errorMessage = "ข้อมูลไม่ถูกต้อง กรุณาตรวจสอบค่าที่กรอก";
+        errorMessage = "Invalid data. Please check the entered values";
       } else if (error.message.includes('404')) {
-        errorMessage = "ไม่พบข้อมูลที่ต้องการอัปเดต";
+        errorMessage = "Data to be updated not found";
       }
       
       toast({ description: errorMessage, variant: "destructive" });
@@ -142,16 +179,16 @@ export default function FinancialReports() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/balance-sheet'] });
-      toast({ description: "งบดุลถูกอัปเดตเรียบร้อยแล้ว" });
+      toast({ description: "Balance sheet updated successfully" });
     },
     onError: (error: any) => {
       console.error('Balance sheet update error:', error);
-      let errorMessage = "เกิดข้อผิดพลาดในการอัปเดต";
+      let errorMessage = "An error occurred while updating";
       
       if (error.message.includes('400')) {
-        errorMessage = "ข้อมูลไม่ถูกต้อง กรุณาตรวจสอบค่าที่กรอก";
+        errorMessage = "Invalid data. Please check the entered values";
       } else if (error.message.includes('404')) {
-        errorMessage = "ไม่พบข้อมูลที่ต้องการอัปเดต";
+        errorMessage = "Data to be updated not found";
       }
       
       toast({ description: errorMessage, variant: "destructive" });
@@ -165,16 +202,16 @@ export default function FinancialReports() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/cash-flow'] });
-      toast({ description: "งบกระแสเงินสดถูกอัปเดตเรียบร้อยแล้ว" });
+      toast({ description: "Cash flow statement updated successfully" });
     },
     onError: (error: any) => {
       console.error('Cash flow update error:', error);
-      let errorMessage = "เกิดข้อผิดพลาดในการอัปเดต";
+      let errorMessage = "An error occurred while updating";
       
       if (error.message.includes('400')) {
-        errorMessage = "ข้อมูลไม่ถูกต้อง กรุณาตรวจสอบค่าที่กรอก";
+        errorMessage = "Invalid data. Please check the entered values";
       } else if (error.message.includes('404')) {
-        errorMessage = "ไม่พบข้อมูลที่ต้องการอัปเดต";
+        errorMessage = "Data to be updated not found";
       }
       
       toast({ description: errorMessage, variant: "destructive" });
@@ -254,7 +291,7 @@ export default function FinancialReports() {
   // Format number for display
   const formatNumber = (value: string | number) => {
     const num = typeof value === 'string' ? parseFloat(value) : value;
-    return new Intl.NumberFormat('th-TH', {
+    return new Intl.NumberFormat('en-US', {
       minimumFractionDigits: 0,
       maximumFractionDigits: 2
     }).format(num);
@@ -366,11 +403,11 @@ export default function FinancialReports() {
   // Profit & Loss Table Component - Comparative View
   const ProfitLossTable = () => {
     if (plLoading) {
-      return <div className="p-8 text-center" data-testid="loading-pl">กำลังโหลดข้อมูล...</div>;
+      return <div className="p-8 text-center" data-testid="loading-pl">Loading data...</div>;
     }
 
     if (plStatements.length === 0) {
-      return <div className="p-8 text-center text-muted-foreground">ไม่มีข้อมูลงบกำไรขาดทุน</div>;
+      return <div className="p-8 text-center text-muted-foreground">No profit & loss data available</div>;
     }
 
     // Group statements by topic and sort periods
@@ -396,7 +433,7 @@ export default function FinancialReports() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Calculator className="h-5 w-5" />
-                  งบกำไรขาดทุน - {topic}
+                  Profit & Loss Statement - {topic}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -404,7 +441,7 @@ export default function FinancialReports() {
                   <Table className="min-w-full">
                     <TableHeader>
                       <TableRow>
-                        <TableHead className="sticky left-0 bg-background z-10 min-w-[200px] border-r">รายการ</TableHead>
+                        <TableHead className="sticky left-0 bg-background z-10 min-w-[200px] border-r">Line Item</TableHead>
                         {statements.map((statement) => (
                           <TableHead key={statement.period} className="text-right min-w-[120px]" data-testid={`header-${statement.period}`}>
                             {statement.period}
@@ -414,7 +451,7 @@ export default function FinancialReports() {
                     </TableHeader>
                   <TableBody>
                     <TableRow>
-                      <TableCell className="font-medium sticky left-0 bg-background z-10 border-r">รายได้รวม</TableCell>
+                      <TableCell className="font-medium sticky left-0 bg-background z-10 border-r">Total Revenue</TableCell>
                       {statements.map((statement) => (
                         <EditableCell
                           key={`${statement.id}-totalRevenue`}
@@ -427,7 +464,7 @@ export default function FinancialReports() {
                       ))}
                     </TableRow>
                     <TableRow>
-                      <TableCell className="font-medium sticky left-0 bg-background z-10 border-r">ต้นทุนขายสินค้า</TableCell>
+                      <TableCell className="font-medium sticky left-0 bg-background z-10 border-r">Cost of Goods Sold</TableCell>
                       {statements.map((statement) => (
                         <EditableCell
                           key={`${statement.id}-costOfGoodsSold`}
@@ -440,7 +477,7 @@ export default function FinancialReports() {
                       ))}
                     </TableRow>
                     <TableRow className="border-t-2 bg-blue-50 dark:bg-blue-950/20">
-                      <TableCell className="font-bold sticky left-0 bg-background z-10 border-r">กำไรขั้นต้น</TableCell>
+                      <TableCell className="font-bold sticky left-0 bg-background z-10 border-r">Gross Profit</TableCell>
                       {statements.map((statement) => (
                         <EditableCell
                           key={`${statement.id}-grossProfit`}
@@ -454,7 +491,7 @@ export default function FinancialReports() {
                       ))}
                     </TableRow>
                     <TableRow>
-                      <TableCell className="font-medium sticky left-0 bg-background z-10 border-r">ค่าใช้จ่ายในการดำเนินงาน</TableCell>
+                      <TableCell className="font-medium sticky left-0 bg-background z-10 border-r">Operating Expenses</TableCell>
                       {statements.map((statement) => (
                         <EditableCell
                           key={`${statement.id}-operatingExpenses`}
@@ -467,7 +504,7 @@ export default function FinancialReports() {
                       ))}
                     </TableRow>
                     <TableRow className="border-t-2 bg-green-50 dark:bg-green-950/20">
-                      <TableCell className="font-bold sticky left-0 bg-background z-10 border-r">กำไรจากการดำเนินงาน</TableCell>
+                      <TableCell className="font-bold sticky left-0 bg-background z-10 border-r">Operating Income</TableCell>
                       {statements.map((statement) => (
                         <EditableCell
                           key={`${statement.id}-operatingIncome`}
@@ -481,7 +518,7 @@ export default function FinancialReports() {
                       ))}
                     </TableRow>
                     <TableRow>
-                      <TableCell className="font-medium sticky left-0 bg-background z-10 border-r">รายได้อื่น</TableCell>
+                      <TableCell className="font-medium sticky left-0 bg-background z-10 border-r">Other Income</TableCell>
                       {statements.map((statement) => (
                         <EditableCell
                           key={`${statement.id}-otherIncome`}
@@ -494,7 +531,7 @@ export default function FinancialReports() {
                       ))}
                     </TableRow>
                     <TableRow>
-                      <TableCell className="font-medium sticky left-0 bg-background z-10 border-r">ค่าใช้จ่ายอื่น</TableCell>
+                      <TableCell className="font-medium sticky left-0 bg-background z-10 border-r">Other Expenses</TableCell>
                       {statements.map((statement) => (
                         <EditableCell
                           key={`${statement.id}-otherExpenses`}
@@ -507,7 +544,7 @@ export default function FinancialReports() {
                       ))}
                     </TableRow>
                     <TableRow className="border-t-2 bg-orange-50 dark:bg-orange-950/20">
-                      <TableCell className="font-bold sticky left-0 bg-background z-10 border-r">กำไรสุทธิก่อนภาษี</TableCell>
+                      <TableCell className="font-bold sticky left-0 bg-background z-10 border-r">Income Before Tax</TableCell>
                       {statements.map((statement) => (
                         <EditableCell
                           key={`${statement.id}-netIncomeBeforeTax`}
@@ -521,7 +558,7 @@ export default function FinancialReports() {
                       ))}
                     </TableRow>
                     <TableRow>
-                      <TableCell className="font-medium sticky left-0 bg-background z-10 border-r">ค่าใช้จ่ายภาษี</TableCell>
+                      <TableCell className="font-medium sticky left-0 bg-background z-10 border-r">Tax Expense</TableCell>
                       {statements.map((statement) => (
                         <EditableCell
                           key={`${statement.id}-taxExpense`}
@@ -534,7 +571,7 @@ export default function FinancialReports() {
                       ))}
                     </TableRow>
                     <TableRow className="border-t-4 bg-primary/10">
-                      <TableCell className="font-bold text-lg sticky left-0 bg-background z-10 border-r">กำไรสุทธิ</TableCell>
+                      <TableCell className="font-bold text-lg sticky left-0 bg-background z-10 border-r">Net Income</TableCell>
                       {statements.map((statement) => (
                         <EditableCell
                           key={`${statement.id}-netIncome`}
@@ -561,11 +598,11 @@ export default function FinancialReports() {
   // Balance Sheet Table Component - Comparative View
   const BalanceSheetTable = () => {
     if (bsLoading) {
-      return <div className="p-8 text-center" data-testid="loading-bs">กำลังโหลดข้อมูล...</div>;
+      return <div className="p-8 text-center" data-testid="loading-bs">Loading data...</div>;
     }
 
     if (balanceSheets.length === 0) {
-      return <div className="p-8 text-center text-muted-foreground">ไม่มีข้อมูลงบดุล</div>;
+      return <div className="p-8 text-center text-muted-foreground">No balance sheet data available</div>;
     }
 
     // Group statements by topic and sort periods
@@ -587,7 +624,7 @@ export default function FinancialReports() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <BarChart3 className="h-5 w-5" />
-                งบดุล - {topic}
+                Balance Sheet - {topic}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -837,11 +874,11 @@ export default function FinancialReports() {
   // Cash Flow Table Component - Comparative View
   const CashFlowTable = () => {
     if (cfLoading) {
-      return <div className="p-8 text-center" data-testid="loading-cf">กำลังโหลดข้อมูล...</div>;
+      return <div className="p-8 text-center" data-testid="loading-cf">Loading data...</div>;
     }
 
     if (cashFlowStatements.length === 0) {
-      return <div className="p-8 text-center text-muted-foreground">ไม่มีข้อมูลงบกระแสเงินสด</div>;
+      return <div className="p-8 text-center text-muted-foreground">No cash flow data available</div>;
     }
 
     // Group statements by topic and sort periods
@@ -863,7 +900,7 @@ export default function FinancialReports() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <TrendingUp className="h-5 w-5" />
-                งบกระแสเงินสด - {topic}
+                Cash Flow Statement - {topic}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -1119,30 +1156,45 @@ export default function FinancialReports() {
                   </SelectContent>
                 </Select>
 
-                <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
-                  <SelectTrigger className="w-[200px]" data-testid="select-period">
-                    <SelectValue placeholder="เลือกช่วงเวลา" />
+                <Select value={startPeriod} onValueChange={handleStartPeriodChange}>
+                  <SelectTrigger className="w-[200px]" data-testid="select-start-period">
+                    <SelectValue placeholder="Start Period" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all" data-testid="option-all-periods">ทั้งหมด</SelectItem>
+                    <SelectItem value="none" data-testid="option-no-start">No Start</SelectItem>
                     {uniquePeriods.map((period) => (
-                      <SelectItem key={period} value={period} data-testid={`option-period-${period}`}>
+                      <SelectItem key={period} value={period} data-testid={`option-start-${period}`}>
+                        {period}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                
+                <Select value={endPeriod} onValueChange={handleEndPeriodChange}>
+                  <SelectTrigger className="w-[200px]" data-testid="select-end-period">
+                    <SelectValue placeholder="End Period" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none" data-testid="option-no-end">No End</SelectItem>
+                    {uniquePeriods.map((period) => (
+                      <SelectItem key={period} value={period} data-testid={`option-end-${period}`}>
                         {period}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
 
-                {(selectedTopic && selectedTopic !== "all" || selectedPeriod && selectedPeriod !== "all") && (
+                {(selectedTopic && selectedTopic !== "all" || (startPeriod && startPeriod !== "none") || (endPeriod && endPeriod !== "none")) && (
                   <Button
                     variant="outline"
                     onClick={() => {
                       setSelectedTopic("all");
-                      setSelectedPeriod("all");
+                      setStartPeriod("none");
+                      setEndPeriod("none");
                     }}
                     data-testid="button-clear-filters"
                   >
-                    ล้างตัวกรอง
+                    Clear Filters
                   </Button>
                 )}
               </div>

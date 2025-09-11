@@ -94,13 +94,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Profit & Loss Statement routes
   app.get("/api/profit-loss", async (req, res) => {
     try {
-      const { topic, period } = req.query;
+      const { topic, startPeriod, endPeriod } = req.query;
       let statements;
       
-      if (topic || period) {
+      if (topic || startPeriod || endPeriod) {
         statements = await storage.getProfitLossStatementsFiltered(
           topic as string, 
-          period as string
+          startPeriod as string,
+          endPeriod as string
         );
       } else {
         statements = await storage.getAllProfitLossStatements();
@@ -149,13 +150,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Balance Sheet routes
   app.get("/api/balance-sheet", async (req, res) => {
     try {
-      const { topic, period } = req.query;
+      const { topic, startPeriod, endPeriod } = req.query;
       let sheets;
       
-      if (topic || period) {
+      if (topic || startPeriod || endPeriod) {
         sheets = await storage.getBalanceSheetsFiltered(
           topic as string, 
-          period as string
+          startPeriod as string,
+          endPeriod as string
         );
       } else {
         sheets = await storage.getAllBalanceSheets();
@@ -204,13 +206,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Cash Flow Statement routes
   app.get("/api/cash-flow", async (req, res) => {
     try {
-      const { topic, period } = req.query;
+      const { topic, startPeriod, endPeriod } = req.query;
       let statements;
       
-      if (topic || period) {
+      if (topic || startPeriod || endPeriod) {
         statements = await storage.getCashFlowStatementsFiltered(
           topic as string, 
-          period as string
+          startPeriod as string,
+          endPeriod as string
         );
       } else {
         statements = await storage.getAllCashFlowStatements();

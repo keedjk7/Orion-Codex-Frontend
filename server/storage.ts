@@ -51,7 +51,7 @@ export interface IStorage {
   getAllProfitLossStatements(): Promise<ProfitLossStatement[]>;
   getProfitLossStatementsByTopic(topic: string): Promise<ProfitLossStatement[]>;
   getProfitLossStatementsByPeriod(period: string): Promise<ProfitLossStatement[]>;
-  getProfitLossStatementsFiltered(topic?: string, period?: string): Promise<ProfitLossStatement[]>;
+  getProfitLossStatementsFiltered(topic?: string, startPeriod?: string, endPeriod?: string): Promise<ProfitLossStatement[]>;
   createProfitLossStatement(statement: InsertProfitLossStatement): Promise<ProfitLossStatement>;
   updateProfitLossStatement(id: string, statement: Partial<InsertProfitLossStatement>): Promise<ProfitLossStatement | undefined>;
   
@@ -59,7 +59,7 @@ export interface IStorage {
   getAllBalanceSheets(): Promise<BalanceSheet[]>;
   getBalanceSheetsByTopic(topic: string): Promise<BalanceSheet[]>;
   getBalanceSheetsByPeriod(period: string): Promise<BalanceSheet[]>;
-  getBalanceSheetsFiltered(topic?: string, period?: string): Promise<BalanceSheet[]>;
+  getBalanceSheetsFiltered(topic?: string, startPeriod?: string, endPeriod?: string): Promise<BalanceSheet[]>;
   createBalanceSheet(sheet: InsertBalanceSheet): Promise<BalanceSheet>;
   updateBalanceSheet(id: string, sheet: Partial<InsertBalanceSheet>): Promise<BalanceSheet | undefined>;
   
@@ -67,7 +67,7 @@ export interface IStorage {
   getAllCashFlowStatements(): Promise<CashFlowStatement[]>;
   getCashFlowStatementsByTopic(topic: string): Promise<CashFlowStatement[]>;
   getCashFlowStatementsByPeriod(period: string): Promise<CashFlowStatement[]>;
-  getCashFlowStatementsFiltered(topic?: string, period?: string): Promise<CashFlowStatement[]>;
+  getCashFlowStatementsFiltered(topic?: string, startPeriod?: string, endPeriod?: string): Promise<CashFlowStatement[]>;
   createCashFlowStatement(statement: InsertCashFlowStatement): Promise<CashFlowStatement>;
   updateCashFlowStatement(id: string, statement: Partial<InsertCashFlowStatement>): Promise<CashFlowStatement | undefined>;
 }
@@ -282,13 +282,16 @@ export class MemStorage implements IStorage {
     return Array.from(this.profitLossStatements.values()).filter(statement => statement.period === period);
   }
 
-  async getProfitLossStatementsFiltered(topic?: string, period?: string): Promise<ProfitLossStatement[]> {
+  async getProfitLossStatementsFiltered(topic?: string, startPeriod?: string, endPeriod?: string): Promise<ProfitLossStatement[]> {
     let statements = Array.from(this.profitLossStatements.values());
     if (topic) {
       statements = statements.filter(statement => statement.topic === topic);
     }
-    if (period) {
-      statements = statements.filter(statement => statement.period === period);
+    if (startPeriod) {
+      statements = statements.filter(statement => statement.period >= startPeriod);
+    }
+    if (endPeriod) {
+      statements = statements.filter(statement => statement.period <= endPeriod);
     }
     return statements;
   }
@@ -334,13 +337,16 @@ export class MemStorage implements IStorage {
     return Array.from(this.balanceSheets.values()).filter(sheet => sheet.period === period);
   }
 
-  async getBalanceSheetsFiltered(topic?: string, period?: string): Promise<BalanceSheet[]> {
+  async getBalanceSheetsFiltered(topic?: string, startPeriod?: string, endPeriod?: string): Promise<BalanceSheet[]> {
     let sheets = Array.from(this.balanceSheets.values());
     if (topic) {
       sheets = sheets.filter(sheet => sheet.topic === topic);
     }
-    if (period) {
-      sheets = sheets.filter(sheet => sheet.period === period);
+    if (startPeriod) {
+      sheets = sheets.filter(sheet => sheet.period >= startPeriod);
+    }
+    if (endPeriod) {
+      sheets = sheets.filter(sheet => sheet.period <= endPeriod);
     }
     return sheets;
   }
@@ -384,13 +390,16 @@ export class MemStorage implements IStorage {
     return Array.from(this.cashFlowStatements.values()).filter(statement => statement.period === period);
   }
 
-  async getCashFlowStatementsFiltered(topic?: string, period?: string): Promise<CashFlowStatement[]> {
+  async getCashFlowStatementsFiltered(topic?: string, startPeriod?: string, endPeriod?: string): Promise<CashFlowStatement[]> {
     let statements = Array.from(this.cashFlowStatements.values());
     if (topic) {
       statements = statements.filter(statement => statement.topic === topic);
     }
-    if (period) {
-      statements = statements.filter(statement => statement.period === period);
+    if (startPeriod) {
+      statements = statements.filter(statement => statement.period >= startPeriod);
+    }
+    if (endPeriod) {
+      statements = statements.filter(statement => statement.period <= endPeriod);
     }
     return statements;
   }
