@@ -29,7 +29,10 @@ import {
   PieChart,
   Activity,
   ArrowUpRight,
-  ArrowDownRight
+  ArrowDownRight,
+  Download,
+  FileDown,
+  Printer
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
@@ -124,6 +127,111 @@ export default function FinancialReports() {
   const calculatePercentageChange = (current: number, previous: number): number => {
     if (previous === 0) return 0;
     return ((current - previous) / Math.abs(previous)) * 100;
+  };
+
+  // Export helper functions
+  const exportToCSV = (data: any[], fileName: string, reportType: string) => {
+    try {
+      let csvContent = '';
+      
+      if (reportType === 'pl') {
+        // Profit & Loss CSV format
+        csvContent = 'Topic,Period,Total Revenue,Cost of Goods Sold,Gross Profit,Operating Expenses,Operating Income,Other Income,Other Expenses,Net Income Before Tax,Tax Expense,Net Income\n';
+        data.forEach(item => {
+          csvContent += `"${item.topic}","${item.period}","${item.totalRevenue}","${item.costOfGoodsSold}","${item.grossProfit}","${item.operatingExpenses}","${item.operatingIncome}","${item.otherIncome}","${item.otherExpenses}","${item.netIncomeBeforeTax}","${item.taxExpense}","${item.netIncome}"\n`;
+        });
+      } else if (reportType === 'bs') {
+        // Balance Sheet CSV format
+        csvContent = 'Topic,Period,Current Assets,Cash,Accounts Receivable,Inventory,Non-Current Assets,Property Plant Equipment,Intangible Assets,Total Assets,Current Liabilities,Accounts Payable,Short Term Debt,Long Term Liabilities,Long Term Debt,Total Liabilities,Shareholders Equity,Retained Earnings\n';
+        data.forEach(item => {
+          csvContent += `"${item.topic}","${item.period}","${item.currentAssets}","${item.cash}","${item.accountsReceivable}","${item.inventory}","${item.nonCurrentAssets}","${item.propertyPlantEquipment}","${item.intangibleAssets}","${item.totalAssets}","${item.currentLiabilities}","${item.accountsPayable}","${item.shortTermDebt}","${item.longTermLiabilities}","${item.longTermDebt}","${item.totalLiabilities}","${item.shareholdersEquity}","${item.retainedEarnings}"\n`;
+        });
+      } else if (reportType === 'cf') {
+        // Cash Flow CSV format
+        csvContent = 'Topic,Period,Operating Cash Flow,Net Income,Depreciation,Change in Working Capital,Investing Cash Flow,Capital Expenditures,Acquisitions,Financing Cash Flow,Debt Issuance,Debt Repayment,Dividends Paid,Net Change in Cash,Beginning Cash Balance,Ending Cash Balance\n';
+        data.forEach(item => {
+          csvContent += `"${item.topic}","${item.period}","${item.operatingCashFlow}","${item.netIncome}","${item.depreciation}","${item.changeInWorkingCapital}","${item.investingCashFlow}","${item.capitalExpenditures}","${item.acquisitions}","${item.financingCashFlow}","${item.debtIssuance}","${item.debtRepayment}","${item.dividendsPaid}","${item.netChangeInCash}","${item.beginningCashBalance}","${item.endingCashBalance}"\n`;
+        });
+      }
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', fileName);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      toast({ description: `${fileName} exported successfully` });
+    } catch (error) {
+      console.error('Export error:', error);
+      toast({ description: 'Export failed. Please try again.', variant: 'destructive' });
+    }
+  };
+
+  const exportToPDF = (reportType: string) => {
+    try {
+      // Get the current tab content
+      const activeTabElement = document.querySelector(`[data-testid="tab-content-${reportType}"]`);
+      if (!activeTabElement) {
+        toast({ description: 'No data to export', variant: 'destructive' });
+        return;
+      }
+
+      // Create a new window for printing
+      const printWindow = window.open('', '_blank');
+      if (!printWindow) {
+        toast({ description: 'Popup blocked. Please allow popups and try again.', variant: 'destructive' });
+        return;
+      }
+
+      const reportTitle = reportType === 'pl' ? 'Profit & Loss Statement' : 
+                         reportType === 'bs' ? 'Balance Sheet' : 'Cash Flow Statement';
+
+      printWindow.document.write(`
+        <html>
+          <head>
+            <title>${reportTitle}</title>
+            <style>
+              body { font-family: Arial, sans-serif; margin: 20px; }
+              h1 { color: #333; text-align: center; }
+              table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+              th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+              th { background-color: #f2f2f2; font-weight: bold; }
+              .number { text-align: right; }
+              @media print {
+                body { margin: 0; }
+                .no-print { display: none; }
+              }
+            </style>
+          </head>
+          <body>
+            <h1>${reportTitle}</h1>
+            <div>${activeTabElement.innerHTML}</div>
+            <script>
+              window.onload = function() {
+                // Clean up the content for printing
+                const editButtons = document.querySelectorAll('button');
+                editButtons.forEach(btn => btn.style.display = 'none');
+                
+                // Auto print
+                window.print();
+                window.close();
+              };
+            </script>
+          </body>
+        </html>
+      `);
+      
+      printWindow.document.close();
+      
+      toast({ description: `${reportTitle} PDF export initiated` });
+    } catch (error) {
+      console.error('PDF export error:', error);
+      toast({ description: 'PDF export failed. Please try again.', variant: 'destructive' });
+    }
   };
 
   // Calculate key financial metrics
@@ -1551,13 +1659,47 @@ export default function FinancialReports() {
           {/* Enhanced Financial Reports Tabs */}
           <div className="bg-gradient-to-r from-background/50 to-muted/30 rounded-2xl p-6 backdrop-blur-sm border border-border/50">
             <div className="mb-6">
-              <h2 className="text-2xl font-bold text-foreground flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-primary/10">
-                  <FileText className="h-6 w-6 text-primary" />
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-2xl font-bold text-foreground flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-primary/10">
+                      <FileText className="h-6 w-6 text-primary" />
+                    </div>
+                    Financial Reports
+                  </h2>
+                  <p className="text-muted-foreground mt-2">Select the type of report you want to view</p>
                 </div>
-                Financial Reports
-              </h2>
-              <p className="text-muted-foreground mt-2">Select the type of report you want to view</p>
+                
+                {/* Export Buttons */}
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      const data = activeTab === 'pl' ? plStatements : 
+                                   activeTab === 'bs' ? balanceSheets : cashFlowStatements;
+                      const reportName = activeTab === 'pl' ? 'Profit_Loss_Statement' : 
+                                        activeTab === 'bs' ? 'Balance_Sheet' : 'Cash_Flow_Statement';
+                      exportToCSV(data, `${reportName}_${new Date().toISOString().split('T')[0]}.csv`, activeTab);
+                    }}
+                    className="gap-2 hover-elevate"
+                    data-testid="button-export-csv"
+                  >
+                    <Download className="h-4 w-4" />
+                    CSV
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => exportToPDF(activeTab)}
+                    className="gap-2 hover-elevate"
+                    data-testid="button-export-pdf"
+                  >
+                    <Printer className="h-4 w-4" />
+                    PDF
+                  </Button>
+                </div>
+              </div>
             </div>
             
             <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
