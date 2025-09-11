@@ -26,8 +26,166 @@ import {
 } from "lucide-react";
 import heroBackground from "@assets/generated_images/Gradient_mesh_hero_background_83768b02.png";
 
+// Define types for better type safety
+type Detail = {
+  label: string;
+  value: string;
+  trend: string;
+};
+
+type Topic = {
+  title: string;
+  icon: React.ReactNode;
+  summary: string;
+  details: Detail[];
+};
+
+const topics: Record<string, Topic> = {
+  performance: {
+    title: "Performance Overview",
+    icon: <TrendingUp className="w-5 h-5" />,
+    summary: "Company performance remains strong across all key metrics. Revenue growth of 15% YoY with improved operational efficiency.",
+    details: [
+      { label: "Revenue Growth", value: "+15% YoY", trend: "up" },
+      { label: "Profit Margin", value: "18.5%", trend: "up" },
+      { label: "Customer Satisfaction", value: "4.6/5", trend: "up" },
+      { label: "Employee Retention", value: "94%", trend: "stable" }
+    ]
+  },
+  financial: {
+    title: "Financial Health",
+    icon: <DollarSign className="w-5 h-5" />,
+    summary: "Strong financial position with healthy cash flow and controlled spending across all departments. Budget variance within acceptable range.",
+    details: [
+      { label: "Cash Flow", value: "+$2.1M", trend: "up" },
+      { label: "Budget Variance", value: "-2.3%", trend: "good" },
+      { label: "Operating Costs", value: "$8.2M", trend: "stable" },
+      { label: "ROI", value: "22.4%", trend: "up" }
+    ]
+  },
+  operations: {
+    title: "Operational Excellence",
+    icon: <Activity className="w-5 h-5" />,
+    summary: "Operational efficiency improved through automation and process optimization. Project delivery rate exceeds targets.",
+    details: [
+      { label: "Project Success Rate", value: "89%", trend: "up" },
+      { label: "Process Efficiency", value: "+12%", trend: "up" },
+      { label: "System Uptime", value: "99.8%", trend: "excellent" },
+      { label: "Response Time", value: "<2h", trend: "good" }
+    ]
+  },
+  growth: {
+    title: "Growth Trajectory",
+    icon: <BarChart3 className="w-5 h-5" />,
+    summary: "Sustained growth momentum with new customer acquisition and market expansion initiatives showing positive results.",
+    details: [
+      { label: "New Customers", value: "+284", trend: "up" },
+      { label: "Market Share", value: "12.8%", trend: "up" },
+      { label: "Product Adoption", value: "+28%", trend: "up" },
+      { label: "Churn Rate", value: "5.8%", trend: "down" }
+    ]
+  }
+};
+
+type TopicFocusContentProps = {
+  selectedTopic: string;
+  setSelectedTopic: (topic: string) => void;
+};
+
+const TopicFocusContent = ({ selectedTopic, setSelectedTopic }: TopicFocusContentProps) => {
+  const currentTopic = topics[selectedTopic];
+
+  return (
+    <div className="p-6">
+      <h1 className="text-2xl font-bold text-foreground mb-6" data-testid="topic-focus-title">
+        Topics in Focus
+      </h1>
+      
+      {/* Topic Navigation */}
+      <div className="space-y-2 mb-6">
+        {Object.entries(topics).map(([key, topic]) => (
+          <Button
+            key={key}
+            variant={selectedTopic === key ? "default" : "ghost"}
+            className="w-full justify-start"
+            onClick={() => setSelectedTopic(key)}
+            data-testid={`topic-${key}`}
+          >
+            {topic.icon}
+            <span className="ml-2">{topic.title}</span>
+          </Button>
+        ))}
+      </div>
+
+      <Separator className="my-6" />
+
+      {/* Selected Topic Details */}
+      <div className="space-y-4">
+        <div className="flex items-center gap-2 mb-4">
+          {currentTopic.icon}
+          <h2 className="text-lg font-semibold text-foreground" data-testid="current-topic-title">
+            {currentTopic.title}
+          </h2>
+        </div>
+        
+        <div className="bg-muted/50 rounded-lg p-4 mb-4">
+          <p className="text-sm text-muted-foreground leading-relaxed" data-testid="topic-summary">
+            {currentTopic.summary}
+          </p>
+        </div>
+
+        <div className="space-y-3">
+          <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+            Key Indicators
+          </h3>
+          {currentTopic.details.map((detail: Detail, index: number) => (
+            <div key={index} className="flex justify-between items-center py-2 border-b border-border/20 last:border-b-0" data-testid={`indicator-${index}`}>
+              <div className="text-sm font-medium text-foreground">{detail.label}</div>
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-semibold">{detail.value}</span>
+                {detail.trend === "up" && <TrendingUp className="w-3 h-3 text-green-600" />}
+                {detail.trend === "down" && <TrendingDown className="w-3 h-3 text-red-600" />}
+                {detail.trend === "stable" && <Activity className="w-3 h-3 text-blue-600" />}
+                {(detail.trend === "good" || detail.trend === "excellent") && <Target className="w-3 h-3 text-green-600" />}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <Separator className="my-6" />
+
+      {/* Quick Metrics Summary */}
+      <div>
+        <h3 className="text-sm font-semibold text-muted-foreground mb-3 uppercase tracking-wide" data-testid="quick-metrics-title">
+          Quick Metrics
+        </h3>
+        <div className="grid grid-cols-2 gap-3">
+          <div className="bg-card/50 rounded-lg p-3 text-center">
+            <div className="text-lg font-bold text-foreground" data-testid="metric-revenue">$2.8M</div>
+            <div className="text-xs text-muted-foreground">Monthly Revenue</div>
+          </div>
+          <div className="bg-card/50 rounded-lg p-3 text-center">
+            <div className="text-lg font-bold text-foreground" data-testid="metric-customers">284</div>
+            <div className="text-xs text-muted-foreground">New Customers</div>
+          </div>
+          <div className="bg-card/50 rounded-lg p-3 text-center">
+            <div className="text-lg font-bold text-foreground" data-testid="metric-success">89%</div>
+            <div className="text-xs text-muted-foreground">Success Rate</div>
+          </div>
+          <div className="bg-card/50 rounded-lg p-3 text-center">
+            <div className="text-lg font-bold text-foreground" data-testid="metric-satisfaction">4.6/5</div>
+            <div className="text-xs text-muted-foreground">Satisfaction</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export default function Dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [selectedTopic, setSelectedTopic] = useState("performance");
 
   // Mock internal business data for company overview
   const departmentData = [
@@ -249,117 +407,6 @@ export default function Dashboard() {
     );
   };
 
-  const SidebarContent = () => (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold text-foreground mb-6" data-testid="dashboard-title">
-        Company Dashboard
-      </h1>
-      
-      {/* Navigation Sections */}
-      <div className="space-y-6">
-        <div>
-          <h3 className="text-sm font-semibold text-muted-foreground mb-3 uppercase tracking-wide" data-testid="nav-departments">
-            Departments
-          </h3>
-          <div className="space-y-2">
-            <Button variant="ghost" className="w-full justify-start" data-testid="nav-sales">
-              <Target className="w-4 h-4 mr-2" />
-              Sales
-            </Button>
-            <Button variant="ghost" className="w-full justify-start" data-testid="nav-marketing">
-              <TrendingUp className="w-4 h-4 mr-2" />
-              Marketing
-            </Button>
-            <Button variant="ghost" className="w-full justify-start" data-testid="nav-engineering">
-              <Building2 className="w-4 h-4 mr-2" />
-              Engineering
-            </Button>
-          </div>
-        </div>
-
-        <div>
-          <h3 className="text-sm font-semibold text-muted-foreground mb-3 uppercase tracking-wide" data-testid="nav-analytics">
-            Analytics
-          </h3>
-          <div className="space-y-2">
-            <Button variant="ghost" className="w-full justify-start" data-testid="nav-performance">
-              <BarChart3 className="w-4 h-4 mr-2" />
-              Performance
-            </Button>
-            <Button variant="ghost" className="w-full justify-start" data-testid="nav-budget-analysis">
-              <PieChart className="w-4 h-4 mr-2" />
-              Budget Analysis
-            </Button>
-            <Button variant="ghost" className="w-full justify-start" data-testid="nav-project-tracking">
-              <Activity className="w-4 h-4 mr-2" />
-              Project Tracking
-            </Button>
-          </div>
-        </div>
-
-        <div>
-          <h3 className="text-sm font-semibold text-muted-foreground mb-3 uppercase tracking-wide" data-testid="nav-reports">
-            Reports
-          </h3>
-          <div className="space-y-2">
-            <Button variant="ghost" className="w-full justify-start" data-testid="nav-financial-reports">
-              <FileText className="w-4 h-4 mr-2" />
-              Financial Reports
-            </Button>
-            <Button variant="ghost" className="w-full justify-start" data-testid="nav-monthly-summary">
-              <Calendar className="w-4 h-4 mr-2" />
-              Monthly Summary
-            </Button>
-            <Button variant="ghost" className="w-full justify-start" data-testid="nav-team-reports">
-              <Users className="w-4 h-4 mr-2" />
-              Team Reports
-            </Button>
-          </div>
-        </div>
-
-        <div>
-          <h3 className="text-sm font-semibold text-muted-foreground mb-3 uppercase tracking-wide" data-testid="nav-tools">
-            Tools
-          </h3>
-          <div className="space-y-2">
-            <Button variant="ghost" className="w-full justify-start" data-testid="nav-budget-planner">
-              <DollarSign className="w-4 h-4 mr-2" />
-              Budget Planner
-            </Button>
-            <Button variant="ghost" className="w-full justify-start" data-testid="nav-team-management">
-              <Users className="w-4 h-4 mr-2" />
-              Team Management
-            </Button>
-          </div>
-        </div>
-      </div>
-
-      <Separator className="my-6" />
-
-      {/* Key Metrics */}
-      <div>
-        <h3 className="text-sm font-semibold text-muted-foreground mb-3 uppercase tracking-wide" data-testid="key-metrics-title">
-          Key Metrics
-        </h3>
-        <div className="space-y-3">
-          {keyMetrics.map((metric) => (
-            <div key={metric.id} className="flex justify-between items-center" data-testid={`metric-${metric.name.toLowerCase().replace(/\s+/g, '-')}`}>
-              <div className="text-sm">
-                <div className="font-medium">{metric.name}</div>
-                <div className="text-muted-foreground text-xs">{metric.period}</div>
-              </div>
-              <div className="text-right">
-                <div className="font-semibold text-sm">{metric.value}</div>
-                <div className={`text-xs ${metric.change.startsWith('+') ? 'text-green-600' : 'text-red-600'}`}>
-                  {metric.change}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
@@ -377,7 +424,7 @@ export default function Dashboard() {
         {/* Desktop Sidebar */}
         <div className="hidden lg:block w-80 bg-card/95 backdrop-blur-sm border-r border-border/20 flex-shrink-0">
           <ScrollArea className="h-screen">
-            <SidebarContent />
+            <TopicFocusContent selectedTopic={selectedTopic} setSelectedTopic={setSelectedTopic} />
           </ScrollArea>
         </div>
 
@@ -395,7 +442,7 @@ export default function Dashboard() {
               </SheetTrigger>
               <SheetContent side="left" className="w-80 p-0 bg-card/95 backdrop-blur-sm">
                 <ScrollArea className="h-full">
-                  <SidebarContent />
+                  <TopicFocusContent selectedTopic={selectedTopic} setSelectedTopic={setSelectedTopic} />
                 </ScrollArea>
               </SheetContent>
             </Sheet>
