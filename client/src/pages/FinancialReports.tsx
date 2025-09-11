@@ -532,8 +532,8 @@ export default function FinancialReports() {
 
     if (!isEditable) {
       return (
-        <TableCell className={`text-right ${className}`} data-testid={`cell-readonly-${field}`}>
-          {formatNumber(value)}
+        <TableCell className={`text-right font-medium text-base py-4 px-6 ${className}`} data-testid={`cell-readonly-${field}`}>
+          <span className="text-foreground">{formatNumber(value)}</span>
         </TableCell>
       );
     }
@@ -665,10 +665,10 @@ export default function FinancialReports() {
                 <div className="overflow-x-auto">
                   <Table className="min-w-full border-separate border-spacing-0 rounded-xl overflow-hidden">
                     <TableHeader>
-                      <TableRow className="bg-muted/50 border-b border-border/50">
-                        <TableHead className="sticky left-0 bg-muted/50 z-10 min-w-[200px] border-r border-border/50 font-bold text-foreground p-4">Line Item</TableHead>
+                      <TableRow className="bg-muted/70 border-b-2 border-border">
+                        <TableHead className="sticky left-0 bg-muted/70 z-10 min-w-[200px] border-r border-border/50 font-bold text-lg text-foreground py-5 px-6">Line Item</TableHead>
                         {statements.map((statement) => (
-                          <TableHead key={statement.period} className="text-right min-w-[120px] font-semibold text-foreground p-4" data-testid={`header-${statement.period}`}>
+                          <TableHead key={statement.period} className="text-right min-w-[120px] font-bold text-lg text-foreground py-5 px-6" data-testid={`header-${statement.period}`}>
                             {statement.period}
                           </TableHead>
                         ))}
@@ -869,10 +869,10 @@ export default function FinancialReports() {
               <div className="overflow-x-auto">
                 <Table className="min-w-full border-separate border-spacing-0 rounded-xl overflow-hidden">
                   <TableHeader>
-                    <TableRow className="bg-muted/50 border-b border-border/50">
-                      <TableHead className="sticky left-0 bg-muted/50 z-10 min-w-[200px] border-r border-border/50 font-bold text-foreground p-4">Line Item</TableHead>
+                    <TableRow className="bg-muted/70 border-b-2 border-border">
+                      <TableHead className="sticky left-0 bg-muted/70 z-10 min-w-[200px] border-r border-border/50 font-bold text-lg text-foreground py-5 px-6">Line Item</TableHead>
                       {sheets.map((sheet) => (
-                        <TableHead key={sheet.period} className="text-right min-w-[120px] font-semibold text-foreground p-4" data-testid={`header-${sheet.period}`}>
+                        <TableHead key={sheet.period} className="text-right min-w-[120px] font-bold text-lg text-foreground py-5 px-6" data-testid={`header-${sheet.period}`}>
                           {sheet.period}
                         </TableHead>
                       ))}
@@ -880,8 +880,8 @@ export default function FinancialReports() {
                   </TableHeader>
                   <TableBody>
                     {/* Assets Section */}
-                    <TableRow className="bg-muted/30 dark:bg-muted/20">
-                      <TableCell className="font-bold sticky left-0 bg-muted/50 z-10 border-r border-border/50">Current Assets</TableCell>
+                    <TableRow className="bg-muted/40 dark:bg-muted/30 border-t border-border/30">
+                      <TableCell className="font-bold text-base sticky left-0 bg-muted/60 z-10 border-r border-border/50 py-4 px-6 text-foreground">Current Assets</TableCell>
                       {sheets.map((sheet) => (
                         <EditableCell
                           key={`${sheet.id}-currentAssets`}
@@ -973,8 +973,8 @@ export default function FinancialReports() {
                         />
                       ))}
                     </TableRow>
-                    <TableRow className="border-t-2 bg-muted/30 dark:bg-muted/20">
-                      <TableCell className="font-bold sticky left-0 bg-muted/50 z-10 border-r border-border/50">Total Assets</TableCell>
+                    <TableRow className="border-t-2 bg-muted/50 dark:bg-muted/40">
+                      <TableCell className="font-bold text-lg sticky left-0 bg-muted/70 z-10 border-r border-border/50 py-4 px-6 text-foreground">Total Assets</TableCell>
                       {sheets.map((sheet) => (
                         <EditableCell
                           key={`${sheet.id}-totalAssets`}
@@ -1158,10 +1158,10 @@ export default function FinancialReports() {
               <div className="overflow-x-auto">
                 <Table className="min-w-full border-separate border-spacing-0 rounded-xl overflow-hidden">
                   <TableHeader>
-                    <TableRow className="bg-muted/50 border-b border-border/50">
-                      <TableHead className="sticky left-0 bg-muted/50 z-10 min-w-[200px] border-r border-border/50 font-bold text-foreground p-4">Line Item</TableHead>
+                    <TableRow className="bg-muted/70 border-b-2 border-border">
+                      <TableHead className="sticky left-0 bg-muted/70 z-10 min-w-[200px] border-r border-border/50 font-bold text-lg text-foreground py-5 px-6">Line Item</TableHead>
                       {statements.map((statement) => (
-                        <TableHead key={statement.period} className="text-right min-w-[120px] font-semibold text-foreground p-4" data-testid={`header-${statement.period}`}>
+                        <TableHead key={statement.period} className="text-right min-w-[120px] font-bold text-lg text-foreground py-5 px-6" data-testid={`header-${statement.period}`}>
                           {statement.period}
                         </TableHead>
                       ))}
@@ -1381,11 +1381,11 @@ export default function FinancialReports() {
         <section className="py-24">
         <div className="container mx-auto px-6">
           <div className="text-center space-y-6">
-            <h1 className="text-4xl md:text-5xl font-black text-foreground mb-4" data-testid="page-title">
+            <h1 className="text-5xl md:text-6xl font-black text-foreground mb-6 leading-tight" data-testid="page-title">
               Financial Reports
               <span className="bg-gradient-to-r from-chart-1 to-chart-2 bg-clip-text text-transparent"> Suite</span>
             </h1>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed" data-testid="page-description">
+            <p className="text-xl md:text-2xl text-foreground/80 max-w-4xl mx-auto leading-relaxed font-medium" data-testid="page-description">
               View and edit financial reports including Profit & Loss statements, Balance Sheets, and Cash Flow statements with real-time intelligent analysis
             </p>
             <div className="flex justify-center gap-4 text-sm text-muted-foreground">
@@ -1414,15 +1414,15 @@ export default function FinancialReports() {
                   <Filter className="h-5 w-5 text-primary" />
                 </div>
                 <div>
-                  <CardTitle className="text-lg font-semibold">Data Filters</CardTitle>
-                  <p className="text-sm text-muted-foreground">Select the data you want to view</p>
+                  <CardTitle className="text-xl font-bold text-foreground">Data Filters</CardTitle>
+                  <p className="text-base text-foreground/70 mt-1">Select the data you want to view</p>
                 </div>
               </div>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-foreground">Topic</label>
+                  <label className="text-base font-semibold text-foreground">Topic</label>
                   <Select value={selectedTopic} onValueChange={setSelectedTopic}>
                     <SelectTrigger className="w-full bg-background/80 border-muted focus:border-primary transition-colors" data-testid="select-topic">
                       <SelectValue placeholder="Select topic" />
