@@ -297,6 +297,9 @@ export class MemStorage implements IStorage {
     const id = randomUUID();
     const statement: ProfitLossStatement = {
       ...insertStatement,
+      otherIncome: insertStatement.otherIncome ?? "0",
+      otherExpenses: insertStatement.otherExpenses ?? "0",
+      isEditable: insertStatement.isEditable ?? "true",
       id,
       createdAt: new Date(),
       updatedAt: new Date()
@@ -346,6 +349,7 @@ export class MemStorage implements IStorage {
     const id = randomUUID();
     const sheet: BalanceSheet = {
       ...insertSheet,
+      isEditable: insertSheet.isEditable ?? "true",
       id,
       createdAt: new Date(),
       updatedAt: new Date()
@@ -395,6 +399,11 @@ export class MemStorage implements IStorage {
     const id = randomUUID();
     const statement: CashFlowStatement = {
       ...insertStatement,
+      acquisitions: insertStatement.acquisitions ?? "0",
+      debtIssuance: insertStatement.debtIssuance ?? "0",
+      debtRepayment: insertStatement.debtRepayment ?? "0",
+      dividendsPaid: insertStatement.dividendsPaid ?? "0",
+      isEditable: insertStatement.isEditable ?? "true",
       id,
       createdAt: new Date(),
       updatedAt: new Date()
