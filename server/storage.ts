@@ -8,7 +8,13 @@ import {
   type CompanyMetrics,
   type InsertCompanyMetrics,
   type EconomicIndicators,
-  type InsertEconomicIndicators
+  type InsertEconomicIndicators,
+  type ProfitLossStatement,
+  type InsertProfitLossStatement,
+  type BalanceSheet,
+  type InsertBalanceSheet,
+  type CashFlowStatement,
+  type InsertCashFlowStatement
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 
@@ -39,6 +45,31 @@ export interface IStorage {
   // Economic indicators methods
   getAllEconomicIndicators(): Promise<EconomicIndicators[]>;
   createEconomicIndicator(indicator: InsertEconomicIndicators): Promise<EconomicIndicators>;
+  
+  // Financial Reports methods
+  // Profit & Loss
+  getAllProfitLossStatements(): Promise<ProfitLossStatement[]>;
+  getProfitLossStatementsByTopic(topic: string): Promise<ProfitLossStatement[]>;
+  getProfitLossStatementsByPeriod(period: string): Promise<ProfitLossStatement[]>;
+  getProfitLossStatementsFiltered(topic?: string, period?: string): Promise<ProfitLossStatement[]>;
+  createProfitLossStatement(statement: InsertProfitLossStatement): Promise<ProfitLossStatement>;
+  updateProfitLossStatement(id: string, statement: Partial<InsertProfitLossStatement>): Promise<ProfitLossStatement | undefined>;
+  
+  // Balance Sheet
+  getAllBalanceSheets(): Promise<BalanceSheet[]>;
+  getBalanceSheetsByTopic(topic: string): Promise<BalanceSheet[]>;
+  getBalanceSheetsByPeriod(period: string): Promise<BalanceSheet[]>;
+  getBalanceSheetsFiltered(topic?: string, period?: string): Promise<BalanceSheet[]>;
+  createBalanceSheet(sheet: InsertBalanceSheet): Promise<BalanceSheet>;
+  updateBalanceSheet(id: string, sheet: Partial<InsertBalanceSheet>): Promise<BalanceSheet | undefined>;
+  
+  // Cash Flow
+  getAllCashFlowStatements(): Promise<CashFlowStatement[]>;
+  getCashFlowStatementsByTopic(topic: string): Promise<CashFlowStatement[]>;
+  getCashFlowStatementsByPeriod(period: string): Promise<CashFlowStatement[]>;
+  getCashFlowStatementsFiltered(topic?: string, period?: string): Promise<CashFlowStatement[]>;
+  createCashFlowStatement(statement: InsertCashFlowStatement): Promise<CashFlowStatement>;
+  updateCashFlowStatement(id: string, statement: Partial<InsertCashFlowStatement>): Promise<CashFlowStatement | undefined>;
 }
 
 export class MemStorage implements IStorage {
@@ -47,6 +78,9 @@ export class MemStorage implements IStorage {
   private businessNews: Map<string, BusinessNews>;
   private companyMetrics: Map<string, CompanyMetrics>;
   private economicIndicators: Map<string, EconomicIndicators>;
+  private profitLossStatements: Map<string, ProfitLossStatement>;
+  private balanceSheets: Map<string, BalanceSheet>;
+  private cashFlowStatements: Map<string, CashFlowStatement>;
 
   constructor() {
     this.users = new Map();
@@ -54,6 +88,9 @@ export class MemStorage implements IStorage {
     this.businessNews = new Map();
     this.companyMetrics = new Map();
     this.economicIndicators = new Map();
+    this.profitLossStatements = new Map();
+    this.balanceSheets = new Map();
+    this.cashFlowStatements = new Map();
     
     // Initialize with sample data synchronously
     this.initializeSampleDataSync();
@@ -226,6 +263,306 @@ export class MemStorage implements IStorage {
         updatedAt: new Date()
       };
       this.economicIndicators.set(id, indicatorEntry);
+    }
+
+    // Initialize sample financial reports data
+    this.initializeFinancialReportsData();
+  }
+
+  // Profit & Loss Statement methods
+  async getAllProfitLossStatements(): Promise<ProfitLossStatement[]> {
+    return Array.from(this.profitLossStatements.values());
+  }
+
+  async getProfitLossStatementsByTopic(topic: string): Promise<ProfitLossStatement[]> {
+    return Array.from(this.profitLossStatements.values()).filter(statement => statement.topic === topic);
+  }
+
+  async getProfitLossStatementsByPeriod(period: string): Promise<ProfitLossStatement[]> {
+    return Array.from(this.profitLossStatements.values()).filter(statement => statement.period === period);
+  }
+
+  async getProfitLossStatementsFiltered(topic?: string, period?: string): Promise<ProfitLossStatement[]> {
+    let statements = Array.from(this.profitLossStatements.values());
+    if (topic) {
+      statements = statements.filter(statement => statement.topic === topic);
+    }
+    if (period) {
+      statements = statements.filter(statement => statement.period === period);
+    }
+    return statements;
+  }
+
+  async createProfitLossStatement(insertStatement: InsertProfitLossStatement): Promise<ProfitLossStatement> {
+    const id = randomUUID();
+    const statement: ProfitLossStatement = {
+      ...insertStatement,
+      id,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    this.profitLossStatements.set(id, statement);
+    return statement;
+  }
+
+  async updateProfitLossStatement(id: string, updates: Partial<InsertProfitLossStatement>): Promise<ProfitLossStatement | undefined> {
+    const statement = this.profitLossStatements.get(id);
+    if (!statement) return undefined;
+    
+    const updatedStatement: ProfitLossStatement = {
+      ...statement,
+      ...updates,
+      updatedAt: new Date()
+    };
+    this.profitLossStatements.set(id, updatedStatement);
+    return updatedStatement;
+  }
+
+  // Balance Sheet methods
+  async getAllBalanceSheets(): Promise<BalanceSheet[]> {
+    return Array.from(this.balanceSheets.values());
+  }
+
+  async getBalanceSheetsByTopic(topic: string): Promise<BalanceSheet[]> {
+    return Array.from(this.balanceSheets.values()).filter(sheet => sheet.topic === topic);
+  }
+
+  async getBalanceSheetsByPeriod(period: string): Promise<BalanceSheet[]> {
+    return Array.from(this.balanceSheets.values()).filter(sheet => sheet.period === period);
+  }
+
+  async getBalanceSheetsFiltered(topic?: string, period?: string): Promise<BalanceSheet[]> {
+    let sheets = Array.from(this.balanceSheets.values());
+    if (topic) {
+      sheets = sheets.filter(sheet => sheet.topic === topic);
+    }
+    if (period) {
+      sheets = sheets.filter(sheet => sheet.period === period);
+    }
+    return sheets;
+  }
+
+  async createBalanceSheet(insertSheet: InsertBalanceSheet): Promise<BalanceSheet> {
+    const id = randomUUID();
+    const sheet: BalanceSheet = {
+      ...insertSheet,
+      id,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    this.balanceSheets.set(id, sheet);
+    return sheet;
+  }
+
+  async updateBalanceSheet(id: string, updates: Partial<InsertBalanceSheet>): Promise<BalanceSheet | undefined> {
+    const sheet = this.balanceSheets.get(id);
+    if (!sheet) return undefined;
+    
+    const updatedSheet: BalanceSheet = {
+      ...sheet,
+      ...updates,
+      updatedAt: new Date()
+    };
+    this.balanceSheets.set(id, updatedSheet);
+    return updatedSheet;
+  }
+
+  // Cash Flow Statement methods
+  async getAllCashFlowStatements(): Promise<CashFlowStatement[]> {
+    return Array.from(this.cashFlowStatements.values());
+  }
+
+  async getCashFlowStatementsByTopic(topic: string): Promise<CashFlowStatement[]> {
+    return Array.from(this.cashFlowStatements.values()).filter(statement => statement.topic === topic);
+  }
+
+  async getCashFlowStatementsByPeriod(period: string): Promise<CashFlowStatement[]> {
+    return Array.from(this.cashFlowStatements.values()).filter(statement => statement.period === period);
+  }
+
+  async getCashFlowStatementsFiltered(topic?: string, period?: string): Promise<CashFlowStatement[]> {
+    let statements = Array.from(this.cashFlowStatements.values());
+    if (topic) {
+      statements = statements.filter(statement => statement.topic === topic);
+    }
+    if (period) {
+      statements = statements.filter(statement => statement.period === period);
+    }
+    return statements;
+  }
+
+  async createCashFlowStatement(insertStatement: InsertCashFlowStatement): Promise<CashFlowStatement> {
+    const id = randomUUID();
+    const statement: CashFlowStatement = {
+      ...insertStatement,
+      id,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    this.cashFlowStatements.set(id, statement);
+    return statement;
+  }
+
+  async updateCashFlowStatement(id: string, updates: Partial<InsertCashFlowStatement>): Promise<CashFlowStatement | undefined> {
+    const statement = this.cashFlowStatements.get(id);
+    if (!statement) return undefined;
+    
+    const updatedStatement: CashFlowStatement = {
+      ...statement,
+      ...updates,
+      updatedAt: new Date()
+    };
+    this.cashFlowStatements.set(id, updatedStatement);
+    return updatedStatement;
+  }
+
+  private initializeFinancialReportsData() {
+    // Sample P&L data
+    const samplePLData = [
+      {
+        topic: "บริษัท ABC จำกัด",
+        period: "2024-01",
+        totalRevenue: "5000000.00",
+        costOfGoodsSold: "3000000.00",
+        grossProfit: "2000000.00",
+        operatingExpenses: "1200000.00",
+        operatingIncome: "800000.00",
+        otherIncome: "50000.00",
+        otherExpenses: "20000.00",
+        netIncomeBeforeTax: "830000.00",
+        taxExpense: "166000.00",
+        netIncome: "664000.00",
+        isEditable: JSON.stringify({
+          totalRevenue: true,
+          costOfGoodsSold: true,
+          operatingExpenses: true,
+          grossProfit: false,
+          operatingIncome: false,
+          netIncomeBeforeTax: false,
+          netIncome: false
+        })
+      },
+      {
+        topic: "บริษัท ABC จำกัด",
+        period: "2024-02",
+        totalRevenue: "5200000.00",
+        costOfGoodsSold: "3100000.00",
+        grossProfit: "2100000.00",
+        operatingExpenses: "1250000.00",
+        operatingIncome: "850000.00",
+        otherIncome: "30000.00",
+        otherExpenses: "15000.00",
+        netIncomeBeforeTax: "865000.00",
+        taxExpense: "173000.00",
+        netIncome: "692000.00",
+        isEditable: JSON.stringify({
+          totalRevenue: true,
+          costOfGoodsSold: true,
+          operatingExpenses: true,
+          grossProfit: false,
+          operatingIncome: false,
+          netIncomeBeforeTax: false,
+          netIncome: false
+        })
+      }
+    ];
+
+    for (const data of samplePLData) {
+      const id = randomUUID();
+      const statement: ProfitLossStatement = {
+        ...data,
+        id,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+      this.profitLossStatements.set(id, statement);
+    }
+
+    // Sample Balance Sheet data
+    const sampleBSData = [
+      {
+        topic: "บริษัท ABC จำกัด",
+        period: "2024-01",
+        currentAssets: "8000000.00",
+        cash: "2000000.00",
+        accountsReceivable: "3000000.00",
+        inventory: "3000000.00",
+        nonCurrentAssets: "15000000.00",
+        propertyPlantEquipment: "12000000.00",
+        intangibleAssets: "3000000.00",
+        totalAssets: "23000000.00",
+        currentLiabilities: "4000000.00",
+        accountsPayable: "2000000.00",
+        shortTermDebt: "2000000.00",
+        longTermLiabilities: "8000000.00",
+        longTermDebt: "8000000.00",
+        totalLiabilities: "12000000.00",
+        shareholdersEquity: "11000000.00",
+        retainedEarnings: "6000000.00",
+        isEditable: JSON.stringify({
+          cash: true,
+          accountsReceivable: true,
+          inventory: true,
+          accountsPayable: true,
+          shortTermDebt: true,
+          currentAssets: false,
+          totalAssets: false,
+          totalLiabilities: false
+        })
+      }
+    ];
+
+    for (const data of sampleBSData) {
+      const id = randomUUID();
+      const sheet: BalanceSheet = {
+        ...data,
+        id,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+      this.balanceSheets.set(id, sheet);
+    }
+
+    // Sample Cash Flow data
+    const sampleCFData = [
+      {
+        topic: "บริษัท ABC จำกัด",
+        period: "2024-01",
+        operatingCashFlow: "900000.00",
+        netIncome: "664000.00",
+        depreciation: "300000.00",
+        changeInWorkingCapital: "-64000.00",
+        investingCashFlow: "-500000.00",
+        capitalExpenditures: "-500000.00",
+        acquisitions: "0.00",
+        financingCashFlow: "-200000.00",
+        debtIssuance: "0.00",
+        debtRepayment: "-100000.00",
+        dividendsPaid: "-100000.00",
+        netChangeInCash: "200000.00",
+        beginningCashBalance: "1800000.00",
+        endingCashBalance: "2000000.00",
+        isEditable: JSON.stringify({
+          netIncome: false,
+          depreciation: true,
+          capitalExpenditures: true,
+          debtRepayment: true,
+          dividendsPaid: true,
+          operatingCashFlow: false,
+          netChangeInCash: false
+        })
+      }
+    ];
+
+    for (const data of sampleCFData) {
+      const id = randomUUID();
+      const statement: CashFlowStatement = {
+        ...data,
+        id,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+      this.cashFlowStatements.set(id, statement);
     }
   }
 }
