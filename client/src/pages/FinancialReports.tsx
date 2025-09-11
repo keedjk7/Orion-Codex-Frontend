@@ -1238,22 +1238,48 @@ export default function FinancialReports() {
             </CardContent>
           </Card>
 
-          {/* Financial Reports Tabs */}
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-            <TabsList className="grid w-full grid-cols-3" data-testid="tabs-list">
-              <TabsTrigger value="pl" className="flex items-center gap-2" data-testid="tab-pl">
-                <Calculator className="h-4 w-4" />
-                งบกำไรขาดทุน
-              </TabsTrigger>
-              <TabsTrigger value="bs" className="flex items-center gap-2" data-testid="tab-bs">
-                <BarChart3 className="h-4 w-4" />
-                งบดุล
-              </TabsTrigger>
-              <TabsTrigger value="cf" className="flex items-center gap-2" data-testid="tab-cf">
-                <TrendingUp className="h-4 w-4" />
-                งบกระแสเงินสด
-              </TabsTrigger>
-            </TabsList>
+          {/* Enhanced Financial Reports Tabs */}
+          <div className="bg-gradient-to-r from-background/50 to-muted/30 rounded-2xl p-6 backdrop-blur-sm border border-border/50">
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-foreground flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-primary/10">
+                  <FileText className="h-6 w-6 text-primary" />
+                </div>
+                รายงานการเงิน
+              </h2>
+              <p className="text-muted-foreground mt-2">เลือกประเภทรายงานที่ต้องการดู</p>
+            </div>
+            
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
+              <TabsList className="grid w-full grid-cols-3 p-1 bg-muted/50 backdrop-blur-sm rounded-xl border border-border/30 shadow-lg" data-testid="tabs-list">
+                <TabsTrigger 
+                  value="pl" 
+                  className="flex items-center gap-3 px-6 py-4 text-sm font-medium rounded-lg transition-all duration-300 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg hover:bg-muted-foreground/10" 
+                  data-testid="tab-pl"
+                >
+                  <Calculator className="h-5 w-5" />
+                  <span className="hidden sm:inline">งบกำไรขาดทุน</span>
+                  <span className="sm:hidden">P&L</span>
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="bs" 
+                  className="flex items-center gap-3 px-6 py-4 text-sm font-medium rounded-lg transition-all duration-300 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg hover:bg-muted-foreground/10" 
+                  data-testid="tab-bs"
+                >
+                  <BarChart3 className="h-5 w-5" />
+                  <span className="hidden sm:inline">งบดุล</span>
+                  <span className="sm:hidden">BS</span>
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="cf" 
+                  className="flex items-center gap-3 px-6 py-4 text-sm font-medium rounded-lg transition-all duration-300 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg hover:bg-muted-foreground/10" 
+                  data-testid="tab-cf"
+                >
+                  <TrendingUp className="h-5 w-5" />
+                  <span className="hidden sm:inline">งบกระแสเงินสด</span>
+                  <span className="sm:hidden">CF</span>
+                </TabsTrigger>
+              </TabsList>
 
             <TabsContent value="pl" data-testid="tab-content-pl">
               <ProfitLossTable />
@@ -1267,6 +1293,7 @@ export default function FinancialReports() {
               <CashFlowTable />
             </TabsContent>
           </Tabs>
+        </div>
         </div>
       </main>
     </div>
