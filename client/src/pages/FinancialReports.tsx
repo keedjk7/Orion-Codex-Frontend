@@ -24,7 +24,12 @@ import {
   Calculator,
   TrendingUp,
   BarChart3,
-  AlertCircle
+  AlertCircle,
+  DollarSign,
+  PieChart,
+  Activity,
+  ArrowUpRight,
+  ArrowDownRight
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
@@ -106,6 +111,104 @@ export default function FinancialReports() {
       // Standard string comparison works for YYYY-MM format
       return a.localeCompare(b);
     }).reverse();
+  }, [plStatements, balanceSheets, cashFlowStatements]);
+
+  // Helper function for safe number parsing
+  const safeParseFloat = (value: string | undefined): number => {
+    if (!value) return 0;
+    const parsed = parseFloat(value);
+    return isNaN(parsed) ? 0 : parsed;
+  };
+
+  // Helper function for percentage change calculation
+  const calculatePercentageChange = (current: number, previous: number): number => {
+    if (previous === 0) return 0;
+    return ((current - previous) / Math.abs(previous)) * 100;
+  };
+
+  // Calculate key financial metrics
+  const financialMetrics = useMemo(() => {
+    // Get latest periods for each statement type
+    const plPeriods = plStatements.map(pl => pl.period).sort().reverse();
+    const bsPeriods = balanceSheets.map(bs => bs.period).sort().reverse();
+    const cfPeriods = cashFlowStatements.map(cf => cf.period).sort().reverse();
+    
+    const latestPLPeriod = plPeriods[0] || '';
+    const previousPLPeriod = plPeriods[1] || '';
+    const latestBSPeriod = bsPeriods[0] || '';
+    const previousBSPeriod = bsPeriods[1] || '';
+    const latestCFPeriod = cfPeriods[0] || '';
+    const previousCFPeriod = cfPeriods[1] || '';
+    
+    // P&L Metrics
+    const latestPL = plStatements.find(pl => pl.period === latestPLPeriod);
+    const previousPL = plStatements.find(pl => pl.period === previousPLPeriod);
+    
+    const currentRevenue = latestPL ? safeParseFloat(latestPL.totalRevenue) : 0;
+    const currentExpenses = latestPL ? 
+      safeParseFloat(latestPL.costOfGoodsSold) + 
+      safeParseFloat(latestPL.operatingExpenses) + 
+      safeParseFloat(latestPL.otherExpenses) + 
+      safeParseFloat(latestPL.taxExpense) : 0;
+    const currentNetIncome = latestPL ? safeParseFloat(latestPL.netIncome) : 0;
+    
+    const previousRevenue = previousPL ? safeParseFloat(previousPL.totalRevenue) : 0;
+    const previousExpenses = previousPL ? 
+      safeParseFloat(previousPL.costOfGoodsSold) + 
+      safeParseFloat(previousPL.operatingExpenses) + 
+      safeParseFloat(previousPL.otherExpenses) + 
+      safeParseFloat(previousPL.taxExpense) : 0;
+    const previousNetIncome = previousPL ? safeParseFloat(previousPL.netIncome) : 0;
+    
+    // Balance Sheet Metrics
+    const latestBS = balanceSheets.find(bs => bs.period === latestBSPeriod);
+    const previousBS = balanceSheets.find(bs => bs.period === previousBSPeriod);
+    
+    const currentTotalAssets = latestBS ? safeParseFloat(latestBS.totalAssets) : 0;
+    const currentCurrentAssets = latestBS ? safeParseFloat(latestBS.currentAssets) : 0;
+    const currentCurrentLiabilities = latestBS ? safeParseFloat(latestBS.currentLiabilities) : 0;
+    const workingCapital = currentCurrentAssets - currentCurrentLiabilities;
+    
+    const previousTotalAssets = previousBS ? safeParseFloat(previousBS.totalAssets) : 0;
+    const previousCurrentAssets = previousBS ? safeParseFloat(previousBS.currentAssets) : 0;
+    const previousCurrentLiabilities = previousBS ? safeParseFloat(previousBS.currentLiabilities) : 0;
+    const previousWorkingCapital = previousCurrentAssets - previousCurrentLiabilities;
+    
+    // Cash Flow Metrics
+    const latestCF = cashFlowStatements.find(cf => cf.period === latestCFPeriod);
+    const previousCF = cashFlowStatements.find(cf => cf.period === previousCFPeriod);
+    
+    const operatingCashFlow = latestCF ? safeParseFloat(latestCF.operatingCashFlow) : 0;
+    const previousOperatingCashFlow = previousCF ? safeParseFloat(previousCF.operatingCashFlow) : 0;
+    
+    // Calculate percentage changes
+    const revenueChange = calculatePercentageChange(currentRevenue, previousRevenue);
+    const expenseChange = calculatePercentageChange(currentExpenses, previousExpenses);
+    const netIncomeChange = calculatePercentageChange(currentNetIncome, previousNetIncome);
+    const assetsChange = calculatePercentageChange(currentTotalAssets, previousTotalAssets);
+    const workingCapitalChange = calculatePercentageChange(workingCapital, previousWorkingCapital);
+    const operatingCashFlowChange = calculatePercentageChange(operatingCashFlow, previousOperatingCashFlow);
+    
+    return {
+      currentRevenue,
+      currentExpenses,
+      currentNetIncome,
+      currentTotalAssets,
+      workingCapital,
+      operatingCashFlow,
+      revenueChange,
+      expenseChange,
+      netIncomeChange,
+      assetsChange,
+      workingCapitalChange,
+      operatingCashFlowChange,
+      latestPLPeriod,
+      latestBSPeriod,
+      latestCFPeriod,
+      hasPreviousPL: !!previousPL,
+      hasPreviousBS: !!previousBS,
+      hasPreviousCF: !!previousCF
+    };
   }, [plStatements, balanceSheets, cashFlowStatements]);
 
   // Date range validation
@@ -1285,6 +1388,165 @@ export default function FinancialReports() {
               </div>
             </CardContent>
           </Card>
+
+          {/* Financial Metrics Dashboard */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6 mb-8">
+            <Card className="bg-card/95 backdrop-blur-sm border border-border/50 shadow-lg hover-elevate transition-all duration-300" data-testid="metric-revenue">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-muted-foreground">Total Revenue</p>
+                    <p className="text-2xl font-bold text-foreground">${formatNumber(financialMetrics.currentRevenue)}</p>
+                    {financialMetrics.hasPreviousPL && (
+                      <div className="flex items-center mt-1">
+                        {financialMetrics.revenueChange >= 0 ? (
+                          <ArrowUpRight className="h-4 w-4 text-green-600" />
+                        ) : (
+                          <ArrowDownRight className="h-4 w-4 text-red-600" />
+                        )}
+                        <span className={`text-sm ${financialMetrics.revenueChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                          {Math.abs(financialMetrics.revenueChange).toFixed(1)}%
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="p-3 rounded-full bg-green-100 dark:bg-green-900/20">
+                    <DollarSign className="h-6 w-6 text-green-600" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-card/95 backdrop-blur-sm border border-border/50 shadow-lg hover-elevate transition-all duration-300" data-testid="metric-expenses">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-muted-foreground">Total Expenses</p>
+                    <p className="text-2xl font-bold text-foreground">${formatNumber(financialMetrics.currentExpenses)}</p>
+                    {financialMetrics.hasPreviousPL && (
+                      <div className="flex items-center mt-1">
+                        {financialMetrics.expenseChange <= 0 ? (
+                          <ArrowDownRight className="h-4 w-4 text-green-600" />
+                        ) : (
+                          <ArrowUpRight className="h-4 w-4 text-red-600" />
+                        )}
+                        <span className={`text-sm ${financialMetrics.expenseChange <= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                          {Math.abs(financialMetrics.expenseChange).toFixed(1)}%
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="p-3 rounded-full bg-red-100 dark:bg-red-900/20">
+                    <TrendingUp className="h-6 w-6 text-red-600" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-card/95 backdrop-blur-sm border border-border/50 shadow-lg hover-elevate transition-all duration-300" data-testid="metric-net-income">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-muted-foreground">Net Income</p>
+                    <p className="text-2xl font-bold text-foreground">${formatNumber(financialMetrics.currentNetIncome)}</p>
+                    {financialMetrics.hasPreviousPL && (
+                      <div className="flex items-center mt-1">
+                        {financialMetrics.netIncomeChange >= 0 ? (
+                          <ArrowUpRight className="h-4 w-4 text-green-600" />
+                        ) : (
+                          <ArrowDownRight className="h-4 w-4 text-red-600" />
+                        )}
+                        <span className={`text-sm ${financialMetrics.netIncomeChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                          {Math.abs(financialMetrics.netIncomeChange).toFixed(1)}%
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="p-3 rounded-full bg-blue-100 dark:bg-blue-900/20">
+                    <Calculator className="h-6 w-6 text-blue-600" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-card/95 backdrop-blur-sm border border-border/50 shadow-lg hover-elevate transition-all duration-300" data-testid="metric-assets">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-muted-foreground">Total Assets</p>
+                    <p className="text-2xl font-bold text-foreground">${formatNumber(financialMetrics.currentTotalAssets)}</p>
+                    {financialMetrics.hasPreviousBS && (
+                      <div className="flex items-center mt-1">
+                        {financialMetrics.assetsChange >= 0 ? (
+                          <ArrowUpRight className="h-4 w-4 text-green-600" />
+                        ) : (
+                          <ArrowDownRight className="h-4 w-4 text-red-600" />
+                        )}
+                        <span className={`text-sm ${financialMetrics.assetsChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                          {Math.abs(financialMetrics.assetsChange).toFixed(1)}%
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="p-3 rounded-full bg-purple-100 dark:bg-purple-900/20">
+                    <BarChart3 className="h-6 w-6 text-purple-600" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-card/95 backdrop-blur-sm border border-border/50 shadow-lg hover-elevate transition-all duration-300" data-testid="metric-working-capital">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-muted-foreground">Working Capital</p>
+                    <p className="text-2xl font-bold text-foreground">${formatNumber(financialMetrics.workingCapital)}</p>
+                    {financialMetrics.hasPreviousBS && (
+                      <div className="flex items-center mt-1">
+                        {financialMetrics.workingCapitalChange >= 0 ? (
+                          <ArrowUpRight className="h-4 w-4 text-green-600" />
+                        ) : (
+                          <ArrowDownRight className="h-4 w-4 text-red-600" />
+                        )}
+                        <span className={`text-sm ${financialMetrics.workingCapitalChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                          {Math.abs(financialMetrics.workingCapitalChange).toFixed(1)}%
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="p-3 rounded-full bg-orange-100 dark:bg-orange-900/20">
+                    <PieChart className="h-6 w-6 text-orange-600" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-card/95 backdrop-blur-sm border border-border/50 shadow-lg hover-elevate transition-all duration-300" data-testid="metric-cash-flow">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-muted-foreground">Operating Cash Flow</p>
+                    <p className="text-2xl font-bold text-foreground">${formatNumber(financialMetrics.operatingCashFlow)}</p>
+                    {financialMetrics.hasPreviousCF && (
+                      <div className="flex items-center mt-1">
+                        {financialMetrics.operatingCashFlowChange >= 0 ? (
+                          <ArrowUpRight className="h-4 w-4 text-green-600" />
+                        ) : (
+                          <ArrowDownRight className="h-4 w-4 text-red-600" />
+                        )}
+                        <span className={`text-sm ${financialMetrics.operatingCashFlowChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                          {Math.abs(financialMetrics.operatingCashFlowChange).toFixed(1)}%
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="p-3 rounded-full bg-teal-100 dark:bg-teal-900/20">
+                    <Activity className="h-6 w-6 text-teal-600" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
 
           {/* Enhanced Financial Reports Tabs */}
           <div className="bg-gradient-to-r from-background/50 to-muted/30 rounded-2xl p-6 backdrop-blur-sm border border-border/50">
