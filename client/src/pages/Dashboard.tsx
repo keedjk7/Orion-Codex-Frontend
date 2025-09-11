@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Navigation from "@/components/Navigation";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -17,43 +18,47 @@ import {
   Users,
   ArrowUpRight,
   ArrowDownRight,
-  Menu
+  Menu,
+  Target,
+  PieChart,
+  FileText,
+  Calendar
 } from "lucide-react";
 import heroBackground from "@assets/generated_images/Gradient_mesh_hero_background_83768b02.png";
 
 export default function Dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  // Design placeholders instead of real data
-  const placeholderMarketData = [
-    { id: "1", symbol: "AAPL", name: "Apple Inc.", sector: "Technology" },
-    { id: "2", symbol: "MSFT", name: "Microsoft Corporation", sector: "Technology" },
-    { id: "3", symbol: "GOOGL", name: "Alphabet Inc.", sector: "Technology" },
-    { id: "4", symbol: "AMZN", name: "Amazon.com Inc.", sector: "Consumer Discretionary" },
-    { id: "5", symbol: "TSLA", name: "Tesla Inc.", sector: "Consumer Discretionary" },
-    { id: "6", symbol: "NVDA", name: "NVIDIA Corporation", sector: "Technology" }
+  // Design placeholders for internal business data
+  const placeholderDepartments = [
+    { id: "1", name: "Sales", budget: "$2.5M", status: "On Track" },
+    { id: "2", name: "Marketing", budget: "$1.8M", status: "Over Budget" },
+    { id: "3", name: "Engineering", budget: "$4.2M", status: "Under Budget" },
+    { id: "4", name: "Operations", budget: "$1.1M", status: "On Track" },
+    { id: "5", name: "Customer Success", budget: "$850K", status: "On Track" },
+    { id: "6", name: "HR", budget: "$650K", status: "Under Budget" }
   ];
 
-  const placeholderNews = [
-    { id: "1", category: "Markets", importance: "high" },
-    { id: "2", category: "Earnings", importance: "medium" },
-    { id: "3", category: "Policy", importance: "high" },
-    { id: "4", category: "Analysis", importance: "medium" },
-    { id: "5", category: "Technology", importance: "low" }
+  const placeholderUpdates = [
+    { id: "1", category: "Sales", importance: "high", type: "Monthly Report" },
+    { id: "2", category: "Product", importance: "medium", type: "Feature Release" },
+    { id: "3", category: "Operations", importance: "high", type: "System Update" },
+    { id: "4", category: "HR", importance: "medium", type: "Team Announcement" },
+    { id: "5", category: "Finance", importance: "low", type: "Budget Review" }
   ];
 
-  const placeholderCompanies = [
-    { id: "1", symbol: "AAPL", industry: "Technology Hardware" },
-    { id: "2", symbol: "MSFT", industry: "Software Infrastructure" },
-    { id: "3", symbol: "GOOGL", industry: "Internet Content & Information" }
+  const placeholderProjects = [
+    { id: "1", name: "Q4 Product Launch", status: "In Progress", team: "Product Team" },
+    { id: "2", name: "Customer Portal Redesign", status: "Planning", team: "Engineering" },
+    { id: "3", name: "Sales Process Optimization", status: "Complete", team: "Sales Ops" }
   ];
 
-  const placeholderIndicators = [
-    { id: "1", name: "GDP Growth Rate", period: "Q3 2024" },
-    { id: "2", name: "Unemployment Rate", period: "September 2024" },
-    { id: "3", name: "Inflation Rate", period: "September 2024" },
-    { id: "4", name: "Treasury Yield", period: "Current" },
-    { id: "5", name: "Consumer Confidence", period: "September 2024" }
+  const placeholderMetrics = [
+    { id: "1", name: "Monthly Revenue", period: "November 2024" },
+    { id: "2", name: "Customer Acquisition", period: "This Month" },
+    { id: "3", name: "Employee Satisfaction", period: "Q4 2024" },
+    { id: "4", name: "Project Completion Rate", period: "Current Quarter" },
+    { id: "5", name: "Customer Retention", period: "Last 30 Days" }
   ];
 
   const formatCurrency = (value: string) => {
@@ -78,47 +83,47 @@ export default function Dashboard() {
   const SidebarContent = () => (
     <div className="p-6">
       <h1 className="text-2xl font-bold text-foreground mb-6" data-testid="dashboard-title">
-        Business Intelligence
+        Company Dashboard
       </h1>
       
       {/* Navigation Sections */}
       <div className="space-y-6">
         <div>
-          <h3 className="text-sm font-semibold text-muted-foreground mb-3 uppercase tracking-wide" data-testid="nav-markets">
-            Markets
+          <h3 className="text-sm font-semibold text-muted-foreground mb-3 uppercase tracking-wide" data-testid="nav-departments">
+            Departments
           </h3>
           <div className="space-y-2">
-            <Button variant="ghost" className="w-full justify-start" data-testid="nav-equities">
-              <BarChart3 className="w-4 h-4 mr-2" />
-              Equities
+            <Button variant="ghost" className="w-full justify-start" data-testid="nav-sales">
+              <Target className="w-4 h-4 mr-2" />
+              Sales
             </Button>
-            <Button variant="ghost" className="w-full justify-start" data-testid="nav-bonds">
+            <Button variant="ghost" className="w-full justify-start" data-testid="nav-marketing">
               <TrendingUp className="w-4 h-4 mr-2" />
-              Bonds
+              Marketing
             </Button>
-            <Button variant="ghost" className="w-full justify-start" data-testid="nav-commodities">
-              <Globe className="w-4 h-4 mr-2" />
-              Commodities
+            <Button variant="ghost" className="w-full justify-start" data-testid="nav-engineering">
+              <Building2 className="w-4 h-4 mr-2" />
+              Engineering
             </Button>
           </div>
         </div>
 
         <div>
-          <h3 className="text-sm font-semibold text-muted-foreground mb-3 uppercase tracking-wide" data-testid="nav-analysis">
-            Analysis
+          <h3 className="text-sm font-semibold text-muted-foreground mb-3 uppercase tracking-wide" data-testid="nav-analytics">
+            Analytics
           </h3>
           <div className="space-y-2">
-            <Button variant="ghost" className="w-full justify-start" data-testid="nav-company-research">
-              <Building2 className="w-4 h-4 mr-2" />
-              Company Research
+            <Button variant="ghost" className="w-full justify-start" data-testid="nav-performance">
+              <BarChart3 className="w-4 h-4 mr-2" />
+              Performance
             </Button>
-            <Button variant="ghost" className="w-full justify-start" data-testid="nav-economic-data">
+            <Button variant="ghost" className="w-full justify-start" data-testid="nav-budget-analysis">
+              <PieChart className="w-4 h-4 mr-2" />
+              Budget Analysis
+            </Button>
+            <Button variant="ghost" className="w-full justify-start" data-testid="nav-project-tracking">
               <Activity className="w-4 h-4 mr-2" />
-              Economic Data
-            </Button>
-            <Button variant="ghost" className="w-full justify-start" data-testid="nav-news-analysis">
-              <Clock className="w-4 h-4 mr-2" />
-              News Analysis
+              Project Tracking
             </Button>
           </div>
         </div>
@@ -129,16 +134,16 @@ export default function Dashboard() {
           </h3>
           <div className="space-y-2">
             <Button variant="ghost" className="w-full justify-start" data-testid="nav-financial-reports">
-              <BarChart3 className="w-4 h-4 mr-2" />
+              <FileText className="w-4 h-4 mr-2" />
               Financial Reports
             </Button>
-            <Button variant="ghost" className="w-full justify-start" data-testid="nav-earnings-reports">
-              <TrendingUp className="w-4 h-4 mr-2" />
-              Earnings Reports
+            <Button variant="ghost" className="w-full justify-start" data-testid="nav-monthly-summary">
+              <Calendar className="w-4 h-4 mr-2" />
+              Monthly Summary
             </Button>
-            <Button variant="ghost" className="w-full justify-start" data-testid="nav-market-reports">
-              <Globe className="w-4 h-4 mr-2" />
-              Market Reports
+            <Button variant="ghost" className="w-full justify-start" data-testid="nav-team-reports">
+              <Users className="w-4 h-4 mr-2" />
+              Team Reports
             </Button>
           </div>
         </div>
@@ -148,13 +153,13 @@ export default function Dashboard() {
             Tools
           </h3>
           <div className="space-y-2">
-            <Button variant="ghost" className="w-full justify-start" data-testid="nav-portfolio">
+            <Button variant="ghost" className="w-full justify-start" data-testid="nav-budget-planner">
               <DollarSign className="w-4 h-4 mr-2" />
-              Portfolio Analytics
+              Budget Planner
             </Button>
-            <Button variant="ghost" className="w-full justify-start" data-testid="nav-alerts">
+            <Button variant="ghost" className="w-full justify-start" data-testid="nav-team-management">
               <Users className="w-4 h-4 mr-2" />
-              Market Alerts
+              Team Management
             </Button>
           </div>
         </div>
@@ -162,17 +167,17 @@ export default function Dashboard() {
 
       <Separator className="my-6" />
 
-      {/* Economic Indicators */}
+      {/* Key Metrics */}
       <div>
-        <h3 className="text-sm font-semibold text-muted-foreground mb-3 uppercase tracking-wide" data-testid="economic-indicators-title">
-          Economic Indicators
+        <h3 className="text-sm font-semibold text-muted-foreground mb-3 uppercase tracking-wide" data-testid="key-metrics-title">
+          Key Metrics
         </h3>
         <div className="space-y-3">
-          {placeholderIndicators.map((indicator) => (
-            <div key={indicator.id} className="flex justify-between items-center" data-testid={`indicator-${indicator.name.toLowerCase().replace(/\s+/g, '-')}`}>
+          {placeholderMetrics.map((metric) => (
+            <div key={metric.id} className="flex justify-between items-center" data-testid={`metric-${metric.name.toLowerCase().replace(/\s+/g, '-')}`}>
               <div className="text-sm">
-                <div className="font-medium">{indicator.name}</div>
-                <div className="text-muted-foreground text-xs">{indicator.period}</div>
+                <div className="font-medium">{metric.name}</div>
+                <div className="text-muted-foreground text-xs">{metric.period}</div>
               </div>
               <div className="text-right">
                 <div className="w-12 h-4 bg-muted rounded animate-pulse"></div>
@@ -187,6 +192,9 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
+      {/* Navigation Bar like landing page */}
+      <Navigation />
+      
       {/* Beautiful Background like landing page */}
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
@@ -194,7 +202,7 @@ export default function Dashboard() {
       />
       <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-background/60 to-background/80" />
       
-      <div className="relative z-10 flex">
+      <div className="relative z-10 flex pt-20">
         {/* Desktop Sidebar */}
         <div className="hidden lg:block w-80 bg-card/95 backdrop-blur-sm border-r border-border/20 flex-shrink-0">
           <ScrollArea className="h-screen">
@@ -206,7 +214,7 @@ export default function Dashboard() {
         <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-md border-b border-border/20">
           <div className="flex items-center justify-between p-4">
             <h1 className="text-lg font-bold text-foreground" data-testid="mobile-dashboard-title">
-              Business Intelligence
+              Company Dashboard
             </h1>
             <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
               <SheetTrigger asChild>
@@ -226,32 +234,35 @@ export default function Dashboard() {
         {/* Main Content Area */}
         <div className="flex-1 p-6 pt-20 lg:pt-6">
           <div className="max-w-6xl mx-auto space-y-6">
-            {/* Top Market Overview */}
-            <Card className="bg-card/95 backdrop-blur-sm" data-testid="market-overview-card">
+            {/* Department Overview */}
+            <Card className="bg-card/95 backdrop-blur-sm" data-testid="department-overview-card">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <BarChart3 className="w-5 h-5" />
-                  Market Overview
+                  <Building2 className="w-5 h-5" />
+                  Department Overview
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {placeholderMarketData.map((stock) => (
-                    <div key={stock.id} className="p-4 border rounded-lg hover:bg-muted/50 transition-colors bg-card/50 backdrop-blur-sm" data-testid={`stock-${stock.symbol}`}>
+                  {placeholderDepartments.map((dept) => (
+                    <div key={dept.id} className="p-4 border rounded-lg hover:bg-muted/50 transition-colors bg-card/50 backdrop-blur-sm" data-testid={`dept-${dept.name.toLowerCase()}`}>
                       <div className="flex justify-between items-start mb-2">
                         <div>
-                          <div className="font-semibold">{stock.symbol}</div>
-                          <div className="text-sm text-muted-foreground">{stock.name}</div>
+                          <div className="font-semibold">{dept.name}</div>
+                          <div className="text-sm text-muted-foreground">{dept.budget}</div>
                         </div>
-                        <Badge variant="outline" className="text-xs">
-                          {stock.sector}
+                        <Badge 
+                          variant={dept.status === "On Track" ? "default" : dept.status === "Over Budget" ? "destructive" : "secondary"} 
+                          className="text-xs"
+                        >
+                          {dept.status}
                         </Badge>
                       </div>
                       <div className="space-y-1">
                         <div className="w-16 h-6 bg-muted rounded animate-pulse"></div>
                         <div className="flex items-center gap-1">
-                          <div className="w-12 h-4 bg-green-200 rounded animate-pulse"></div>
-                          <ArrowUpRight className="w-3 h-3 text-green-600" />
+                          <div className="w-12 h-4 bg-blue-200 rounded animate-pulse"></div>
+                          <TrendingUp className="w-3 h-3 text-blue-600" />
                         </div>
                         <div className="w-20 h-3 bg-muted/60 rounded animate-pulse"></div>
                       </div>
@@ -262,30 +273,33 @@ export default function Dashboard() {
             </Card>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Business News */}
-              <Card className="bg-card/95 backdrop-blur-sm" data-testid="business-news-card">
+              {/* Company Updates */}
+              <Card className="bg-card/95 backdrop-blur-sm" data-testid="company-updates-card">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Clock className="w-5 h-5" />
-                    Latest Business News
+                    Latest Company Updates
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <ScrollArea className="h-80">
                     <div className="space-y-4">
-                      {placeholderNews.map((news) => (
-                        <div key={news.id} className="pb-4 border-b last:border-b-0" data-testid={`news-${news.id}`}>
+                      {placeholderUpdates.map((update) => (
+                        <div key={update.id} className="pb-4 border-b last:border-b-0" data-testid={`update-${update.id}`}>
                           <div className="flex items-start gap-3">
                             <div className="flex-1">
                               <div className="flex items-center gap-2 mb-1">
                                 <Badge 
-                                  variant={news.importance === 'high' ? 'destructive' : news.importance === 'medium' ? 'default' : 'secondary'}
+                                  variant={update.importance === 'high' ? 'destructive' : update.importance === 'medium' ? 'default' : 'secondary'}
                                   className="text-xs"
                                 >
-                                  {news.importance}
+                                  {update.importance}
                                 </Badge>
                                 <Badge variant="outline" className="text-xs">
-                                  {news.category}
+                                  {update.category}
+                                </Badge>
+                                <Badge variant="secondary" className="text-xs">
+                                  {update.type}
                                 </Badge>
                               </div>
                               <div className="w-3/4 h-4 bg-muted rounded animate-pulse mb-2"></div>
@@ -303,41 +317,46 @@ export default function Dashboard() {
                 </CardContent>
               </Card>
 
-              {/* Company Highlights */}
-              <Card className="bg-card/95 backdrop-blur-sm" data-testid="company-highlights-card">
+              {/* Active Projects */}
+              <Card className="bg-card/95 backdrop-blur-sm" data-testid="active-projects-card">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Building2 className="w-5 h-5" />
-                    Company Highlights
+                    <Target className="w-5 h-5" />
+                    Active Projects
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <ScrollArea className="h-80">
                     <div className="space-y-4">
-                      {placeholderCompanies.map((company) => (
-                        <div key={company.id} className="p-4 border rounded-lg bg-card/50 backdrop-blur-sm" data-testid={`company-${company.symbol}`}>
+                      {placeholderProjects.map((project) => (
+                        <div key={project.id} className="p-4 border rounded-lg bg-card/50 backdrop-blur-sm" data-testid={`project-${project.id}`}>
                           <div className="flex justify-between items-start mb-2">
                             <div>
-                              <div className="w-32 h-5 bg-muted rounded animate-pulse mb-1"></div>
-                              <p className="text-sm text-muted-foreground">{company.industry}</p>
+                              <h4 className="font-semibold">{project.name}</h4>
+                              <p className="text-sm text-muted-foreground">{project.team}</p>
                             </div>
-                            <Badge variant="outline">{company.symbol}</Badge>
+                            <Badge 
+                              variant={project.status === "Complete" ? "default" : project.status === "In Progress" ? "secondary" : "outline"} 
+                              className="text-xs"
+                            >
+                              {project.status}
+                            </Badge>
                           </div>
                           <div className="grid grid-cols-2 gap-4 text-sm">
                             <div>
-                              <div className="text-muted-foreground">Revenue</div>
+                              <div className="text-muted-foreground">Progress</div>
                               <div className="w-16 h-4 bg-muted rounded animate-pulse"></div>
                             </div>
                             <div>
-                              <div className="text-muted-foreground">Profit</div>
+                              <div className="text-muted-foreground">Timeline</div>
                               <div className="w-16 h-4 bg-muted rounded animate-pulse"></div>
                             </div>
                             <div>
-                              <div className="text-muted-foreground">Employees</div>
+                              <div className="text-muted-foreground">Budget</div>
                               <div className="w-16 h-4 bg-muted rounded animate-pulse"></div>
                             </div>
                             <div>
-                              <div className="text-muted-foreground">HQ</div>
+                              <div className="text-muted-foreground">Resources</div>
                               <div className="w-16 h-4 bg-muted rounded animate-pulse"></div>
                             </div>
                           </div>
