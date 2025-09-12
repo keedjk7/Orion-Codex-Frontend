@@ -25,7 +25,7 @@ export default function Hero() {
       <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-background/60 to-background/80" />
 
       {/* Floating Demo Cards */}
-      <Card className="absolute top-20 right-8 w-80 p-4 bg-card/95 backdrop-blur-sm animate-pulse" data-testid="card-anomaly-detection">
+      <Card className="absolute top-20 right-8 w-80 p-4 bg-card/95 backdrop-blur-sm animate-pulse hidden lg:block" data-testid="card-anomaly-detection">
         <div className="flex items-center gap-2 mb-3">
           <Bot className="w-5 h-5 text-chart-2" />
           <span className="font-semibold text-card-foreground">AI Anomaly Detection</span>
@@ -42,7 +42,7 @@ export default function Hero() {
         </div>
       </Card>
 
-      <Card className="absolute bottom-32 left-8 w-72 p-4 bg-card/95 backdrop-blur-sm" data-testid="card-natural-language">
+      <Card className="absolute bottom-32 left-8 w-72 p-4 bg-card/95 backdrop-blur-sm hidden lg:block" data-testid="card-natural-language">
         <div className="flex items-center gap-2 mb-3">
           <MessageSquare className="w-5 h-5 text-chart-3" />
           <span className="font-semibold text-card-foreground">Natural Language Query</span>
@@ -58,7 +58,7 @@ export default function Hero() {
         </div>
       </Card>
 
-      <Card className="absolute bottom-20 right-16 w-64 p-4 bg-card/95 backdrop-blur-sm" data-testid="card-scenario-modeling">
+      <Card className="absolute bottom-20 right-16 w-64 p-4 bg-card/95 backdrop-blur-sm hidden lg:block" data-testid="card-scenario-modeling">
         <div className="flex items-center gap-2 mb-3">
           <TrendingUp className="w-5 h-5 text-chart-1" />
           <span className="font-semibold text-card-foreground">Scenario Modeling</span>
@@ -79,7 +79,7 @@ export default function Hero() {
         </div>
       </Card>
 
-      <Card className="absolute top-32 left-12 w-72 p-4 bg-card/95 backdrop-blur-sm" data-testid="card-month-end">
+      <Card className="absolute top-32 left-12 w-72 p-4 bg-card/95 backdrop-blur-sm hidden lg:block" data-testid="card-month-end">
         <div className="flex items-center gap-2 mb-3">
           <CheckCircle className="w-5 h-5 text-green-600" />
           <span className="font-semibold text-card-foreground">Month-End Progress</span>
@@ -109,19 +109,44 @@ export default function Hero() {
 
       {/* Main Content */}
       <div className="relative z-10 text-center max-w-4xl mx-auto px-6">
-        <h1 className="text-5xl md:text-7xl font-black text-foreground mb-6" data-testid="hero-headline">
-          Your AI-Powered
-          <br />
-          <span className="bg-gradient-to-r from-chart-1 to-chart-2 bg-clip-text text-transparent">
-            Finance Team Companion
-          </span>
-        </h1>
-        
-        <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto" data-testid="hero-subheadline">
-          One platform for all your FP&A needs—included in Orion Professional, Team, and Enterprise plans.
-        </p>
+        <div className="space-y-6">
+          <div className="inline-block px-4 py-2 bg-primary/10 rounded-full border border-primary/20 mb-4">
+            <span className="text-primary font-semibold text-sm">
+              🚀 Transform Your Finance Operations
+            </span>
+          </div>
+          
+          <h1 className="text-5xl md:text-7xl font-black text-foreground leading-tight" data-testid="hero-headline">
+            Your AI-Powered
+            <br />
+            <span className="bg-gradient-to-r from-chart-1 to-chart-2 bg-clip-text text-transparent">
+              Finance Team Companion
+            </span>
+          </h1>
+          
+          <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed" data-testid="hero-subheadline">
+            Transform complex financial data into actionable insights with AI. 
+            <br className="hidden md:block" />
+            <span className="text-foreground font-semibold">Cut reporting time by 90%</span> and make data-driven decisions faster.
+          </p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl mx-auto text-sm text-muted-foreground">
+            <div className="flex items-center justify-center gap-2">
+              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+              <span>Real-time Analytics</span>
+            </div>
+            <div className="flex items-center justify-center gap-2">
+              <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+              <span>AI-Powered Insights</span>
+            </div>
+            <div className="flex items-center justify-center gap-2">
+              <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+              <span>No-Code Setup</span>
+            </div>
+          </div>
+        </div>
 
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
           <Link href="/dashboard">
             <Button size="lg" className="text-lg px-8 py-4 hover-elevate active-elevate-2" data-testid="button-get-started">
               Get Started →
@@ -140,16 +165,25 @@ export default function Hero() {
         </div>
 
         {/* Trust Indicators */}
-        <div className="flex flex-wrap items-center justify-center gap-8 text-muted-foreground" data-testid="trust-indicators">
-          <Badge variant="outline" className="px-4 py-2">
-            <strong className="text-foreground">500+</strong> Finance Teams
-          </Badge>
-          <Badge variant="outline" className="px-4 py-2">
-            <strong className="text-foreground">$2B+</strong> Analyzed Daily
-          </Badge>
-          <Badge variant="outline" className="px-4 py-2">
-            <strong className="text-foreground">99.9%</strong> Uptime
-          </Badge>
+        <div className="bg-card/80 backdrop-blur-sm border border-card-border rounded-2xl p-6 max-w-4xl mx-auto" data-testid="trust-indicators">
+          <p className="text-center text-sm text-muted-foreground mb-4">Trusted by leading finance teams worldwide</p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="text-center">
+              <div className="text-3xl font-bold text-chart-1 mb-1">500+</div>
+              <div className="text-sm text-muted-foreground">Finance Teams</div>
+              <div className="text-xs text-muted-foreground mt-1">Across 40+ countries</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-chart-2 mb-1">$2B+</div>
+              <div className="text-sm text-muted-foreground">Analyzed Daily</div>
+              <div className="text-xs text-muted-foreground mt-1">Real-time processing</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-chart-3 mb-1">99.9%</div>
+              <div className="text-sm text-muted-foreground">Uptime SLA</div>
+              <div className="text-xs text-muted-foreground mt-1">Enterprise-grade</div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
