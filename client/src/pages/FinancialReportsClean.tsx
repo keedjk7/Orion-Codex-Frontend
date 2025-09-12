@@ -79,12 +79,6 @@ export default function FinancialReportsClean() {
     return selectedTopic !== "all" || startPeriod !== "none" || endPeriod !== "none";
   }, [selectedTopic, startPeriod, endPeriod]);
 
-  // Helper function to extract unique company names from current data
-  const getUniqueCompanyNames = useMemo(() => {
-    const allData = [...plStatements, ...balanceSheets, ...cashFlowStatements];
-    const companyNames = Array.from(new Set(allData.map(item => item.topic)));
-    return companyNames;
-  }, [plStatements, balanceSheets, cashFlowStatements]);
   // Smart defaults - key sections that should be collapsed (true means collapsed)
   const defaultCollapsedSections: Record<string, boolean> = {
     'pl-income': true, // Revenue section collapsed by default
@@ -143,6 +137,13 @@ export default function FinancialReportsClean() {
       return response.json() as Promise<CashFlowStatement[]>;
     }
   });
+
+  // Helper function to extract unique company names from current data
+  const getUniqueCompanyNames = useMemo(() => {
+    const allData = [...plStatements, ...balanceSheets, ...cashFlowStatements];
+    const companyNames = Array.from(new Set(allData.map(item => item.topic)));
+    return companyNames;
+  }, [plStatements, balanceSheets, cashFlowStatements]);
 
   // Get unique topics and periods for filtering
   const uniqueTopics = useMemo(() => {
