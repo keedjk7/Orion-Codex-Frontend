@@ -73,6 +73,18 @@ export default function FinancialReportsClean() {
   const [editingCells, setEditingCells] = useState<Record<string, any>>({});
   const queryClient = useQueryClient();
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+
+  // Check if any filters are applied
+  const hasFiltersApplied = useMemo(() => {
+    return selectedTopic !== "all" || startPeriod !== "none" || endPeriod !== "none";
+  }, [selectedTopic, startPeriod, endPeriod]);
+
+  // Helper function to extract unique company names from current data
+  const getUniqueCompanyNames = useMemo(() => {
+    const allData = [...plStatements, ...balanceSheets, ...cashFlowStatements];
+    const companyNames = Array.from(new Set(allData.map(item => item.topic)));
+    return companyNames;
+  }, [plStatements, balanceSheets, cashFlowStatements]);
   // Smart defaults - key sections that should be collapsed (true means collapsed)
   const defaultCollapsedSections: Record<string, boolean> = {
     'pl-income': true, // Revenue section collapsed by default
@@ -841,14 +853,17 @@ export default function FinancialReportsClean() {
           </div>
 
           {/* Enhanced Filters Section */}
-          <Card className="mb-8 border-border/50 bg-card/95 backdrop-blur-sm shadow-lg" data-testid="card-filters">
+          <Card className="mb-8 border-primary/30 bg-gradient-to-r from-primary/5 to-secondary/5 shadow-lg" data-testid="card-filters">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-foreground text-lg" data-testid="title-filters">
                 <Filter className="h-5 w-5 text-primary" />
                 Filter Reports
-                <Badge variant="secondary" className="ml-2 text-xs">Optional</Badge>
+                <Badge variant="destructive" className="ml-2 text-xs">Required</Badge>
               </CardTitle>
-              <p className="text-sm text-muted-foreground mt-2">Filter by company, time period, or view all data</p>
+              <p className="text-sm text-muted-foreground mt-2">
+                Please select at least one filter below to view financial statements. 
+                Choose a company (topic), time period, or both to get started.
+              </p>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -1111,10 +1126,27 @@ export default function FinancialReportsClean() {
           <Card className="border-border/50 bg-card/95 backdrop-blur-sm shadow-lg" data-testid="card-main-reports">
             <CardHeader className="border-b border-border/50">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <CardTitle className="flex items-center gap-2 text-foreground text-xl" data-testid="title-reports">
-                  <FileText className="h-5 w-5 text-primary" />
-                  Financial Statements
-                </CardTitle>
+                <div>
+                  <CardTitle className="flex items-center gap-2 text-foreground text-xl" data-testid="title-reports">
+                    <FileText className="h-5 w-5 text-primary" />
+                    Financial Statements
+                  </CardTitle>
+                  {hasFiltersApplied && getUniqueCompanyNames.length > 0 && (
+                    <div className="mt-2">
+                      <p className="text-sm text-muted-foreground">Showing data for:</p>
+                      <div className="flex flex-wrap gap-2 mt-1">
+                        {getUniqueCompanyNames.map((company, index) => (
+                          <span 
+                            key={company} 
+                            className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-primary/10 text-primary"
+                          >
+                            {company}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
                 <p className="text-sm text-muted-foreground mt-2">Detailed financial data organized by statement type</p>
                 
                 {/* Export Controls */}
@@ -1150,32 +1182,48 @@ export default function FinancialReportsClean() {
             </CardHeader>
             
             <CardContent className="p-0">
-              <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                <div className="border-b border-border/50">
-                  <TabsList className="grid w-full grid-cols-3 bg-transparent h-auto p-1" data-testid="tabs-list">
-                    <TabsTrigger 
-                      value="pl" 
-                      className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground px-6 py-3 font-medium"
-                      data-testid="tab-profit-loss"
-                    >
-                      Profit & Loss
-                    </TabsTrigger>
-                    <TabsTrigger 
-                      value="bs" 
-                      className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground px-6 py-3 font-medium"
-                      data-testid="tab-balance-sheet"
-                    >
-                      Balance Sheet
-                    </TabsTrigger>
-                    <TabsTrigger 
-                      value="cf" 
-                      className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground px-6 py-3 font-medium"
-                      data-testid="tab-cash-flow"
-                    >
-                      Cash Flow
-                    </TabsTrigger>
-                  </TabsList>
+              {!hasFiltersApplied ? (
+                <div className="flex items-center justify-center py-16" data-testid="filter-required-message">
+                  <div className="text-center max-w-md">
+                    <Filter className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+                    <h3 className="text-xl font-semibold text-foreground mb-2">Filters Required</h3>
+                    <p className="text-muted-foreground mb-4">
+                      Please apply at least one filter above to view financial statements. 
+                      You can filter by company (topic), start period, or end period.
+                    </p>
+                    <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+                      <span>👆</span>
+                      <span>Use the filters above to get started</span>
+                    </div>
+                  </div>
                 </div>
+              ) : (
+                <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                  <div className="border-b border-border/50">
+                    <TabsList className="grid w-full grid-cols-3 bg-transparent h-auto p-1" data-testid="tabs-list">
+                      <TabsTrigger 
+                        value="pl" 
+                        className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground px-6 py-3 font-medium"
+                        data-testid="tab-profit-loss"
+                      >
+                        Profit & Loss
+                      </TabsTrigger>
+                      <TabsTrigger 
+                        value="bs" 
+                        className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground px-6 py-3 font-medium"
+                        data-testid="tab-balance-sheet"
+                      >
+                        Balance Sheet
+                      </TabsTrigger>
+                      <TabsTrigger 
+                        value="cf" 
+                        className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground px-6 py-3 font-medium"
+                        data-testid="tab-cash-flow"
+                      >
+                        Cash Flow
+                      </TabsTrigger>
+                    </TabsList>
+                  </div>
 
                 {/* Profit & Loss Tab */}
                 <TabsContent value="pl" className="m-0" data-testid="tab-content-pl">
@@ -1208,10 +1256,7 @@ export default function FinancialReportsClean() {
                                 className="text-center font-bold text-foreground py-4 px-6 min-w-[150px] border-l border-border/50"
                                 data-testid={`header-period-${statement.period}`}
                               >
-                                <div className="space-y-1">
-                                  <div className="text-xs text-muted-foreground font-normal">{statement.topic}</div>
-                                  <div className="text-sm font-bold bg-primary/10 rounded px-2 py-1">{statement.period}</div>
-                                </div>
+                                <div className="text-sm font-bold bg-primary/10 rounded px-2 py-1">{statement.period}</div>
                               </TableHead>
                             ))}
                           </TableRow>
@@ -1481,10 +1526,7 @@ export default function FinancialReportsClean() {
                                 className="text-center font-bold text-foreground py-4 px-6 min-w-[150px] border-l border-border/50"
                                 data-testid={`header-period-${statement.period}`}
                               >
-                                <div className="space-y-1">
-                                  <div className="text-xs text-muted-foreground font-normal">{statement.topic}</div>
-                                  <div className="text-sm font-bold bg-primary/10 rounded px-2 py-1">{statement.period}</div>
-                                </div>
+                                <div className="text-sm font-bold bg-primary/10 rounded px-2 py-1">{statement.period}</div>
                               </TableHead>
                             ))}
                           </TableRow>
@@ -1856,10 +1898,7 @@ export default function FinancialReportsClean() {
                                 className="text-center font-bold text-foreground py-4 px-6 min-w-[150px] border-l border-border/50"
                                 data-testid={`header-period-${statement.period}`}
                               >
-                                <div className="space-y-1">
-                                  <div className="text-xs text-muted-foreground font-normal">{statement.topic}</div>
-                                  <div className="text-sm font-bold bg-primary/10 rounded px-2 py-1">{statement.period}</div>
-                                </div>
+                                <div className="text-sm font-bold bg-primary/10 rounded px-2 py-1">{statement.period}</div>
                               </TableHead>
                             ))}
                           </TableRow>
@@ -2124,6 +2163,7 @@ export default function FinancialReportsClean() {
                   )}
                 </TabsContent>
               </Tabs>
+              )}
             </CardContent>
           </Card>
         </div>
