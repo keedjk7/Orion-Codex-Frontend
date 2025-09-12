@@ -32,7 +32,11 @@ import {
   ArrowDownRight,
   Download,
   FileDown,
-  Printer
+  Printer,
+  ChevronDown,
+  ChevronRight,
+  Plus,
+  Minus
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
@@ -52,6 +56,7 @@ export default function FinancialReports() {
   const [editingCells, setEditingCells] = useState<Record<string, any>>({});
   const queryClient = useQueryClient();
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+  const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>({});
   const { toast } = useToast();
 
   // Fetch financial reports data
@@ -127,6 +132,29 @@ export default function FinancialReports() {
   const calculatePercentageChange = (current: number, previous: number): number => {
     if (previous === 0) return 0;
     return ((current - previous) / Math.abs(previous)) * 100;
+  };
+
+  // Helper functions for collapsible sections
+  const toggleSection = (sectionKey: string) => {
+    setCollapsedSections(prev => ({
+      ...prev,
+      [sectionKey]: !prev[sectionKey]
+    }));
+  };
+
+  const isCollapsed = (sectionKey: string) => {
+    return collapsedSections[sectionKey] || false;
+  };
+
+  // Helper function to calculate section totals
+  const calculateSectionTotal = (statements: any[], fields: string[]) => {
+    return statements.map(statement => {
+      const total = fields.reduce((sum, field) => {
+        const value = parseFloat(statement[field] || '0');
+        return sum + (isNaN(value) ? 0 : value);
+      }, 0);
+      return total;
+    });
   };
 
   // Export helper functions
@@ -612,6 +640,253 @@ export default function FinancialReports() {
     );
   };
 
+  // Collapsible Table Section Component
+  interface CollapsibleSectionProps {
+    title: string;
+    sectionKey: string;
+    children: React.ReactNode;
+    statements: any[];
+    className?: string;
+    isSubSection?: boolean;
+    showToggle?: boolean;
+    prefix?: string;
+    calculateTotal?: boolean;
+    totalFields?: string[];
+  }
+
+  const CollapsibleTableSection = ({ 
+    title, 
+    sectionKey, 
+    children, 
+    statements,
+    className = "",
+    isSubSection = false,
+    showToggle = true,
+    prefix = "",
+    calculateTotal = false,
+    totalFields = []
+  }: CollapsibleSectionProps) => {
+    const namespacedKey = prefix ? `${prefix}-${sectionKey}` : sectionKey;
+    const collapsed = isCollapsed(namespacedKey);
+    const indentClass = isSubSection ? "pl-8" : "pl-6";
+    
+    // Calculate totals if needed
+    const sectionTotals = calculateTotal && totalFields.length > 0 
+      ? calculateSectionTotal(statements, totalFields)
+      : [];
+    
+    return (
+      <>
+        <TableRow 
+          className={`${className} ${collapsed ? 'border-b border-border/30' : ''}`}
+        >
+          <TableCell 
+            className={`font-bold sticky left-0 bg-muted/60 z-10 border-r border-border/50 py-3 px-4 text-foreground ${indentClass}`}
+            onClick={showToggle ? () => toggleSection(namespacedKey) : undefined}
+            style={{ cursor: showToggle ? 'pointer' : 'default' }}
+            data-testid={`section-${sectionKey}`}
+            role={showToggle ? "button" : undefined}
+            aria-expanded={showToggle ? !collapsed : undefined}
+            aria-controls={showToggle ? `section-content-${namespacedKey}` : undefined}
+          >
+            <div className="flex items-center gap-2">
+              {showToggle && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-6 w-6 p-0 hover:bg-muted/80"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleSection(namespacedKey);
+                  }}
+                  data-testid={`toggle-${sectionKey}`}
+                  aria-label={`${collapsed ? 'Expand' : 'Collapse'} ${title} section`}
+                >
+                  {collapsed ? (
+                    <Plus className="h-4 w-4 text-muted-foreground" />
+                  ) : (
+                    <Minus className="h-4 w-4 text-muted-foreground" />
+                  )}
+                </Button>
+              )}
+              <span className={isSubSection ? "text-sm" : "text-base"}>{title}</span>
+            </div>
+          </TableCell>
+          {statements.map((statement, index) => (
+            <TableCell 
+              key={`${statement.id}-${sectionKey}`}
+              className="text-right font-medium bg-muted/40 py-3 px-6"
+              data-testid={`total-${namespacedKey}-${statement.period}`}
+            >
+              {calculateTotal && sectionTotals.length > 0 && sectionTotals[index] !== undefined ? (
+                <span className="text-foreground font-semibold">{formatNumber(sectionTotals[index])}</span>
+              ) : (
+                <span className="text-muted-foreground">—</span>
+              )}
+            </TableCell>
+          ))}
+        </TableRow>
+        {!collapsed && children}
+      </>
+    );
+  };
+
+  // Section hierarchy definitions based on financial statement structure
+  const financialSections = {
+    profitLoss: {
+      income: {
+        title: "Income",
+        key: "income",
+        items: [
+          { field: "totalRevenue", title: "Total Revenue" }
+        ]
+      },
+      cost: {
+        title: "Cost",
+        key: "cost", 
+        items: [
+          { field: "costOfGoodsSold", title: "Cost of Goods Sold" }
+        ]
+      },
+      grossProfit: {
+        title: "Gross Profit",
+        key: "grossProfit",
+        isCalculated: true,
+        items: [
+          { field: "grossProfit", title: "Gross Profit" }
+        ]
+      },
+      operatingExpenses: {
+        title: "Operating Expenses",
+        key: "operatingExpenses",
+        items: [
+          { field: "operatingExpenses", title: "Total Operating Expenses" }
+        ]
+      },
+      operatingIncome: {
+        title: "Operating Income",
+        key: "operatingIncome",
+        isCalculated: true,
+        items: [
+          { field: "operatingIncome", title: "Operating Income" }
+        ]
+      },
+      otherItems: {
+        title: "Other Items",
+        key: "otherItems",
+        items: [
+          { field: "otherIncome", title: "Other Income" },
+          { field: "otherExpenses", title: "Other Expenses" }
+        ]
+      },
+      netIncome: {
+        title: "Net Income",
+        key: "netIncome",
+        isCalculated: true,
+        items: [
+          { field: "netIncomeBeforeTax", title: "Income Before Tax" },
+          { field: "taxExpense", title: "Tax Expense" },
+          { field: "netIncome", title: "Net Income" }
+        ]
+      }
+    },
+    balanceSheet: {
+      assets: {
+        title: "Assets",
+        key: "assets",
+        sections: {
+          currentAssets: {
+            title: "Current Assets",
+            key: "currentAssets",
+            items: [
+              { field: "cash", title: "Cash" },
+              { field: "accountsReceivable", title: "Accounts Receivable" },
+              { field: "inventory", title: "Inventory" }
+            ]
+          },
+          nonCurrentAssets: {
+            title: "Non-Current Assets", 
+            key: "nonCurrentAssets",
+            items: [
+              { field: "propertyPlantEquipment", title: "Property, Plant & Equipment" },
+              { field: "intangibleAssets", title: "Intangible Assets" }
+            ]
+          }
+        }
+      },
+      liabilities: {
+        title: "Liabilities",
+        key: "liabilities", 
+        sections: {
+          currentLiabilities: {
+            title: "Current Liabilities",
+            key: "currentLiabilities",
+            items: [
+              { field: "accountsPayable", title: "Accounts Payable" },
+              { field: "shortTermDebt", title: "Short-term Debt" }
+            ]
+          },
+          longTermLiabilities: {
+            title: "Long-term Liabilities",
+            key: "longTermLiabilities", 
+            items: [
+              { field: "longTermDebt", title: "Long-term Debt" }
+            ]
+          }
+        }
+      },
+      equity: {
+        title: "Shareholders' Equity",
+        key: "equity",
+        items: [
+          { field: "shareholdersEquity", title: "Total Shareholders' Equity" },
+          { field: "retainedEarnings", title: "Retained Earnings" }
+        ]
+      }
+    },
+    cashFlow: {
+      operating: {
+        title: "Operating Activities",
+        key: "operating",
+        items: [
+          { field: "netIncome", title: "Net Income" },
+          { field: "depreciation", title: "Depreciation" },
+          { field: "changeInWorkingCapital", title: "Change in Working Capital" },
+          { field: "operatingCashFlow", title: "Operating Cash Flow" }
+        ]
+      },
+      investing: {
+        title: "Investing Activities", 
+        key: "investing",
+        items: [
+          { field: "capitalExpenditures", title: "Capital Expenditures" },
+          { field: "acquisitions", title: "Acquisitions" },
+          { field: "investingCashFlow", title: "Investing Cash Flow" }
+        ]
+      },
+      financing: {
+        title: "Financing Activities",
+        key: "financing",
+        items: [
+          { field: "debtIssuance", title: "Debt Issuance" },
+          { field: "debtRepayment", title: "Debt Repayment" },
+          { field: "dividendsPaid", title: "Dividends Paid" },
+          { field: "financingCashFlow", title: "Financing Cash Flow" }
+        ]
+      },
+      netCashChange: {
+        title: "Net Change in Cash",
+        key: "netCashChange",
+        isCalculated: true,
+        items: [
+          { field: "netChangeInCash", title: "Net Change in Cash" },
+          { field: "beginningCashBalance", title: "Beginning Cash Balance" },
+          { field: "endingCashBalance", title: "Ending Cash Balance" }
+        ]
+      }
+    }
+  };
+
   // Profit & Loss Table Component - Comparative View
   const ProfitLossTable = () => {
     if (plLoading) {
@@ -675,140 +950,214 @@ export default function FinancialReports() {
                       </TableRow>
                     </TableHeader>
                   <TableBody>
-                    <TableRow>
-                      <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50">Total Revenue</TableCell>
-                      {statements.map((statement) => (
-                        <EditableCell
-                          key={`${statement.id}-totalRevenue`}
-                          value={statement.totalRevenue}
-                          itemId={statement.id}
-                          field="totalRevenue"
-                          reportType="pl"
-                          isEditable={JSON.parse(statement.isEditable || '{}').totalRevenue}
-                        />
+                    {/* Income Section */}
+                    <CollapsibleTableSection 
+                      title={financialSections.profitLoss.income.title}
+                      sectionKey={financialSections.profitLoss.income.key}
+                      statements={statements}
+                      className="bg-muted/30 dark:bg-muted/20"
+                      prefix={`pl-${topic}`}
+                      calculateTotal={true}
+                      totalFields={['totalRevenue']}
+                    >
+                      {financialSections.profitLoss.income.items.map((item) => (
+                        <TableRow key={item.field}>
+                          <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50 pl-12">
+                            {item.title}
+                          </TableCell>
+                          {statements.map((statement) => (
+                            <EditableCell
+                              key={`${statement.id}-${item.field}`}
+                              value={statement[item.field as keyof ProfitLossStatement] as string}
+                              itemId={statement.id}
+                              field={item.field}
+                              reportType="pl"
+                              isEditable={JSON.parse(statement.isEditable || '{}')[item.field]}
+                            />
+                          ))}
+                        </TableRow>
                       ))}
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50">Cost of Goods Sold</TableCell>
-                      {statements.map((statement) => (
-                        <EditableCell
-                          key={`${statement.id}-costOfGoodsSold`}
-                          value={statement.costOfGoodsSold}
-                          itemId={statement.id}
-                          field="costOfGoodsSold"
-                          reportType="pl"
-                          isEditable={JSON.parse(statement.isEditable || '{}').costOfGoodsSold}
-                        />
+                    </CollapsibleTableSection>
+
+                    {/* Cost Section */}
+                    <CollapsibleTableSection 
+                      title={financialSections.profitLoss.cost.title}
+                      sectionKey={financialSections.profitLoss.cost.key}
+                      statements={statements}
+                      className="bg-muted/30 dark:bg-muted/20"
+                      prefix={`pl-${topic}`}
+                      calculateTotal={true}
+                      totalFields={['costOfGoodsSold']}
+                    >
+                      {financialSections.profitLoss.cost.items.map((item) => (
+                        <TableRow key={item.field}>
+                          <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50 pl-12">
+                            {item.title}
+                          </TableCell>
+                          {statements.map((statement) => (
+                            <EditableCell
+                              key={`${statement.id}-${item.field}`}
+                              value={statement[item.field as keyof ProfitLossStatement] as string}
+                              itemId={statement.id}
+                              field={item.field}
+                              reportType="pl"
+                              isEditable={JSON.parse(statement.isEditable || '{}')[item.field]}
+                            />
+                          ))}
+                        </TableRow>
                       ))}
-                    </TableRow>
-                    <TableRow className="border-t-2 bg-muted/30 dark:bg-muted/20">
-                      <TableCell className="font-bold sticky left-0 bg-muted/50 z-10 border-r border-border/50">Gross Profit</TableCell>
-                      {statements.map((statement) => (
-                        <EditableCell
-                          key={`${statement.id}-grossProfit`}
-                          value={statement.grossProfit}
-                          itemId={statement.id}
-                          field="grossProfit"
-                          reportType="pl"
-                          isEditable={JSON.parse(statement.isEditable || '{}').grossProfit}
-                          className="font-bold"
-                        />
+                    </CollapsibleTableSection>
+
+                    {/* Gross Profit - Calculated Section */}
+                    <CollapsibleTableSection 
+                      title={financialSections.profitLoss.grossProfit.title}
+                      sectionKey={financialSections.profitLoss.grossProfit.key}
+                      statements={statements}
+                      className="border-t-2 bg-primary/10 dark:bg-primary/5"
+                      showToggle={false}
+                      prefix={`pl-${topic}`}
+                      calculateTotal={true}
+                      totalFields={['grossProfit']}
+                    >
+                      {financialSections.profitLoss.grossProfit.items.map((item) => (
+                        <TableRow key={item.field} className="bg-primary/5 dark:bg-primary/5">
+                          <TableCell className="font-bold sticky left-0 bg-primary/10 z-10 border-r border-border/50 pl-12">
+                            {item.title}
+                          </TableCell>
+                          {statements.map((statement) => (
+                            <EditableCell
+                              key={`${statement.id}-${item.field}`}
+                              value={statement[item.field as keyof ProfitLossStatement] as string}
+                              itemId={statement.id}
+                              field={item.field}
+                              reportType="pl"
+                              isEditable={JSON.parse(statement.isEditable || '{}')[item.field]}
+                              className="font-bold"
+                            />
+                          ))}
+                        </TableRow>
                       ))}
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50">Operating Expenses</TableCell>
-                      {statements.map((statement) => (
-                        <EditableCell
-                          key={`${statement.id}-operatingExpenses`}
-                          value={statement.operatingExpenses}
-                          itemId={statement.id}
-                          field="operatingExpenses"
-                          reportType="pl"
-                          isEditable={JSON.parse(statement.isEditable || '{}').operatingExpenses}
-                        />
+                    </CollapsibleTableSection>
+
+                    {/* Operating Expenses Section */}
+                    <CollapsibleTableSection 
+                      title={financialSections.profitLoss.operatingExpenses.title}
+                      sectionKey={financialSections.profitLoss.operatingExpenses.key}
+                      statements={statements}
+                      className="bg-muted/30 dark:bg-muted/20"
+                      prefix={`pl-${topic}`}
+                      calculateTotal={true}
+                      totalFields={['operatingExpenses']}
+                    >
+                      {financialSections.profitLoss.operatingExpenses.items.map((item) => (
+                        <TableRow key={item.field}>
+                          <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50 pl-12">
+                            {item.title}
+                          </TableCell>
+                          {statements.map((statement) => (
+                            <EditableCell
+                              key={`${statement.id}-${item.field}`}
+                              value={statement[item.field as keyof ProfitLossStatement] as string}
+                              itemId={statement.id}
+                              field={item.field}
+                              reportType="pl"
+                              isEditable={JSON.parse(statement.isEditable || '{}')[item.field]}
+                            />
+                          ))}
+                        </TableRow>
                       ))}
-                    </TableRow>
-                    <TableRow className="border-t-2 bg-muted/30 dark:bg-muted/20">
-                      <TableCell className="font-bold sticky left-0 bg-muted/50 z-10 border-r border-border/50">Operating Income</TableCell>
-                      {statements.map((statement) => (
-                        <EditableCell
-                          key={`${statement.id}-operatingIncome`}
-                          value={statement.operatingIncome}
-                          itemId={statement.id}
-                          field="operatingIncome"
-                          reportType="pl"
-                          isEditable={JSON.parse(statement.isEditable || '{}').operatingIncome}
-                          className="font-bold"
-                        />
+                    </CollapsibleTableSection>
+
+                    {/* Operating Income - Calculated Section */}
+                    <CollapsibleTableSection 
+                      title={financialSections.profitLoss.operatingIncome.title}
+                      sectionKey={financialSections.profitLoss.operatingIncome.key}
+                      statements={statements}
+                      className="border-t-2 bg-primary/10 dark:bg-primary/5"
+                      showToggle={false}
+                      prefix={`pl-${topic}`}
+                      calculateTotal={true}
+                      totalFields={['operatingIncome']}
+                    >
+                      {financialSections.profitLoss.operatingIncome.items.map((item) => (
+                        <TableRow key={item.field} className="bg-primary/5 dark:bg-primary/5">
+                          <TableCell className="font-bold sticky left-0 bg-primary/10 z-10 border-r border-border/50 pl-12">
+                            {item.title}
+                          </TableCell>
+                          {statements.map((statement) => (
+                            <EditableCell
+                              key={`${statement.id}-${item.field}`}
+                              value={statement[item.field as keyof ProfitLossStatement] as string}
+                              itemId={statement.id}
+                              field={item.field}
+                              reportType="pl"
+                              isEditable={JSON.parse(statement.isEditable || '{}')[item.field]}
+                              className="font-bold"
+                            />
+                          ))}
+                        </TableRow>
                       ))}
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50">Other Income</TableCell>
-                      {statements.map((statement) => (
-                        <EditableCell
-                          key={`${statement.id}-otherIncome`}
-                          value={statement.otherIncome}
-                          itemId={statement.id}
-                          field="otherIncome"
-                          reportType="pl"
-                          isEditable={JSON.parse(statement.isEditable || '{}').otherIncome}
-                        />
+                    </CollapsibleTableSection>
+
+                    {/* Other Items Section */}
+                    <CollapsibleTableSection 
+                      title={financialSections.profitLoss.otherItems.title}
+                      sectionKey={financialSections.profitLoss.otherItems.key}
+                      statements={statements}
+                      className="bg-muted/30 dark:bg-muted/20"
+                      prefix={`pl-${topic}`}
+                      calculateTotal={true}
+                      totalFields={['otherIncome', 'otherExpenses']}
+                    >
+                      {financialSections.profitLoss.otherItems.items.map((item) => (
+                        <TableRow key={item.field}>
+                          <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50 pl-12">
+                            {item.title}
+                          </TableCell>
+                          {statements.map((statement) => (
+                            <EditableCell
+                              key={`${statement.id}-${item.field}`}
+                              value={statement[item.field as keyof ProfitLossStatement] as string}
+                              itemId={statement.id}
+                              field={item.field}
+                              reportType="pl"
+                              isEditable={JSON.parse(statement.isEditable || '{}')[item.field]}
+                            />
+                          ))}
+                        </TableRow>
                       ))}
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50">Other Expenses</TableCell>
-                      {statements.map((statement) => (
-                        <EditableCell
-                          key={`${statement.id}-otherExpenses`}
-                          value={statement.otherExpenses}
-                          itemId={statement.id}
-                          field="otherExpenses"
-                          reportType="pl"
-                          isEditable={JSON.parse(statement.isEditable || '{}').otherExpenses}
-                        />
+                    </CollapsibleTableSection>
+
+                    {/* Net Income Section - Final Calculated Section */}
+                    <CollapsibleTableSection 
+                      title={financialSections.profitLoss.netIncome.title}
+                      sectionKey={financialSections.profitLoss.netIncome.key}
+                      statements={statements}
+                      className="border-t-2 bg-primary/15 dark:bg-primary/10"
+                      showToggle={false}
+                      prefix={`pl-${topic}`}
+                      calculateTotal={true}
+                      totalFields={['netIncome']}
+                    >
+                      {financialSections.profitLoss.netIncome.items.map((item, index) => (
+                        <TableRow key={item.field} className={index === financialSections.profitLoss.netIncome.items.length - 1 ? "bg-primary/20 dark:bg-primary/15" : "bg-primary/10 dark:bg-primary/5"}>
+                          <TableCell className={`${index === financialSections.profitLoss.netIncome.items.length - 1 ? "font-bold text-lg" : "font-bold"} sticky left-0 bg-primary/20 z-10 border-r border-border/50 pl-12`}>
+                            {item.title}
+                          </TableCell>
+                          {statements.map((statement) => (
+                            <EditableCell
+                              key={`${statement.id}-${item.field}`}
+                              value={statement[item.field as keyof ProfitLossStatement] as string}
+                              itemId={statement.id}
+                              field={item.field}
+                              reportType="pl"
+                              isEditable={JSON.parse(statement.isEditable || '{}')[item.field]}
+                              className={index === financialSections.profitLoss.netIncome.items.length - 1 ? "font-bold text-lg" : "font-bold"}
+                            />
+                          ))}
+                        </TableRow>
                       ))}
-                    </TableRow>
-                    <TableRow className="border-t-2 bg-muted/30 dark:bg-muted/20">
-                      <TableCell className="font-bold sticky left-0 bg-muted/50 z-10 border-r border-border/50">Income Before Tax</TableCell>
-                      {statements.map((statement) => (
-                        <EditableCell
-                          key={`${statement.id}-netIncomeBeforeTax`}
-                          value={statement.netIncomeBeforeTax}
-                          itemId={statement.id}
-                          field="netIncomeBeforeTax"
-                          reportType="pl"
-                          isEditable={JSON.parse(statement.isEditable || '{}').netIncomeBeforeTax}
-                          className="font-bold"
-                        />
-                      ))}
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50">Tax Expense</TableCell>
-                      {statements.map((statement) => (
-                        <EditableCell
-                          key={`${statement.id}-taxExpense`}
-                          value={statement.taxExpense}
-                          itemId={statement.id}
-                          field="taxExpense"
-                          reportType="pl"
-                          isEditable={JSON.parse(statement.isEditable || '{}').taxExpense}
-                        />
-                      ))}
-                    </TableRow>
-                    <TableRow className="border-t-2 bg-muted/30 dark:bg-muted/20">
-                      <TableCell className="font-bold text-lg sticky left-0 bg-muted/50 z-10 border-r border-border/50">Net Income</TableCell>
-                      {statements.map((statement) => (
-                        <EditableCell
-                          key={`${statement.id}-netIncome`}
-                          value={statement.netIncome}
-                          itemId={statement.id}
-                          field="netIncome"
-                          reportType="pl"
-                          isEditable={JSON.parse(statement.isEditable || '{}').netIncome}
-                          className="font-bold text-lg"
-                        />
-                      ))}
-                    </TableRow>
+                    </CollapsibleTableSection>
                   </TableBody>
                 </Table>
                 </div>
@@ -880,225 +1229,212 @@ export default function FinancialReports() {
                   </TableHeader>
                   <TableBody>
                     {/* Assets Section */}
-                    <TableRow className="bg-muted/40 dark:bg-muted/30 border-t border-border/30">
-                      <TableCell className="font-bold text-base sticky left-0 bg-muted/60 z-10 border-r border-border/50 py-4 px-6 text-foreground">Current Assets</TableCell>
-                      {sheets.map((sheet) => (
-                        <EditableCell
-                          key={`${sheet.id}-currentAssets`}
-                          value={sheet.currentAssets}
-                          itemId={sheet.id}
-                          field="currentAssets"
-                          reportType="bs"
-                          isEditable={JSON.parse(sheet.isEditable || '{}').currentAssets}
-                          className="font-bold"
-                        />
-                      ))}
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50 pl-6">Cash</TableCell>
-                      {sheets.map((sheet) => (
-                        <EditableCell
-                          key={`${sheet.id}-cash`}
-                          value={sheet.cash}
-                          itemId={sheet.id}
-                          field="cash"
-                          reportType="bs"
-                          isEditable={JSON.parse(sheet.isEditable || '{}').cash}
-                        />
-                      ))}
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50 pl-6">Accounts Receivable</TableCell>
-                      {sheets.map((sheet) => (
-                        <EditableCell
-                          key={`${sheet.id}-accountsReceivable`}
-                          value={sheet.accountsReceivable}
-                          itemId={sheet.id}
-                          field="accountsReceivable"
-                          reportType="bs"
-                          isEditable={JSON.parse(sheet.isEditable || '{}').accountsReceivable}
-                        />
-                      ))}
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50 pl-6">Inventory</TableCell>
-                      {sheets.map((sheet) => (
-                        <EditableCell
-                          key={`${sheet.id}-inventory`}
-                          value={sheet.inventory}
-                          itemId={sheet.id}
-                          field="inventory"
-                          reportType="bs"
-                          isEditable={JSON.parse(sheet.isEditable || '{}').inventory}
-                        />
-                      ))}
-                    </TableRow>
-                    <TableRow className="bg-muted/30 dark:bg-muted/20">
-                      <TableCell className="font-bold sticky left-0 bg-muted/50 z-10 border-r border-border/50">Non-Current Assets</TableCell>
-                      {sheets.map((sheet) => (
-                        <EditableCell
-                          key={`${sheet.id}-nonCurrentAssets`}
-                          value={sheet.nonCurrentAssets}
-                          itemId={sheet.id}
-                          field="nonCurrentAssets"
-                          reportType="bs"
-                          isEditable={JSON.parse(sheet.isEditable || '{}').nonCurrentAssets}
-                          className="font-bold"
-                        />
-                      ))}
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50 pl-6">Property, Plant & Equipment</TableCell>
-                      {sheets.map((sheet) => (
-                        <EditableCell
-                          key={`${sheet.id}-propertyPlantEquipment`}
-                          value={sheet.propertyPlantEquipment}
-                          itemId={sheet.id}
-                          field="propertyPlantEquipment"
-                          reportType="bs"
-                          isEditable={JSON.parse(sheet.isEditable || '{}').propertyPlantEquipment}
-                        />
-                      ))}
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50 pl-6">Intangible Assets</TableCell>
-                      {sheets.map((sheet) => (
-                        <EditableCell
-                          key={`${sheet.id}-intangibleAssets`}
-                          value={sheet.intangibleAssets}
-                          itemId={sheet.id}
-                          field="intangibleAssets"
-                          reportType="bs"
-                          isEditable={JSON.parse(sheet.isEditable || '{}').intangibleAssets}
-                        />
-                      ))}
-                    </TableRow>
-                    <TableRow className="border-t-2 bg-muted/50 dark:bg-muted/40">
-                      <TableCell className="font-bold text-lg sticky left-0 bg-muted/70 z-10 border-r border-border/50 py-4 px-6 text-foreground">Total Assets</TableCell>
-                      {sheets.map((sheet) => (
-                        <EditableCell
-                          key={`${sheet.id}-totalAssets`}
-                          value={sheet.totalAssets}
-                          itemId={sheet.id}
-                          field="totalAssets"
-                          reportType="bs"
-                          isEditable={JSON.parse(sheet.isEditable || '{}').totalAssets}
-                          className="font-bold"
-                        />
-                      ))}
-                    </TableRow>
-                    
+                    <CollapsibleTableSection 
+                      title={financialSections.balanceSheet.assets.title}
+                      sectionKey={financialSections.balanceSheet.assets.key}
+                      statements={sheets}
+                      className="bg-muted/40 dark:bg-muted/30 border-t border-border/30"
+                      prefix={`bs-${topic}`}
+                      calculateTotal={true}
+                      totalFields={['totalAssets']}
+                    >
+                      {/* Current Assets Subsection */}
+                      <CollapsibleTableSection 
+                        title={financialSections.balanceSheet.assets.sections?.currentAssets.title}
+                        sectionKey={financialSections.balanceSheet.assets.sections?.currentAssets.key}
+                        statements={sheets}
+                        className="bg-muted/30 dark:bg-muted/20"
+                        isSubSection={true}
+                        prefix={`bs-${topic}`}
+                        calculateTotal={true}
+                        totalFields={['cash', 'accountsReceivable', 'inventory']}
+                      >
+                        {financialSections.balanceSheet.assets.sections?.currentAssets.items.map((item) => (
+                          <TableRow key={item.field}>
+                            <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50 pl-16">
+                              {item.title}
+                            </TableCell>
+                            {sheets.map((sheet) => (
+                              <EditableCell
+                                key={`${sheet.id}-${item.field}`}
+                                value={sheet[item.field as keyof BalanceSheet] as string}
+                                itemId={sheet.id}
+                                field={item.field}
+                                reportType="bs"
+                                isEditable={JSON.parse(sheet.isEditable || '{}')[item.field]}
+                              />
+                            ))}
+                          </TableRow>
+                        ))}
+                      </CollapsibleTableSection>
+
+                      {/* Non-Current Assets Subsection */}
+                      <CollapsibleTableSection 
+                        title={financialSections.balanceSheet.assets.sections?.nonCurrentAssets.title}
+                        sectionKey={financialSections.balanceSheet.assets.sections?.nonCurrentAssets.key}
+                        statements={sheets}
+                        className="bg-muted/30 dark:bg-muted/20"
+                        isSubSection={true}
+                        prefix={`bs-${topic}`}
+                        calculateTotal={true}
+                        totalFields={['propertyPlantEquipment', 'intangibleAssets']}
+                      >
+                        {financialSections.balanceSheet.assets.sections?.nonCurrentAssets.items.map((item) => (
+                          <TableRow key={item.field}>
+                            <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50 pl-16">
+                              {item.title}
+                            </TableCell>
+                            {sheets.map((sheet) => (
+                              <EditableCell
+                                key={`${sheet.id}-${item.field}`}
+                                value={sheet[item.field as keyof BalanceSheet] as string}
+                                itemId={sheet.id}
+                                field={item.field}
+                                reportType="bs"
+                                isEditable={JSON.parse(sheet.isEditable || '{}')[item.field]}
+                              />
+                            ))}
+                          </TableRow>
+                        ))}
+                      </CollapsibleTableSection>
+
+                      {/* Total Assets Row */}
+                      <TableRow className="border-t-2 bg-primary/10 dark:bg-primary/5">
+                        <TableCell className="font-bold text-lg sticky left-0 bg-primary/20 z-10 border-r border-border/50 py-4 px-12 text-foreground">
+                          Total Assets
+                        </TableCell>
+                        {sheets.map((sheet) => (
+                          <EditableCell
+                            key={`${sheet.id}-totalAssets`}
+                            value={sheet.totalAssets}
+                            itemId={sheet.id}
+                            field="totalAssets"
+                            reportType="bs"
+                            isEditable={JSON.parse(sheet.isEditable || '{}').totalAssets}
+                            className="font-bold text-lg"
+                          />
+                        ))}
+                      </TableRow>
+                    </CollapsibleTableSection>
+
                     {/* Liabilities Section */}
-                    <TableRow className="bg-muted/30 dark:bg-muted/20">
-                      <TableCell className="font-bold sticky left-0 bg-muted/50 z-10 border-r border-border/50">Current Liabilities</TableCell>
-                      {sheets.map((sheet) => (
-                        <EditableCell
-                          key={`${sheet.id}-currentLiabilities`}
-                          value={sheet.currentLiabilities}
-                          itemId={sheet.id}
-                          field="currentLiabilities"
-                          reportType="bs"
-                          isEditable={JSON.parse(sheet.isEditable || '{}').currentLiabilities}
-                          className="font-bold"
-                        />
-                      ))}
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50 pl-6">Accounts Payable</TableCell>
-                      {sheets.map((sheet) => (
-                        <EditableCell
-                          key={`${sheet.id}-accountsPayable`}
-                          value={sheet.accountsPayable}
-                          itemId={sheet.id}
-                          field="accountsPayable"
-                          reportType="bs"
-                          isEditable={JSON.parse(sheet.isEditable || '{}').accountsPayable}
-                        />
-                      ))}
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50 pl-6">Short-term Liabilities</TableCell>
-                      {sheets.map((sheet) => (
-                        <EditableCell
-                          key={`${sheet.id}-shortTermDebt`}
-                          value={sheet.shortTermDebt}
-                          itemId={sheet.id}
-                          field="shortTermDebt"
-                          reportType="bs"
-                          isEditable={JSON.parse(sheet.isEditable || '{}').shortTermDebt}
-                        />
-                      ))}
-                    </TableRow>
-                    <TableRow className="bg-muted/30 dark:bg-muted/20">
-                      <TableCell className="font-bold sticky left-0 bg-muted/50 z-10 border-r border-border/50">Long-term Liabilities</TableCell>
-                      {sheets.map((sheet) => (
-                        <EditableCell
-                          key={`${sheet.id}-longTermLiabilities`}
-                          value={sheet.longTermLiabilities}
-                          itemId={sheet.id}
-                          field="longTermLiabilities"
-                          reportType="bs"
-                          isEditable={JSON.parse(sheet.isEditable || '{}').longTermLiabilities}
-                          className="font-bold"
-                        />
-                      ))}
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50 pl-6">Long-term Debt</TableCell>
-                      {sheets.map((sheet) => (
-                        <EditableCell
-                          key={`${sheet.id}-longTermDebt`}
-                          value={sheet.longTermDebt}
-                          itemId={sheet.id}
-                          field="longTermDebt"
-                          reportType="bs"
-                          isEditable={JSON.parse(sheet.isEditable || '{}').longTermDebt}
-                        />
-                      ))}
-                    </TableRow>
-                    <TableRow className="border-t-2 bg-muted/30 dark:bg-muted/20">
-                      <TableCell className="font-bold sticky left-0 bg-muted/50 z-10 border-r border-border/50">Total Liabilities</TableCell>
-                      {sheets.map((sheet) => (
-                        <EditableCell
-                          key={`${sheet.id}-totalLiabilities`}
-                          value={sheet.totalLiabilities}
-                          itemId={sheet.id}
-                          field="totalLiabilities"
-                          reportType="bs"
-                          isEditable={JSON.parse(sheet.isEditable || '{}').totalLiabilities}
-                          className="font-bold"
-                        />
-                      ))}
-                    </TableRow>
-                    
+                    <CollapsibleTableSection 
+                      title={financialSections.balanceSheet.liabilities.title}
+                      sectionKey={financialSections.balanceSheet.liabilities.key}
+                      statements={sheets}
+                      className="bg-muted/40 dark:bg-muted/30"
+                      prefix={`bs-${topic}`}
+                      calculateTotal={true}
+                      totalFields={['totalLiabilities']}
+                    >
+                      {/* Current Liabilities Subsection */}
+                      <CollapsibleTableSection 
+                        title={financialSections.balanceSheet.liabilities.sections?.currentLiabilities.title}
+                        sectionKey={financialSections.balanceSheet.liabilities.sections?.currentLiabilities.key}
+                        statements={sheets}
+                        className="bg-muted/30 dark:bg-muted/20"
+                        isSubSection={true}
+                        prefix={`bs-${topic}`}
+                        calculateTotal={true}
+                        totalFields={['accountsPayable', 'shortTermDebt']}
+                      >
+                        {financialSections.balanceSheet.liabilities.sections?.currentLiabilities.items.map((item) => (
+                          <TableRow key={item.field}>
+                            <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50 pl-16">
+                              {item.title}
+                            </TableCell>
+                            {sheets.map((sheet) => (
+                              <EditableCell
+                                key={`${sheet.id}-${item.field}`}
+                                value={sheet[item.field as keyof BalanceSheet] as string}
+                                itemId={sheet.id}
+                                field={item.field}
+                                reportType="bs"
+                                isEditable={JSON.parse(sheet.isEditable || '{}')[item.field]}
+                              />
+                            ))}
+                          </TableRow>
+                        ))}
+                      </CollapsibleTableSection>
+
+                      {/* Long-term Liabilities Subsection */}
+                      <CollapsibleTableSection 
+                        title={financialSections.balanceSheet.liabilities.sections?.longTermLiabilities.title}
+                        sectionKey={financialSections.balanceSheet.liabilities.sections?.longTermLiabilities.key}
+                        statements={sheets}
+                        className="bg-muted/30 dark:bg-muted/20"
+                        isSubSection={true}
+                        prefix={`bs-${topic}`}
+                        calculateTotal={true}
+                        totalFields={['longTermDebt']}
+                      >
+                        {financialSections.balanceSheet.liabilities.sections?.longTermLiabilities.items.map((item) => (
+                          <TableRow key={item.field}>
+                            <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50 pl-16">
+                              {item.title}
+                            </TableCell>
+                            {sheets.map((sheet) => (
+                              <EditableCell
+                                key={`${sheet.id}-${item.field}`}
+                                value={sheet[item.field as keyof BalanceSheet] as string}
+                                itemId={sheet.id}
+                                field={item.field}
+                                reportType="bs"
+                                isEditable={JSON.parse(sheet.isEditable || '{}')[item.field]}
+                              />
+                            ))}
+                          </TableRow>
+                        ))}
+                      </CollapsibleTableSection>
+
+                      {/* Total Liabilities Row */}
+                      <TableRow className="border-t-2 bg-primary/10 dark:bg-primary/5">
+                        <TableCell className="font-bold text-lg sticky left-0 bg-primary/20 z-10 border-r border-border/50 py-4 px-12 text-foreground">
+                          Total Liabilities
+                        </TableCell>
+                        {sheets.map((sheet) => (
+                          <EditableCell
+                            key={`${sheet.id}-totalLiabilities`}
+                            value={sheet.totalLiabilities}
+                            itemId={sheet.id}
+                            field="totalLiabilities"
+                            reportType="bs"
+                            isEditable={JSON.parse(sheet.isEditable || '{}').totalLiabilities}
+                            className="font-bold text-lg"
+                          />
+                        ))}
+                      </TableRow>
+                    </CollapsibleTableSection>
+
                     {/* Equity Section */}
-                    <TableRow className="bg-muted/30 dark:bg-muted/20">
-                      <TableCell className="font-bold sticky left-0 bg-muted/50 z-10 border-r border-border/50">Shareholders' Equity</TableCell>
-                      {sheets.map((sheet) => (
-                        <EditableCell
-                          key={`${sheet.id}-shareholdersEquity`}
-                          value={sheet.shareholdersEquity}
-                          itemId={sheet.id}
-                          field="shareholdersEquity"
-                          reportType="bs"
-                          isEditable={JSON.parse(sheet.isEditable || '{}').shareholdersEquity}
-                          className="font-bold"
-                        />
+                    <CollapsibleTableSection 
+                      title={financialSections.balanceSheet.equity.title}
+                      sectionKey={financialSections.balanceSheet.equity.key}
+                      statements={sheets}
+                      className="bg-muted/40 dark:bg-muted/30"
+                      prefix={`bs-${topic}`}
+                      calculateTotal={true}
+                      totalFields={['shareholdersEquity', 'retainedEarnings']}
+                    >
+                      {financialSections.balanceSheet.equity.items.map((item) => (
+                        <TableRow key={item.field}>
+                          <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50 pl-12">
+                            {item.title}
+                          </TableCell>
+                          {sheets.map((sheet) => (
+                            <EditableCell
+                              key={`${sheet.id}-${item.field}`}
+                              value={sheet[item.field as keyof BalanceSheet] as string}
+                              itemId={sheet.id}
+                              field={item.field}
+                              reportType="bs"
+                              isEditable={JSON.parse(sheet.isEditable || '{}')[item.field]}
+                              className="font-bold"
+                            />
+                          ))}
+                        </TableRow>
                       ))}
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50 pl-6">Retained Earnings</TableCell>
-                      {sheets.map((sheet) => (
-                        <EditableCell
-                          key={`${sheet.id}-retainedEarnings`}
-                          value={sheet.retainedEarnings}
-                          itemId={sheet.id}
-                          field="retainedEarnings"
-                          reportType="bs"
-                          isEditable={JSON.parse(sheet.isEditable || '{}').retainedEarnings}
-                        />
-                      ))}
-                    </TableRow>
+                    </CollapsibleTableSection>
                   </TableBody>
                 </Table>
               </div>
@@ -1168,193 +1504,126 @@ export default function FinancialReports() {
                     </TableRow>
                   </TableHeader>
                 <TableBody>
-                  <TableRow className="bg-muted/30 dark:bg-muted/20">
-                    <TableCell className="font-bold sticky left-0 bg-muted/50 z-10 border-r border-border/50">Operating Cash Flow</TableCell>
-                    {statements.map((statement) => (
-                      <EditableCell
-                        key={`${statement.id}-operatingCashFlow`}
-                        value={statement.operatingCashFlow}
-                        itemId={statement.id}
-                        field="operatingCashFlow"
-                        reportType="cf"
-                        isEditable={JSON.parse(statement.isEditable || '{}').operatingCashFlow}
-                        className="font-bold"
-                      />
+                  {/* Operating Activities Section */}
+                  <CollapsibleTableSection 
+                    title={financialSections.cashFlow.operating.title}
+                    sectionKey={financialSections.cashFlow.operating.key}
+                    statements={statements}
+                    className="bg-muted/30 dark:bg-muted/20"
+                    prefix={`cf-${topic}`}
+                    calculateTotal={true}
+                    totalFields={['operatingCashFlow']}
+                  >
+                    {financialSections.cashFlow.operating.items.map((item) => (
+                      <TableRow key={item.field}>
+                        <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50 pl-12">
+                          {item.title}
+                        </TableCell>
+                        {statements.map((statement) => (
+                          <EditableCell
+                            key={`${statement.id}-${item.field}`}
+                            value={statement[item.field as keyof CashFlowStatement] as string}
+                            itemId={statement.id}
+                            field={item.field}
+                            reportType="cf"
+                            isEditable={JSON.parse(statement.isEditable || '{}')[item.field]}
+                            className={item.field === 'operatingCashFlow' ? 'font-bold' : ''}
+                          />
+                        ))}
+                      </TableRow>
                     ))}
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50 pl-8">Net Income</TableCell>
-                    {statements.map((statement) => (
-                      <EditableCell
-                        key={`${statement.id}-netIncome`}
-                        value={statement.netIncome}
-                        itemId={statement.id}
-                        field="netIncome"
-                        reportType="cf"
-                        isEditable={JSON.parse(statement.isEditable || '{}').netIncome}
-                      />
+                  </CollapsibleTableSection>
+
+                  {/* Investing Activities Section */}
+                  <CollapsibleTableSection 
+                    title={financialSections.cashFlow.investing.title}
+                    sectionKey={financialSections.cashFlow.investing.key}
+                    statements={statements}
+                    className="bg-muted/30 dark:bg-muted/20"
+                    prefix={`cf-${topic}`}
+                    calculateTotal={true}
+                    totalFields={['investingCashFlow']}
+                  >
+                    {financialSections.cashFlow.investing.items.map((item) => (
+                      <TableRow key={item.field}>
+                        <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50 pl-12">
+                          {item.title}
+                        </TableCell>
+                        {statements.map((statement) => (
+                          <EditableCell
+                            key={`${statement.id}-${item.field}`}
+                            value={statement[item.field as keyof CashFlowStatement] as string}
+                            itemId={statement.id}
+                            field={item.field}
+                            reportType="cf"
+                            isEditable={JSON.parse(statement.isEditable || '{}')[item.field]}
+                            className={item.field === 'investingCashFlow' ? 'font-bold' : ''}
+                          />
+                        ))}
+                      </TableRow>
                     ))}
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50 pl-8">Depreciation</TableCell>
-                    {statements.map((statement) => (
-                      <EditableCell
-                        key={`${statement.id}-depreciation`}
-                        value={statement.depreciation}
-                        itemId={statement.id}
-                        field="depreciation"
-                        reportType="cf"
-                        isEditable={JSON.parse(statement.isEditable || '{}').depreciation}
-                      />
+                  </CollapsibleTableSection>
+
+                  {/* Financing Activities Section */}
+                  <CollapsibleTableSection 
+                    title={financialSections.cashFlow.financing.title}
+                    sectionKey={financialSections.cashFlow.financing.key}
+                    statements={statements}
+                    className="bg-muted/30 dark:bg-muted/20"
+                    prefix={`cf-${topic}`}
+                    calculateTotal={true}
+                    totalFields={['financingCashFlow']}
+                  >
+                    {financialSections.cashFlow.financing.items.map((item) => (
+                      <TableRow key={item.field}>
+                        <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50 pl-12">
+                          {item.title === 'Debt Issuance' ? 'Loan Proceeds' : item.title === 'Debt Repayment' ? 'Debt Repayments' : item.title}
+                        </TableCell>
+                        {statements.map((statement) => (
+                          <EditableCell
+                            key={`${statement.id}-${item.field}`}
+                            value={statement[item.field as keyof CashFlowStatement] as string}
+                            itemId={statement.id}
+                            field={item.field}
+                            reportType="cf"
+                            isEditable={JSON.parse(statement.isEditable || '{}')[item.field]}
+                            className={item.field === 'financingCashFlow' ? 'font-bold' : ''}
+                          />
+                        ))}
+                      </TableRow>
                     ))}
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50 pl-8">Changes in Working Capital</TableCell>
-                    {statements.map((statement) => (
-                      <EditableCell
-                        key={`${statement.id}-changeInWorkingCapital`}
-                        value={statement.changeInWorkingCapital}
-                        itemId={statement.id}
-                        field="changeInWorkingCapital"
-                        reportType="cf"
-                        isEditable={JSON.parse(statement.isEditable || '{}').changeInWorkingCapital}
-                      />
+                  </CollapsibleTableSection>
+
+                  {/* Net Change in Cash Section */}
+                  <CollapsibleTableSection 
+                    title={financialSections.cashFlow.netCashChange.title}
+                    sectionKey={financialSections.cashFlow.netCashChange.key}
+                    statements={statements}
+                    className="border-t-2 bg-primary/15 dark:bg-primary/10"
+                    showToggle={false}
+                    prefix={`cf-${topic}`}
+                    calculateTotal={true}
+                    totalFields={['netChangeInCash']}
+                  >
+                    {financialSections.cashFlow.netCashChange.items.map((item, index) => (
+                      <TableRow key={item.field} className={item.field === 'netChangeInCash' ? "bg-primary/20 dark:bg-primary/15" : "bg-primary/10 dark:bg-primary/5"}>
+                        <TableCell className={`${item.field === 'netChangeInCash' ? "font-bold text-lg" : "font-bold"} sticky left-0 bg-primary/20 z-10 border-r border-border/50 pl-12`}>
+                          {item.title}
+                        </TableCell>
+                        {statements.map((statement) => (
+                          <EditableCell
+                            key={`${statement.id}-${item.field}`}
+                            value={statement[item.field as keyof CashFlowStatement] as string}
+                            itemId={statement.id}
+                            field={item.field}
+                            reportType="cf"
+                            isEditable={JSON.parse(statement.isEditable || '{}')[item.field]}
+                            className={item.field === 'netChangeInCash' ? "font-bold text-lg" : item.field === 'endingCashBalance' ? "font-bold text-lg" : "font-bold"}
+                          />
+                        ))}
+                      </TableRow>
                     ))}
-                  </TableRow>
-                  <TableRow className="bg-muted/30 dark:bg-muted/20">
-                    <TableCell className="font-bold sticky left-0 bg-muted/50 z-10 border-r border-border/50">Investing Cash Flow</TableCell>
-                    {statements.map((statement) => (
-                      <EditableCell
-                        key={`${statement.id}-investingCashFlow`}
-                        value={statement.investingCashFlow}
-                        itemId={statement.id}
-                        field="investingCashFlow"
-                        reportType="cf"
-                        isEditable={JSON.parse(statement.isEditable || '{}').investingCashFlow}
-                        className="font-bold"
-                      />
-                    ))}
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50 pl-8">Capital Expenditures</TableCell>
-                    {statements.map((statement) => (
-                      <EditableCell
-                        key={`${statement.id}-capitalExpenditures`}
-                        value={statement.capitalExpenditures}
-                        itemId={statement.id}
-                        field="capitalExpenditures"
-                        reportType="cf"
-                        isEditable={JSON.parse(statement.isEditable || '{}').capitalExpenditures}
-                      />
-                    ))}
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50 pl-8">Business Acquisitions</TableCell>
-                    {statements.map((statement) => (
-                      <EditableCell
-                        key={`${statement.id}-acquisitions`}
-                        value={statement.acquisitions}
-                        itemId={statement.id}
-                        field="acquisitions"
-                        reportType="cf"
-                        isEditable={JSON.parse(statement.isEditable || '{}').acquisitions}
-                      />
-                    ))}
-                  </TableRow>
-                  <TableRow className="bg-muted/30 dark:bg-muted/20">
-                    <TableCell className="font-bold sticky left-0 bg-muted/50 z-10 border-r border-border/50">Financing Cash Flow</TableCell>
-                    {statements.map((statement) => (
-                      <EditableCell
-                        key={`${statement.id}-financingCashFlow`}
-                        value={statement.financingCashFlow}
-                        itemId={statement.id}
-                        field="financingCashFlow"
-                        reportType="cf"
-                        isEditable={JSON.parse(statement.isEditable || '{}').financingCashFlow}
-                        className="font-bold"
-                      />
-                    ))}
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50 pl-8">Loan Proceeds</TableCell>
-                    {statements.map((statement) => (
-                      <EditableCell
-                        key={`${statement.id}-debtIssuance`}
-                        value={statement.debtIssuance}
-                        itemId={statement.id}
-                        field="debtIssuance"
-                        reportType="cf"
-                        isEditable={JSON.parse(statement.isEditable || '{}').debtIssuance}
-                      />
-                    ))}
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50 pl-8">Debt Repayments</TableCell>
-                    {statements.map((statement) => (
-                      <EditableCell
-                        key={`${statement.id}-debtRepayment`}
-                        value={statement.debtRepayment}
-                        itemId={statement.id}
-                        field="debtRepayment"
-                        reportType="cf"
-                        isEditable={JSON.parse(statement.isEditable || '{}').debtRepayment}
-                      />
-                    ))}
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50 pl-8">Dividends Paid</TableCell>
-                    {statements.map((statement) => (
-                      <EditableCell
-                        key={`${statement.id}-dividendsPaid`}
-                        value={statement.dividendsPaid}
-                        itemId={statement.id}
-                        field="dividendsPaid"
-                        reportType="cf"
-                        isEditable={JSON.parse(statement.isEditable || '{}').dividendsPaid}
-                      />
-                    ))}
-                  </TableRow>
-                  <TableRow className="border-t-2 bg-muted/30 dark:bg-muted/20">
-                    <TableCell className="font-bold text-lg sticky left-0 bg-muted/50 z-10 border-r border-border/50">Net Change in Cash</TableCell>
-                    {statements.map((statement) => (
-                      <EditableCell
-                        key={`${statement.id}-netChangeInCash`}
-                        value={statement.netChangeInCash}
-                        itemId={statement.id}
-                        field="netChangeInCash"
-                        reportType="cf"
-                        isEditable={JSON.parse(statement.isEditable || '{}').netChangeInCash}
-                        className="font-bold text-lg"
-                      />
-                    ))}
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className="font-medium sticky left-0 bg-muted/50 z-10 border-r border-border/50">Beginning Cash Balance</TableCell>
-                    {statements.map((statement) => (
-                      <EditableCell
-                        key={`${statement.id}-beginningCashBalance`}
-                        value={statement.beginningCashBalance}
-                        itemId={statement.id}
-                        field="beginningCashBalance"
-                        reportType="cf"
-                        isEditable={JSON.parse(statement.isEditable || '{}').beginningCashBalance}
-                      />
-                    ))}
-                  </TableRow>
-                  <TableRow className="border-t-2 bg-muted/30 dark:bg-muted/20">
-                    <TableCell className="font-bold text-lg sticky left-0 bg-muted/50 z-10 border-r border-border/50">Ending Cash Balance</TableCell>
-                    {statements.map((statement) => (
-                      <EditableCell
-                        key={`${statement.id}-endingCashBalance`}
-                        value={statement.endingCashBalance}
-                        itemId={statement.id}
-                        field="endingCashBalance"
-                        reportType="cf"
-                        isEditable={JSON.parse(statement.isEditable || '{}').endingCashBalance}
-                        className="font-bold text-lg"
-                      />
-                    ))}
-                  </TableRow>
+                  </CollapsibleTableSection>
                 </TableBody>
               </Table>
               </div>

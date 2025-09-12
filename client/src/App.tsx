@@ -5,7 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Home from "@/pages/Home";
 import Dashboard from "@/pages/Dashboard";
-import FinancialReports from "@/pages/FinancialReports";
+import FinancialReports from "@/pages/FinancialReportsClean";
 import NotFound from "@/pages/not-found";
 
 function Router() {
