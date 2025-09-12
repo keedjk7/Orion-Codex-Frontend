@@ -3,17 +3,10 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Copy, Bot, TrendingUp, CheckCircle, MessageSquare } from "lucide-react";
+import { BarChart3, DollarSign, TrendingUp, CheckCircle, MessageSquare, Bot, PieChart } from "lucide-react";
 import heroBackground from "@assets/generated_images/Gradient_mesh_hero_background_83768b02.png";
 
 export default function Hero() {
-  const [copied, setCopied] = useState(false);
-
-  const handleCopy = () => {
-    navigator.clipboard.writeText("npm i -g @orion/cli");
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
@@ -117,7 +110,11 @@ export default function Hero() {
           </div>
           
           <h1 className="text-5xl md:text-7xl font-black text-foreground leading-tight" data-testid="hero-headline">
-            Your AI-Powered
+            <span className="bg-gradient-to-r from-primary to-chart-1 bg-clip-text text-transparent text-8xl md:text-9xl">
+              Orion
+            </span>
+            <br />
+            <span className="text-4xl md:text-5xl">Your AI-Powered</span>
             <br />
             <span className="bg-gradient-to-r from-chart-1 to-chart-2 bg-clip-text text-transparent">
               Finance Team Companion
@@ -152,16 +149,39 @@ export default function Hero() {
               Get Started →
             </Button>
           </Link>
-          <Button 
-            variant="outline" 
-            size="lg" 
-            className="text-lg px-6 py-4 font-mono gap-2 hover-elevate active-elevate-2"
-            onClick={handleCopy}
-            data-testid="button-copy-cli"
-          >
-            $ npm i -g @orion/cli
-            <Copy className="w-4 h-4" />
-          </Button>
+        </div>
+
+        {/* Key Finance Features */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto mb-8">
+          <Card className="p-6 bg-card/80 backdrop-blur-sm hover-elevate transition-all duration-300" data-testid="feature-finance-reports">
+            <div className="flex items-center gap-3 mb-3">
+              <BarChart3 className="w-6 h-6 text-chart-1" />
+              <h3 className="font-semibold text-card-foreground">Finance Reports</h3>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Generate comprehensive financial reports in seconds with AI-powered analysis and insights.
+            </p>
+          </Card>
+          
+          <Card className="p-6 bg-card/80 backdrop-blur-sm hover-elevate transition-all duration-300" data-testid="feature-resource-allocation">
+            <div className="flex items-center gap-3 mb-3">
+              <PieChart className="w-6 h-6 text-chart-2" />
+              <h3 className="font-semibold text-card-foreground">Resource Allocation</h3>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Track costs and revenue allocation across departments with real-time budget monitoring.
+            </p>
+          </Card>
+          
+          <Card className="p-6 bg-card/80 backdrop-blur-sm hover-elevate transition-all duration-300" data-testid="feature-sales-forecast">
+            <div className="flex items-center gap-3 mb-3">
+              <DollarSign className="w-6 h-6 text-chart-3" />
+              <h3 className="font-semibold text-card-foreground">Sales Forecast</h3>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Predict future sales trends and revenue with advanced machine learning models.
+            </p>
+          </Card>
         </div>
 
         {/* Trust Indicators */}
