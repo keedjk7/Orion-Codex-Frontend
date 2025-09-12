@@ -1205,12 +1205,12 @@ export default function FinancialReportsClean() {
                             {plStatements.map(statement => (
                               <TableHead 
                                 key={statement.id} 
-                                className="text-center font-bold text-foreground py-4 px-6 min-w-[150px]"
+                                className="text-center font-bold text-foreground py-4 px-6 min-w-[150px] border-l border-border/50"
                                 data-testid={`header-period-${statement.period}`}
                               >
-                                <div>
-                                  <div className="text-sm">{statement.topic}</div>
-                                  <div className="text-lg">{statement.period}</div>
+                                <div className="space-y-1">
+                                  <div className="text-xs text-muted-foreground font-normal">{statement.topic}</div>
+                                  <div className="text-sm font-bold bg-primary/10 rounded px-2 py-1">{statement.period}</div>
                                 </div>
                               </TableHead>
                             ))}
@@ -1478,12 +1478,12 @@ export default function FinancialReportsClean() {
                             {balanceSheets.map(statement => (
                               <TableHead 
                                 key={statement.id} 
-                                className="text-center font-bold text-foreground py-4 px-6 min-w-[150px]"
+                                className="text-center font-bold text-foreground py-4 px-6 min-w-[150px] border-l border-border/50"
                                 data-testid={`header-period-${statement.period}`}
                               >
-                                <div>
-                                  <div className="text-sm">{statement.topic}</div>
-                                  <div className="text-lg">{statement.period}</div>
+                                <div className="space-y-1">
+                                  <div className="text-xs text-muted-foreground font-normal">{statement.topic}</div>
+                                  <div className="text-sm font-bold bg-primary/10 rounded px-2 py-1">{statement.period}</div>
                                 </div>
                               </TableHead>
                             ))}
@@ -1853,12 +1853,12 @@ export default function FinancialReportsClean() {
                             {cashFlowStatements.map(statement => (
                               <TableHead 
                                 key={statement.id} 
-                                className="text-center font-bold text-foreground py-4 px-6 min-w-[150px]"
+                                className="text-center font-bold text-foreground py-4 px-6 min-w-[150px] border-l border-border/50"
                                 data-testid={`header-period-${statement.period}`}
                               >
-                                <div>
-                                  <div className="text-sm">{statement.topic}</div>
-                                  <div className="text-lg">{statement.period}</div>
+                                <div className="space-y-1">
+                                  <div className="text-xs text-muted-foreground font-normal">{statement.topic}</div>
+                                  <div className="text-sm font-bold bg-primary/10 rounded px-2 py-1">{statement.period}</div>
                                 </div>
                               </TableHead>
                             ))}

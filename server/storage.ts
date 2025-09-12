@@ -470,8 +470,66 @@ export class MemStorage implements IStorage {
   }
 
   private initializeFinancialReportsData() {
-    // Sample P&L data - 12 months
-    const samplePLData = [
+    // Sample P&L data - Multiple companies, 12 months each
+    const companies = [
+      "บริษัท สยามสแตนดาร์ด จำกัด (มหาชน)",
+      "บริษัท ไทยเทค อินโนเวชั่น จำกัด",
+      "บริษัท เอเชียน ไดนามิค จำกัด (มหาชน)",
+      "บริษัท กรุงเทพแมนูแฟคเจอริ่ง จำกัด"
+    ];
+
+    const samplePLData = [];
+
+    // Generate data for each company
+    companies.forEach((company, companyIndex) => {
+      const baseRevenue = 4000000 + (companyIndex * 1500000); // Different base revenue for each company
+      const baseCogsRate = 0.58 + (companyIndex * 0.02); // Different COGS rates
+      const baseOpexRate = 0.22 + (companyIndex * 0.015); // Different operating expense rates
+
+      for (let month = 1; month <= 12; month++) {
+        const period = `2024-${month.toString().padStart(2, '0')}`;
+        const seasonalMultiplier = 1 + (Math.sin((month - 1) * Math.PI / 6) * 0.15); // Seasonal variation
+        const companyVariation = 1 + (companyIndex * 0.1) + (Math.random() * 0.1 - 0.05); // Company-specific variation
+        
+        const totalRevenue = Math.round(baseRevenue * seasonalMultiplier * companyVariation);
+        const costOfGoodsSold = Math.round(totalRevenue * baseCogsRate);
+        const grossProfit = totalRevenue - costOfGoodsSold;
+        const operatingExpenses = Math.round(totalRevenue * baseOpexRate);
+        const operatingIncome = grossProfit - operatingExpenses;
+        const otherIncome = Math.round(totalRevenue * 0.008 * (1 + Math.random() * 0.5));
+        const otherExpenses = Math.round(totalRevenue * 0.004 * (1 + Math.random() * 0.3));
+        const netIncomeBeforeTax = operatingIncome + otherIncome - otherExpenses;
+        const taxExpense = Math.round(netIncomeBeforeTax * 0.2);
+        const netIncome = netIncomeBeforeTax - taxExpense;
+
+        samplePLData.push({
+          topic: company,
+          period: period,
+          totalRevenue: totalRevenue.toString() + ".00",
+          costOfGoodsSold: costOfGoodsSold.toString() + ".00",
+          grossProfit: grossProfit.toString() + ".00",
+          operatingExpenses: operatingExpenses.toString() + ".00",
+          operatingIncome: operatingIncome.toString() + ".00",
+          otherIncome: otherIncome.toString() + ".00",
+          otherExpenses: otherExpenses.toString() + ".00",
+          netIncomeBeforeTax: netIncomeBeforeTax.toString() + ".00",
+          taxExpense: taxExpense.toString() + ".00",
+          netIncome: netIncome.toString() + ".00",
+          isEditable: JSON.stringify({
+            totalRevenue: true,
+            costOfGoodsSold: true,
+            operatingExpenses: true,
+            grossProfit: false,
+            operatingIncome: false,
+            netIncomeBeforeTax: false,
+            netIncome: false
+          })
+        });
+      }
+    });
+
+    // Add the original ABC company data as well
+    const abcData = [
       {
         topic: "บริษัท ABC จำกัด",
         period: "2024-01",
@@ -750,6 +808,9 @@ export class MemStorage implements IStorage {
       }
     ];
 
+    // Combine all P&L data
+    samplePLData.push(...abcData);
+
     for (const data of samplePLData) {
       const id = randomUUID();
       const statement: ProfitLossStatement = {
@@ -761,8 +822,73 @@ export class MemStorage implements IStorage {
       this.profitLossStatements.set(id, statement);
     }
 
-    // Sample Balance Sheet data - 12 months
-    const sampleBSData = [
+    // Sample Balance Sheet data - Multiple companies, 12 months each
+    const sampleBSData = [];
+
+    // Generate balance sheet data for each company
+    companies.forEach((company, companyIndex) => {
+      const baseAssets = 20000000 + (companyIndex * 8000000); // Different base assets for each company
+      const baseLiabilityRate = 0.45 + (companyIndex * 0.03); // Different liability rates
+
+      for (let month = 1; month <= 12; month++) {
+        const period = `2024-${month.toString().padStart(2, '0')}`;
+        const seasonalMultiplier = 1 + (Math.sin((month - 1) * Math.PI / 6) * 0.08); // Seasonal variation
+        const companyVariation = 1 + (companyIndex * 0.15) + (Math.random() * 0.05 - 0.025); // Company-specific variation
+        
+        const totalAssets = Math.round(baseAssets * seasonalMultiplier * companyVariation);
+        const currentAssets = Math.round(totalAssets * (0.35 + Math.random() * 0.1));
+        const cash = Math.round(currentAssets * (0.25 + Math.random() * 0.1));
+        const accountsReceivable = Math.round(currentAssets * (0.35 + Math.random() * 0.1));
+        const inventory = currentAssets - cash - accountsReceivable;
+        const nonCurrentAssets = totalAssets - currentAssets;
+        const propertyPlantEquipment = Math.round(nonCurrentAssets * (0.8 + Math.random() * 0.1));
+        const intangibleAssets = nonCurrentAssets - propertyPlantEquipment;
+        
+        const totalLiabilities = Math.round(totalAssets * baseLiabilityRate);
+        const currentLiabilities = Math.round(totalLiabilities * (0.3 + Math.random() * 0.2));
+        const accountsPayable = Math.round(currentLiabilities * (0.5 + Math.random() * 0.2));
+        const shortTermDebt = currentLiabilities - accountsPayable;
+        const longTermLiabilities = totalLiabilities - currentLiabilities;
+        const longTermDebt = longTermLiabilities;
+        
+        const shareholdersEquity = totalAssets - totalLiabilities;
+        const retainedEarnings = Math.round(shareholdersEquity * (0.6 + Math.random() * 0.2));
+
+        sampleBSData.push({
+          topic: company,
+          period: period,
+          currentAssets: currentAssets.toString() + ".00",
+          cash: cash.toString() + ".00",
+          accountsReceivable: accountsReceivable.toString() + ".00",
+          inventory: inventory.toString() + ".00",
+          nonCurrentAssets: nonCurrentAssets.toString() + ".00",
+          propertyPlantEquipment: propertyPlantEquipment.toString() + ".00",
+          intangibleAssets: intangibleAssets.toString() + ".00",
+          totalAssets: totalAssets.toString() + ".00",
+          currentLiabilities: currentLiabilities.toString() + ".00",
+          accountsPayable: accountsPayable.toString() + ".00",
+          shortTermDebt: shortTermDebt.toString() + ".00",
+          longTermLiabilities: longTermLiabilities.toString() + ".00",
+          longTermDebt: longTermDebt.toString() + ".00",
+          totalLiabilities: totalLiabilities.toString() + ".00",
+          shareholdersEquity: shareholdersEquity.toString() + ".00",
+          retainedEarnings: retainedEarnings.toString() + ".00",
+          isEditable: JSON.stringify({
+            cash: true,
+            accountsReceivable: true,
+            inventory: true,
+            accountsPayable: true,
+            shortTermDebt: true,
+            currentAssets: false,
+            totalAssets: false,
+            totalLiabilities: false
+          })
+        });
+      }
+    });
+
+    // Add original ABC balance sheet data
+    const abcBalanceSheetData = [
       {
         topic: "บริษัท ABC จำกัด",
         period: "2024-01",
@@ -1125,6 +1251,9 @@ export class MemStorage implements IStorage {
       }
     ];
 
+    // Combine all balance sheet data
+    sampleBSData.push(...abcBalanceSheetData);
+
     for (const data of sampleBSData) {
       const id = randomUUID();
       const sheet: BalanceSheet = {
@@ -1136,8 +1265,75 @@ export class MemStorage implements IStorage {
       this.balanceSheets.set(id, sheet);
     }
 
-    // Sample Cash Flow data - 12 months
-    const sampleCFData = [
+    // Sample Cash Flow data - Multiple companies, 12 months each
+    const sampleCFData = [];
+
+    // Generate cash flow data for each company
+    companies.forEach((company, companyIndex) => {
+      const baseOperatingCashFlow = 800000 + (companyIndex * 300000); // Different base cash flows
+      const baseCapex = -400000 - (companyIndex * 150000); // Different capex levels
+
+      for (let month = 1; month <= 12; month++) {
+        const period = `2024-${month.toString().padStart(2, '0')}`;
+        const seasonalMultiplier = 1 + (Math.sin((month - 1) * Math.PI / 6) * 0.2); // Seasonal variation
+        const companyVariation = 1 + (companyIndex * 0.1) + (Math.random() * 0.15 - 0.075); // Company-specific variation
+        
+        const operatingCashFlow = Math.round(baseOperatingCashFlow * seasonalMultiplier * companyVariation);
+        const netIncome = Math.round(operatingCashFlow * (0.7 + Math.random() * 0.2));
+        const depreciation = Math.round(operatingCashFlow * (0.25 + Math.random() * 0.1));
+        const changeInWorkingCapital = Math.round(operatingCashFlow * (Math.random() * 0.2 - 0.1));
+        
+        const capitalExpenditures = Math.round(baseCapex * seasonalMultiplier * companyVariation);
+        const acquisitions = Math.random() > 0.8 ? Math.round(capitalExpenditures * 0.3) : 0;
+        const investingCashFlow = capitalExpenditures + acquisitions;
+        
+        const debtIssuance = Math.random() > 0.7 ? Math.round(operatingCashFlow * 0.2) : 0;
+        const debtRepayment = Math.round(operatingCashFlow * (0.05 + Math.random() * 0.1)) * -1;
+        const dividendsPaid = Math.round(netIncome * (0.1 + Math.random() * 0.15)) * -1;
+        const financingCashFlow = debtIssuance + debtRepayment + dividendsPaid;
+        
+        const netChangeInCash = operatingCashFlow + investingCashFlow + financingCashFlow;
+        const beginningCashBalance = 1500000 + (companyIndex * 500000) + (month - 1) * 100000;
+        const endingCashBalance = beginningCashBalance + netChangeInCash;
+
+        sampleCFData.push({
+          topic: company,
+          period: period,
+          operatingCashFlow: operatingCashFlow.toString() + ".00",
+          netIncome: netIncome.toString() + ".00",
+          depreciation: depreciation.toString() + ".00",
+          changeInWorkingCapital: changeInWorkingCapital.toString() + ".00",
+          investingCashFlow: investingCashFlow.toString() + ".00",
+          capitalExpenditures: capitalExpenditures.toString() + ".00",
+          acquisitions: acquisitions.toString() + ".00",
+          financingCashFlow: financingCashFlow.toString() + ".00",
+          debtIssuance: debtIssuance.toString() + ".00",
+          debtRepayment: debtRepayment.toString() + ".00",
+          dividendsPaid: dividendsPaid.toString() + ".00",
+          netChangeInCash: netChangeInCash.toString() + ".00",
+          beginningCashBalance: beginningCashBalance.toString() + ".00",
+          endingCashBalance: endingCashBalance.toString() + ".00",
+          isEditable: JSON.stringify({
+            netIncome: true,
+            depreciation: true,
+            changeInWorkingCapital: true,
+            capitalExpenditures: true,
+            acquisitions: true,
+            debtIssuance: true,
+            debtRepayment: true,
+            dividendsPaid: true,
+            operatingCashFlow: false,
+            investingCashFlow: false,
+            financingCashFlow: false,
+            netChangeInCash: false,
+            endingCashBalance: false
+          })
+        });
+      }
+    });
+
+    // Add original ABC cash flow data
+    const abcCashFlowData = [
       {
         topic: "บริษัท ABC จำกัด",
         period: "2024-01",
@@ -1463,6 +1659,9 @@ export class MemStorage implements IStorage {
         })
       }
     ];
+
+    // Combine all cash flow data
+    sampleCFData.push(...abcCashFlowData);
 
     for (const data of sampleCFData) {
       const id = randomUUID();
