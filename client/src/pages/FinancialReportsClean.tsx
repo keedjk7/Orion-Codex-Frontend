@@ -73,7 +73,20 @@ export default function FinancialReportsClean() {
   const [editingCells, setEditingCells] = useState<Record<string, any>>({});
   const queryClient = useQueryClient();
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
-  const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>({});
+  // Smart defaults - key sections that should be collapsed (true means collapsed)
+  const defaultCollapsedSections: Record<string, boolean> = {
+    'pl-income': true, // Revenue section collapsed by default
+    'pl-operatingExpenses': true, // Expenses collapsed
+    'pl-netIncome': false, // Net Income expanded by default
+    'bs-assets': false, // Assets expanded
+    'bs-liabilities': true, // Liabilities collapsed
+    'bs-equity': false, // Equity expanded
+    'cf-operating': false, // Operating activities expanded
+    'cf-investing': true, // Investing collapsed
+    'cf-financing': true // Financing collapsed
+  };
+
+  const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>(() => defaultCollapsedSections);
   const { toast } = useToast();
 
   // Fetch financial reports data
@@ -157,7 +170,8 @@ export default function FinancialReportsClean() {
   };
 
   const isCollapsed = (sectionKey: string) => {
-    return collapsedSections[sectionKey] || false;
+    // Use smart defaults if section hasn't been explicitly set
+    return collapsedSections[sectionKey] ?? defaultCollapsedSections[sectionKey] ?? true;
   };
 
   // Helper function to calculate section totals
@@ -747,22 +761,99 @@ export default function FinancialReportsClean() {
         <Navigation />
         
         <div className="container mx-auto px-4 py-8">
+          {/* Enhanced Header Section */}
           <div className="mb-8">
-            <h1 className="text-4xl font-bold text-foreground mb-2" data-testid="title-financial-reports">
-              Financial Reports
-            </h1>
-            <p className="text-lg text-muted-foreground" data-testid="text-subtitle">
-              Comprehensive financial statements and analysis
-            </p>
+            <div className="flex items-start justify-between mb-6">
+              <div>
+                <h1 className="text-4xl font-bold text-foreground mb-3 flex items-center gap-3" data-testid="title-financial-reports">
+                  <BarChart3 className="h-10 w-10 text-primary" />
+                  Financial Reports
+                </h1>
+                <p className="text-xl text-muted-foreground mb-4" data-testid="text-subtitle">
+                  Comprehensive financial statements and analysis
+                </p>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Activity className="h-4 w-4" />
+                  <span>Click on section headers to expand/collapse details</span>
+                </div>
+              </div>
+            </div>
+            
+            {/* Quick Overview Summary */}
+            {!plLoading && !bsLoading && !cfLoading && (plStatements.length > 0 || balanceSheets.length > 0 || cashFlowStatements.length > 0) && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                {/* Revenue Overview */}
+                {plStatements.length > 0 && (
+                  <Card className="border-border/50 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 backdrop-blur-sm">
+                    <CardContent className="p-6">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="p-2 bg-green-100 dark:bg-green-900/50 rounded-lg">
+                          <TrendingUp className="h-5 w-5 text-green-600 dark:text-green-400" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium text-muted-foreground">Latest Revenue</p>
+                          <p className="text-2xl font-bold text-foreground">
+                            {plStatements[0]?.totalRevenue ? `${formatNumber(plStatements[0].totalRevenue)}` : '—'}
+                          </p>
+                        </div>
+                      </div>
+                      <p className="text-xs text-muted-foreground">{plStatements[0]?.period || 'Latest Period'}</p>
+                    </CardContent>
+                  </Card>
+                )}
+                
+                {/* Net Income Overview */}
+                {plStatements.length > 0 && (
+                  <Card className="border-border/50 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 backdrop-blur-sm">
+                    <CardContent className="p-6">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="p-2 bg-blue-100 dark:bg-blue-900/50 rounded-lg">
+                          <DollarSign className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium text-muted-foreground">Net Income</p>
+                          <p className="text-2xl font-bold text-foreground">
+                            {plStatements[0]?.netIncome ? `${formatNumber(plStatements[0].netIncome)}` : '—'}
+                          </p>
+                        </div>
+                      </div>
+                      <p className="text-xs text-muted-foreground">{plStatements[0]?.period || 'Latest Period'}</p>
+                    </CardContent>
+                  </Card>
+                )}
+                
+                {/* Cash Balance Overview */}
+                {balanceSheets.length > 0 && (
+                  <Card className="border-border/50 bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-950/30 dark:to-violet-950/30 backdrop-blur-sm">
+                    <CardContent className="p-6">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="p-2 bg-purple-100 dark:bg-purple-900/50 rounded-lg">
+                          <PieChart className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium text-muted-foreground">Cash Balance</p>
+                          <p className="text-2xl font-bold text-foreground">
+                            {balanceSheets[0]?.cash ? `${formatNumber(balanceSheets[0].cash)}` : '—'}
+                          </p>
+                        </div>
+                      </div>
+                      <p className="text-xs text-muted-foreground">{balanceSheets[0]?.period || 'Latest Period'}</p>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
+            )}
           </div>
 
-          {/* Filters Section */}
-          <Card className="mb-8 border-border/50 bg-card/90 backdrop-blur-sm" data-testid="card-filters">
+          {/* Enhanced Filters Section */}
+          <Card className="mb-8 border-border/50 bg-card/95 backdrop-blur-sm shadow-lg" data-testid="card-filters">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-foreground" data-testid="title-filters">
-                <Filter className="h-5 w-5" />
+              <CardTitle className="flex items-center gap-2 text-foreground text-lg" data-testid="title-filters">
+                <Filter className="h-5 w-5 text-primary" />
                 Filter Reports
+                <Badge variant="secondary" className="ml-2 text-xs">Optional</Badge>
               </CardTitle>
+              <p className="text-sm text-muted-foreground mt-2">Filter by company, time period, or view all data</p>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -1021,14 +1112,15 @@ export default function FinancialReportsClean() {
             </Card>
           </div>
 
-          {/* Main Reports Tabs */}
-          <Card className="border-border/50 bg-card/90 backdrop-blur-sm" data-testid="card-main-reports">
+          {/* Enhanced Main Reports Tabs */}
+          <Card className="border-border/50 bg-card/95 backdrop-blur-sm shadow-lg" data-testid="card-main-reports">
             <CardHeader className="border-b border-border/50">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <CardTitle className="flex items-center gap-2 text-foreground" data-testid="title-reports">
-                  <FileText className="h-5 w-5" />
+                <CardTitle className="flex items-center gap-2 text-foreground text-xl" data-testid="title-reports">
+                  <FileText className="h-5 w-5 text-primary" />
                   Financial Statements
                 </CardTitle>
+                <p className="text-sm text-muted-foreground mt-2">Detailed financial data organized by statement type</p>
                 
                 {/* Export Controls */}
                 <div className="flex items-center gap-2">
