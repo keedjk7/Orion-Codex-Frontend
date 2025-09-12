@@ -42,6 +42,7 @@ import {
   CartesianGrid,
   Tooltip,
   PieChart as RechartsPieChart,
+  Pie,
   Cell,
   LineChart,
   Line,
@@ -796,28 +797,30 @@ export default function Dashboard() {
               <CardContent>
                 <div className="h-64">
                   <ResponsiveContainer width="100%" height="100%">
-                    <RechartsPieChart
-                      data={[
-                        { name: 'Engineering', value: 2800000, color: '#3b82f6' },
-                        { name: 'Marketing', value: 1200000, color: '#10b981' },
-                        { name: 'Sales', value: 1800000, color: '#8b5cf6' },
-                        { name: 'Operations', value: 950000, color: '#f59e0b' },
-                        { name: 'HR', value: 650000, color: '#ef4444' }
-                      ]}
-                      cx="50%"
-                      cy="50%"
-                      outerRadius={80}
-                      dataKey="value"
-                    >
-                      {[
-                        { name: 'Engineering', value: 2800000, color: '#3b82f6' },
-                        { name: 'Marketing', value: 1200000, color: '#10b981' },
-                        { name: 'Sales', value: 1800000, color: '#8b5cf6' },
-                        { name: 'Operations', value: 950000, color: '#f59e0b' },
-                        { name: 'HR', value: 650000, color: '#ef4444' }
-                      ].map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
+                    <RechartsPieChart>
+                      <Pie
+                        data={[
+                          { name: 'Engineering', value: 2800000, color: '#3b82f6' },
+                          { name: 'Marketing', value: 1200000, color: '#10b981' },
+                          { name: 'Sales', value: 1800000, color: '#8b5cf6' },
+                          { name: 'Operations', value: 950000, color: '#f59e0b' },
+                          { name: 'HR', value: 650000, color: '#ef4444' }
+                        ]}
+                        cx="50%"
+                        cy="50%"
+                        outerRadius={80}
+                        dataKey="value"
+                      >
+                        {[
+                          { name: 'Engineering', value: 2800000, color: '#3b82f6' },
+                          { name: 'Marketing', value: 1200000, color: '#10b981' },
+                          { name: 'Sales', value: 1800000, color: '#8b5cf6' },
+                          { name: 'Operations', value: 950000, color: '#f59e0b' },
+                          { name: 'HR', value: 650000, color: '#ef4444' }
+                        ].map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.color} />
+                        ))}
+                      </Pie>
                       <Tooltip formatter={(value: any) => [`$${(value/1000000).toFixed(2)}M`, 'Budget']} />
                     </RechartsPieChart>
                   </ResponsiveContainer>
