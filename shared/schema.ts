@@ -274,3 +274,21 @@ export type CashFlowStatement = typeof cashFlowStatement.$inferSelect;
 export type InsertProfitLossStatement = z.infer<typeof insertProfitLossStatementSchema>;
 export type InsertBalanceSheet = z.infer<typeof insertBalanceSheetSchema>;
 export type InsertCashFlowStatement = z.infer<typeof insertCashFlowStatementSchema>;
+
+// PL Account Table
+export const plAccounts = pgTable("pl_accounts", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  plAccount: text("pl_account").notNull().unique(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const insertPlAccountSchema = createInsertSchema(plAccounts).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+// Types for PL Account
+export type PlAccount = typeof plAccounts.$inferSelect;
+export type InsertPlAccount = z.infer<typeof insertPlAccountSchema>;

@@ -7,6 +7,7 @@ import Home from "@/pages/Home";
 import Dashboard from "@/pages/Dashboard";
 import FinancialReports from "@/pages/FinancialReportsClean";
 import Upload from "@/pages/Upload";
+import PlAccount from "@/pages/PlAccount";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -16,6 +17,7 @@ function Router() {
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/financial-reports" component={FinancialReports} />
       <Route path="/upload" component={Upload} />
+      <Route path="/pl-account" component={PlAccount} />
       {/* Fallback to 404 */}
       <Route component={NotFound} />
     </Switch>

@@ -12,7 +12,7 @@ import {
   SheetContent,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { ChevronDown, Sparkles, BarChart3, FileText, Target, Users, Settings, Home, Menu, Upload } from "lucide-react";
+import { ChevronDown, Sparkles, BarChart3, FileText, Target, Shield, Settings, Home, Menu, Upload } from "lucide-react";
 
 export default function Navigation() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -186,39 +186,39 @@ export default function Navigation() {
                   <Button 
                     variant="ghost" 
                     className="gap-1 text-foreground dark:text-white hover:bg-muted dark:hover:bg-slate-800 px-4 py-2" 
-                    data-testid="dropdown-teams"
+                    data-testid="dropdown-pl"
                   >
-                    <Users className="w-4 h-4" />
-                    Teams <ChevronDown className="w-4 h-4" />
+                    <Shield className="w-4 h-4" />
+                    PL <ChevronDown className="w-4 h-4" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-80 bg-background dark:bg-slate-800 border-border dark:border-slate-700">
                   <div className="grid grid-cols-2 gap-4 p-4">
                     <div>
-                      <div className="text-xs font-semibold text-muted-foreground dark:text-slate-400 uppercase tracking-wide mb-2">Management</div>
+                      <div className="text-xs font-semibold text-muted-foreground dark:text-slate-400 uppercase tracking-wide mb-2">Account Management</div>
                       <div className="space-y-1">
-                        <DropdownMenuItem className="text-foreground dark:text-white hover:bg-muted dark:hover:bg-slate-700" data-testid="menu-team-management" onSelect={() => handleNavigation('/dashboard')}>
-                          Team Management
+                        <DropdownMenuItem className="text-foreground dark:text-white hover:bg-muted dark:hover:bg-slate-700" data-testid="menu-pl-accounts" onSelect={() => handleNavigation('/pl-account')}>
+                          PL Accounts
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="text-foreground dark:text-white hover:bg-muted dark:hover:bg-slate-700" data-testid="menu-department-overview" onSelect={() => handleNavigation('/dashboard')}>
-                          Department Overview
+                        <DropdownMenuItem className="text-foreground dark:text-white hover:bg-muted dark:hover:bg-slate-700" data-testid="menu-account-categories" onSelect={() => handleNavigation('/pl-account')}>
+                          Account Categories
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="text-foreground dark:text-white hover:bg-muted dark:hover:bg-slate-700" data-testid="menu-user-roles" onSelect={() => handleNavigation('/dashboard')}>
-                          User Roles
+                        <DropdownMenuItem className="text-foreground dark:text-white hover:bg-muted dark:hover:bg-slate-700" data-testid="menu-account-mapping" onSelect={() => handleNavigation('/pl-account')}>
+                          Account Mapping
                         </DropdownMenuItem>
                       </div>
                     </div>
                     <div>
-                      <div className="text-xs font-semibold text-muted-foreground dark:text-slate-400 uppercase tracking-wide mb-2">Collaboration</div>
+                      <div className="text-xs font-semibold text-muted-foreground dark:text-slate-400 uppercase tracking-wide mb-2">Financial Setup</div>
                       <div className="space-y-1">
-                        <DropdownMenuItem className="text-foreground dark:text-white hover:bg-muted dark:hover:bg-slate-700" data-testid="menu-access-control" onSelect={() => handleNavigation('/dashboard')}>
-                          Access Control
+                        <DropdownMenuItem className="text-foreground dark:text-white hover:bg-muted dark:hover:bg-slate-700" data-testid="menu-chart-of-accounts" onSelect={() => handleNavigation('/pl-account')}>
+                          Chart of Accounts
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="text-foreground dark:text-white hover:bg-muted dark:hover:bg-slate-700" data-testid="menu-team-reports" onSelect={() => handleNavigation('/dashboard')}>
-                          Team Reports
+                        <DropdownMenuItem className="text-foreground dark:text-white hover:bg-muted dark:hover:bg-slate-700" data-testid="menu-account-structure" onSelect={() => handleNavigation('/pl-account')}>
+                          Account Structure
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="text-foreground dark:text-white hover:bg-muted dark:hover:bg-slate-700" data-testid="menu-collaboration-tools" onSelect={() => handleNavigation('/dashboard')}>
-                          Collaboration Tools
+                        <DropdownMenuItem className="text-foreground dark:text-white hover:bg-muted dark:hover:bg-slate-700" data-testid="menu-financial-templates" onSelect={() => handleNavigation('/pl-account')}>
+                          Financial Templates
                         </DropdownMenuItem>
                       </div>
                     </div>
@@ -328,9 +328,9 @@ export default function Navigation() {
                       </div>
                       
                       <div className="space-y-2">
-                        <div className="text-sm font-semibold text-muted-foreground dark:text-slate-400">Teams</div>
-                        <div className="block p-2 rounded hover:bg-muted dark:hover:bg-slate-800 ml-4 cursor-pointer" onClick={() => handleNavigation('/dashboard')}>Team Management</div>
-                        <div className="block p-2 rounded hover:bg-muted dark:hover:bg-slate-800 ml-4 cursor-pointer" onClick={() => handleNavigation('/dashboard')}>Department Overview</div>
+                        <div className="text-sm font-semibold text-muted-foreground dark:text-slate-400">PL</div>
+                        <div className="block p-2 rounded hover:bg-muted dark:hover:bg-slate-800 ml-4 cursor-pointer" onClick={() => handleNavigation('/pl-account')}>PL Accounts</div>
+                        <div className="block p-2 rounded hover:bg-muted dark:hover:bg-slate-800 ml-4 cursor-pointer" onClick={() => handleNavigation('/pl-account')}>Account Categories</div>
                       </div>
                       
                       <div className="space-y-2">
