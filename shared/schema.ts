@@ -311,3 +311,26 @@ export const insertIoMappingSchema = createInsertSchema(ioMappings).omit({
 // Types for IO Mapping
 export type IoMapping = typeof ioMappings.$inferSelect;
 export type InsertIoMapping = z.infer<typeof insertIoMappingSchema>;
+
+// Company Table
+export const companies = pgTable("companies", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  companyCode: text("company_code").notNull().unique(),
+  shortName: text("short_name").notNull(),
+  fullName: text("full_name").notNull().unique(),
+  description: text("description"),
+  industry: text("industry"),
+  headquarters: text("headquarters"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const insertCompanySchema = createInsertSchema(companies).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+// Types for Company
+export type Company = typeof companies.$inferSelect;
+export type InsertCompany = z.infer<typeof insertCompanySchema>;

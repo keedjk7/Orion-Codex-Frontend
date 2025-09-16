@@ -6,7 +6,8 @@ import {
   insertBalanceSheetSchema,
   insertCashFlowStatementSchema,
   insertPlAccountSchema,
-  insertIoMappingSchema
+  insertIoMappingSchema,
+  insertCompanySchema
 } from "@shared/schema";
 import { ZodError } from "zod";
 
@@ -16,6 +17,7 @@ const updateBalanceSheetSchema = insertBalanceSheetSchema.partial();
 const updateCashFlowStatementSchema = insertCashFlowStatementSchema.partial();
 const updatePlAccountSchema = insertPlAccountSchema.partial();
 const updateIoMappingSchema = insertIoMappingSchema.partial();
+const updateCompanySchema = insertCompanySchema.partial();
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Dashboard API routes
@@ -436,6 +438,101 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(204).send();
     } catch (error) {
       res.status(500).json({ message: "Failed to delete IO mapping" });
+    }
+  });
+
+  // Company API routes
+  app.get("/api/companies", async (req, res) => {
+    try {
+      const companies = await storage.getAllCompanies();
+      res.json(companies);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch companies" });
+    }
+  });
+
+  app.get("/api/companies/search", async (req, res) => {
+    try {
+      const { q } = req.query;
+      if (!q || typeof q !== "string") {
+        return res.status(400).json({ message: "Query parameter 'q' is required" });
+      }
+      
+      const companies = await storage.searchCompanies(q);
+      res.json(companies);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to search companies" });
+    }
+  });
+
+  app.post("/api/companies", async (req, res) => {
+    try {
+      const validationResult = insertCompanySchema.safeParse(req.body);
+      
+      if (!validationResult.success) {
+        return res.status(400).json({ 
+          message: "Invalid data", 
+          errors: validationResult.error.errors 
+        });
+      }
+      
+      const newCompany = await storage.createCompany(validationResult.data);
+      res.status(201).json(newCompany);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        return res.status(400).json({ 
+          message: "Validation failed", 
+          errors: error.errors 
+        });
+      }
+      res.status(500).json({ message: "Failed to create company" });
+    }
+  });
+
+  app.put("/api/companies/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      
+      const validationResult = updateCompanySchema.safeParse(req.body);
+      
+      if (!validationResult.success) {
+        return res.status(400).json({ 
+          message: "Invalid data", 
+          errors: validationResult.error.errors 
+        });
+      }
+      
+      const updates = validationResult.data;
+      const updatedCompany = await storage.updateCompany(id, updates);
+      
+      if (!updatedCompany) {
+        return res.status(404).json({ message: "Company not found" });
+      }
+      
+      res.json(updatedCompany);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        return res.status(400).json({ 
+          message: "Validation failed", 
+          errors: error.errors 
+        });
+      }
+      res.status(500).json({ message: "Failed to update company" });
+    }
+  });
+
+  app.delete("/api/companies/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const success = await storage.deleteCompany(id);
+      
+      if (!success) {
+        return res.status(404).json({ message: "Company not found" });
+      }
+      
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete company" });
     }
   });
 

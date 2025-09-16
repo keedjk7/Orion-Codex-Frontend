@@ -18,7 +18,9 @@ import {
   type PlAccount,
   type InsertPlAccount,
   type IoMapping,
-  type InsertIoMapping
+  type InsertIoMapping,
+  type Company,
+  type InsertCompany
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 
@@ -89,6 +91,14 @@ export interface IStorage {
   createIoMapping(mapping: InsertIoMapping): Promise<IoMapping>;
   updateIoMapping(id: string, mapping: Partial<InsertIoMapping>): Promise<IoMapping | undefined>;
   deleteIoMapping(id: string): Promise<boolean>;
+  
+  // Company methods
+  getAllCompanies(): Promise<Company[]>;
+  getCompanyById(id: string): Promise<Company | undefined>;
+  searchCompanies(query: string): Promise<Company[]>;
+  createCompany(company: InsertCompany): Promise<Company>;
+  updateCompany(id: string, company: Partial<InsertCompany>): Promise<Company | undefined>;
+  deleteCompany(id: string): Promise<boolean>;
 }
 
 export class MemStorage implements IStorage {
@@ -102,6 +112,7 @@ export class MemStorage implements IStorage {
   private cashFlowStatements: Map<string, CashFlowStatement>;
   private plAccounts: Map<string, PlAccount>;
   private ioMappings: Map<string, IoMapping>;
+  private companies: Map<string, Company>;
 
   constructor() {
     this.users = new Map();
@@ -114,6 +125,7 @@ export class MemStorage implements IStorage {
     this.cashFlowStatements = new Map();
     this.plAccounts = new Map();
     this.ioMappings = new Map();
+    this.companies = new Map();
     
     // Initialize with sample data synchronously
     this.initializeSampleDataSync();
@@ -1524,6 +1536,61 @@ export class MemStorage implements IStorage {
       };
       this.ioMappings.set(id, mapping);
     }
+
+    // Initialize Companies
+    const mockCompanies = [
+      {
+        companyCode: "TCC001",
+        shortName: "TCC Tech",
+        fullName: "TCC Technology Co., Ltd.",
+        description: "Leading technology solutions provider",
+        industry: "Technology",
+        headquarters: "Bangkok, Thailand"
+      },
+      {
+        companyCode: "OFS002",
+        shortName: "Orion Finance",
+        fullName: "Orion Financial Services Co., Ltd.",
+        description: "Comprehensive financial management solutions",
+        industry: "Financial Services",
+        headquarters: "Singapore"
+      },
+      {
+        companyCode: "DIL003",
+        shortName: "Digital Labs",
+        fullName: "Digital Innovation Labs Co., Ltd.",
+        description: "Research and development in digital transformation",
+        industry: "Research & Development",
+        headquarters: "Tokyo, Japan"
+      },
+      {
+        companyCode: "GTC004",
+        shortName: "Global Trade",
+        fullName: "Global Trading Corporation",
+        description: "International trading and logistics",
+        industry: "Trading & Logistics",
+        headquarters: "Hong Kong"
+      },
+      {
+        companyCode: "SES005",
+        shortName: "Green Energy",
+        fullName: "Sustainable Energy Solutions Ltd.",
+        description: "Renewable energy and sustainability consulting",
+        industry: "Energy & Environment",
+        headquarters: "Seoul, South Korea"
+      }
+    ];
+
+    for (const companyData of mockCompanies) {
+      const id = randomUUID();
+      const company: Company = {
+        id,
+        ...companyData,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+      this.companies.set(id, company);
+    }
   }
 
   // PL Account methods
@@ -1607,6 +1674,56 @@ export class MemStorage implements IStorage {
 
   async deleteIoMapping(id: string): Promise<boolean> {
     return this.ioMappings.delete(id);
+  }
+
+  // Company methods
+  async getAllCompanies(): Promise<Company[]> {
+    return Array.from(this.companies.values());
+  }
+
+  async getCompanyById(id: string): Promise<Company | undefined> {
+    return this.companies.get(id);
+  }
+
+  async searchCompanies(query: string): Promise<Company[]> {
+    const companies = Array.from(this.companies.values());
+    const lowercaseQuery = query.toLowerCase();
+    return companies.filter(company => 
+      company.shortName.toLowerCase().includes(lowercaseQuery) ||
+      company.fullName.toLowerCase().includes(lowercaseQuery) ||
+      company.companyCode.toLowerCase().includes(lowercaseQuery) ||
+      (company.industry && company.industry.toLowerCase().includes(lowercaseQuery)) ||
+      (company.description && company.description.toLowerCase().includes(lowercaseQuery))
+    );
+  }
+
+  async createCompany(companyData: InsertCompany): Promise<Company> {
+    const id = randomUUID();
+    const company: Company = {
+      id,
+      ...companyData,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    this.companies.set(id, company);
+    return company;
+  }
+
+  async updateCompany(id: string, updates: Partial<InsertCompany>): Promise<Company | undefined> {
+    const existing = this.companies.get(id);
+    if (!existing) return undefined;
+
+    const updated: Company = {
+      ...existing,
+      ...updates,
+      updatedAt: new Date()
+    };
+    this.companies.set(id, updated);
+    return updated;
+  }
+
+  async deleteCompany(id: string): Promise<boolean> {
+    return this.companies.delete(id);
   }
 }
 

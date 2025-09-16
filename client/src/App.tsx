@@ -9,6 +9,7 @@ import FinancialReports from "@/pages/FinancialReportsClean";
 import Upload from "@/pages/Upload";
 import PlAccount from "@/pages/PlAccount";
 import IoMapping from "@/pages/IoMapping";
+import CompanyAccount from "@/pages/CompanyAccount";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -20,6 +21,7 @@ function Router() {
       <Route path="/upload" component={Upload} />
       <Route path="/pl-account" component={PlAccount} />
       <Route path="/io-mapping" component={IoMapping} />
+      <Route path="/company-account" component={CompanyAccount} />
       {/* Fallback to 404 */}
       <Route component={NotFound} />
     </Switch>
