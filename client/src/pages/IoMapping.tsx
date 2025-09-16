@@ -140,6 +140,156 @@ export default function IoMapping() {
         createdAt: "2024-01-19T16:30:00Z",
         updatedAt: "2024-01-19T16:30:00Z",
       },
+      {
+        id: "6",
+        plAccount: "Revenue - Services",
+        createdAt: "2024-01-20T08:45:00Z",
+        updatedAt: "2024-01-20T08:45:00Z",
+      },
+      {
+        id: "7",
+        plAccount: "Revenue - Licensing",
+        createdAt: "2024-01-21T12:15:00Z",
+        updatedAt: "2024-01-21T12:15:00Z",
+      },
+      {
+        id: "8",
+        plAccount: "Revenue - Subscription",
+        createdAt: "2024-01-22T15:30:00Z",
+        updatedAt: "2024-01-22T15:30:00Z",
+      },
+      {
+        id: "9",
+        plAccount: "Direct Labor Costs",
+        createdAt: "2024-01-23T09:20:00Z",
+        updatedAt: "2024-01-23T09:20:00Z",
+      },
+      {
+        id: "10",
+        plAccount: "Manufacturing Overhead",
+        createdAt: "2024-01-24T14:10:00Z",
+        updatedAt: "2024-01-24T14:10:00Z",
+      },
+      {
+        id: "11",
+        plAccount: "Raw Materials",
+        createdAt: "2024-01-25T11:25:00Z",
+        updatedAt: "2024-01-25T11:25:00Z",
+      },
+      {
+        id: "12",
+        plAccount: "Administrative Expenses",
+        createdAt: "2024-01-26T16:40:00Z",
+        updatedAt: "2024-01-26T16:40:00Z",
+      },
+      {
+        id: "13",
+        plAccount: "Salaries & Wages",
+        createdAt: "2024-01-27T10:55:00Z",
+        updatedAt: "2024-01-27T10:55:00Z",
+      },
+      {
+        id: "14",
+        plAccount: "Rent & Utilities",
+        createdAt: "2024-01-28T13:35:00Z",
+        updatedAt: "2024-01-28T13:35:00Z",
+      },
+      {
+        id: "15",
+        plAccount: "Insurance Expenses",
+        createdAt: "2024-01-29T08:50:00Z",
+        updatedAt: "2024-01-29T08:50:00Z",
+      },
+      {
+        id: "16",
+        plAccount: "Professional Services",
+        createdAt: "2024-01-30T12:20:00Z",
+        updatedAt: "2024-01-30T12:20:00Z",
+      },
+      {
+        id: "17",
+        plAccount: "Technology & Software",
+        createdAt: "2024-02-01T15:45:00Z",
+        updatedAt: "2024-02-01T15:45:00Z",
+      },
+      {
+        id: "18",
+        plAccount: "Travel & Entertainment",
+        createdAt: "2024-02-02T09:30:00Z",
+        updatedAt: "2024-02-02T09:30:00Z",
+      },
+      {
+        id: "19",
+        plAccount: "Training & Development",
+        createdAt: "2024-02-03T14:15:00Z",
+        updatedAt: "2024-02-03T14:15:00Z",
+      },
+      {
+        id: "20",
+        plAccount: "Digital Marketing",
+        createdAt: "2024-02-04T11:40:00Z",
+        updatedAt: "2024-02-04T11:40:00Z",
+      },
+      {
+        id: "21",
+        plAccount: "Brand & Communications",
+        createdAt: "2024-02-05T16:25:00Z",
+        updatedAt: "2024-02-05T16:25:00Z",
+      },
+      {
+        id: "22",
+        plAccount: "Market Research",
+        createdAt: "2024-02-06T10:10:00Z",
+        updatedAt: "2024-02-06T10:10:00Z",
+      },
+      {
+        id: "23",
+        plAccount: "Product Innovation",
+        createdAt: "2024-02-07T13:55:00Z",
+        updatedAt: "2024-02-07T13:55:00Z",
+      },
+      {
+        id: "24",
+        plAccount: "Quality Assurance",
+        createdAt: "2024-02-08T08:20:00Z",
+        updatedAt: "2024-02-08T08:20:00Z",
+      },
+      {
+        id: "25",
+        plAccount: "Customer Support",
+        createdAt: "2024-02-09T12:05:00Z",
+        updatedAt: "2024-02-09T12:05:00Z",
+      },
+      {
+        id: "26",
+        plAccount: "Logistics & Shipping",
+        createdAt: "2024-02-10T15:50:00Z",
+        updatedAt: "2024-02-10T15:50:00Z",
+      },
+      {
+        id: "27",
+        plAccount: "Warehouse Operations",
+        createdAt: "2024-02-11T09:35:00Z",
+        updatedAt: "2024-02-11T09:35:00Z",
+      },
+      {
+        id: "28",
+        plAccount: "Equipment Maintenance",
+        createdAt: "2024-02-12T14:20:00Z",
+        updatedAt: "2024-02-12T14:20:00Z",
+      },
+      {
+        id: "29",
+        plAccount: "Legal & Compliance",
+        createdAt: "2024-02-13T11:45:00Z",
+        updatedAt: "2024-02-13T11:45:00Z",
+      },
+      {
+        id: "30",
+        plAccount: "Finance & Accounting",
+        createdAt: "2024-02-14T16:30:00Z",
+        updatedAt: "2024-02-14T16:30:00Z",
+      }
     ];
 
     const mockIoMappings: IoMapping[] = [
@@ -510,6 +660,7 @@ export default function IoMapping() {
 
   const filteredMappings = ioMappings.filter(mapping => {
     const matchesSearch = searchQuery === "" || 
+      mapping.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
       mapping.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
       mapping.account?.plAccount.toLowerCase().includes(searchQuery.toLowerCase());
     
@@ -729,7 +880,7 @@ export default function IoMapping() {
                 <div className="relative flex-1">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                   <Input
-                    placeholder="Search mappings or accounts..."
+                    placeholder="Search by ID, description, or account..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="pl-10"
