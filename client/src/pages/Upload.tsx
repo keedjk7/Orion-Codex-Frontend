@@ -279,31 +279,36 @@ export default function Upload() {
   };
 
   return (
-    <div className="min-h-screen bg-background relative overflow-hidden">
+    <div 
+      className="min-h-screen bg-cover bg-center bg-no-repeat relative"
+      style={{ backgroundImage: `url(${heroBackground})` }}
+    >
+      <div className="absolute inset-0 bg-white/90 dark:bg-slate-900/90"></div>
       <Navigation />
       
-      {/* Beautiful Background like other pages */}
-      <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url(${heroBackground})` }}
-      />
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-background/60 to-background/80" />
-      
-      <main className="relative z-10 container mx-auto px-6 py-8 pt-24">
-        <div className="max-w-6xl mx-auto space-y-8">
-          {/* Header */}
-          <div className="text-center space-y-4">
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
-              Data Upload Center
-            </h1>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              Upload your data files with confidence. Select data type and upload multiple files simultaneously.
-            </p>
+      <div className="relative z-10 container mx-auto px-6 py-8 mt-20">
+        {/* Header */}
+        <div className="mb-8">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="p-3 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-lg">
+              <UploadIcon className="w-8 h-8" />
+            </div>
+            <div>
+              <h1 className="text-4xl font-bold text-slate-900 dark:text-white">
+                Data Upload Center
+              </h1>
+              <p className="text-slate-600 dark:text-slate-400 text-lg">
+                Upload and manage your financial data files
+              </p>
+            </div>
           </div>
+        </div>
+
+        <div className="space-y-8">
 
           {/* Quick Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6">
-            <Card className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950/50 dark:to-blue-900/50 border-blue-200 dark:border-blue-800 hover:shadow-lg transition-all duration-300">
+            <Card className="border-0 shadow-lg bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
               <CardContent className="p-3 md:p-4">
                 <div className="flex items-center justify-between">
                   <div>
@@ -627,7 +632,7 @@ export default function Upload() {
             </Card>
           </div>
         </div>
-      </main>
+      </div>
     </div>
   );
 }

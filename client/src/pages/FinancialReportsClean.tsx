@@ -747,20 +747,15 @@ export default function FinancialReportsClean() {
 
   return (
     <div 
-      className="min-h-screen bg-background"
-      style={{
-        backgroundImage: `url(${heroBackground})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundAttachment: 'fixed'
-      }}
+      className="min-h-screen bg-cover bg-center bg-no-repeat relative"
+      style={{ backgroundImage: `url(${heroBackground})` }}
     >
-      <div className="absolute inset-0 bg-background/95 backdrop-blur-sm" />
+      <div className="absolute inset-0 bg-white/90 dark:bg-slate-900/90"></div>
+      <Navigation />
       
       <div className="relative z-10">
-        <Navigation />
         
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-6 py-8 mt-20">
           {/* Enhanced Header Section */}
           <div className="mb-8">
             <div className="flex items-start justify-between mb-6">
