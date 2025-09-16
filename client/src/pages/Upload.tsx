@@ -32,7 +32,7 @@ import {
 } from "lucide-react";
 import heroBackground from "@assets/generated_images/Gradient_mesh_hero_background_83768b02.png";
 
-type DataType = "transaction" | "master-data" | "actual" | "fix-asset" | "";
+type DataType = "master-data" | "actual" | "fix-asset" | "";
 type UploadStatus = "idle" | "uploading" | "success" | "error";
 
 interface MockFile {
@@ -152,21 +152,6 @@ export default function Upload() {
     const mockHistoricalFiles: UploadedFile[] = [
       {
         file: {
-          name: 'transactions_2024_q1.csv',
-          size: 245760, // 240KB
-          type: 'text/csv'
-        },
-        dataType: 'transaction',
-        status: 'success',
-        progress: 100,
-        id: 'mock-1',
-        recordsProcessed: 1247,
-        uploadedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // 2 hours ago
-        companyName: 'TCC Technology Co., Ltd.',
-        year: 2024
-      },
-      {
-        file: {
           name: 'customer_master.xlsx',
           size: 512000, // 500KB
           type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
@@ -196,17 +181,18 @@ export default function Upload() {
       },
       {
         file: {
-          name: 'failed_import.json',
-          size: 128000, // 125KB
-          type: 'application/json'
+          name: 'fixed_assets_2022.xlsx',
+          size: 384000, // 375KB
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         },
-        dataType: 'transaction',
-        status: 'error',
+        dataType: 'fix-asset',
+        status: 'success',
         progress: 100,
-        id: 'mock-3',
-        error: 'Invalid JSON format',
-        uploadedAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), // 1 day ago
-        companyName: 'Global Trading Corporation'
+        id: 'mock-5',
+        recordsProcessed: 324,
+        uploadedAt: new Date(Date.now() - 18 * 60 * 60 * 1000).toISOString(), // 18 hours ago
+        companyName: 'Sustainable Energy Solutions Ltd.',
+        year: 2022
       }
     ];
     setUploadedFiles(mockHistoricalFiles);
@@ -384,8 +370,6 @@ export default function Upload() {
 
   const getDataTypeIcon = (type: DataType) => {
     switch (type) {
-      case "transaction":
-        return <FileText className="w-4 h-4 text-blue-500" />;
       case "master-data":
         return <Database className="w-4 h-4 text-purple-500" />;
       case "actual":
@@ -399,8 +383,6 @@ export default function Upload() {
 
   const getDataTypeLabel = (type: DataType) => {
     switch (type) {
-      case "transaction":
-        return "Transaction Data";
       case "master-data":
         return "Master Data";
       case "actual":
@@ -535,7 +517,7 @@ export default function Upload() {
                 Upload Files
               </CardTitle>
               <CardDescription>
-                Select data type and upload files. Supports CSV, Excel (.xlsx, .xls) and JSON (max 10MB per file)
+                Select company, data type and upload files. Supports CSV, Excel (.xlsx, .xls) and JSON (max 10MB per file)
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -626,12 +608,6 @@ export default function Upload() {
                     <SelectValue placeholder="Select data type" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="transaction">
-                      <div className="flex items-center gap-2">
-                        <FileText className="w-4 h-4 text-blue-500" />
-                        Transaction Data
-                      </div>
-                    </SelectItem>
                     <SelectItem value="master-data">
                       <div className="flex items-center gap-2">
                         <Database className="w-4 h-4 text-purple-500" />
@@ -849,39 +825,7 @@ export default function Upload() {
           )}
 
           {/* Info Cards */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card className="bg-card/95 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 border-0">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <FileText className="w-5 h-5 text-blue-500" />
-                  Transaction Data
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Financial transaction data such as income, expenses, purchases, and transfers
-                </p>
-                <ul className="text-xs text-muted-foreground space-y-1">
-                  <li className="flex items-center gap-2">
-                    <div className="w-1 h-1 bg-blue-500 rounded-full" />
-                    CSV, Excel or JSON files
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <div className="w-1 h-1 bg-blue-500 rounded-full" />
-                    Must include date and amount columns
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <div className="w-1 h-1 bg-blue-500 rounded-full" />
-                    Supports multiple file upload
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <div className="w-1 h-1 bg-blue-500 rounded-full" />
-                    Maximum file size: 10MB
-                  </li>
-                </ul>
-              </CardContent>
-            </Card>
-
+          <div className="grid md:grid-cols-3 gap-6">
             <Card className="bg-card/95 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 border-0">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
