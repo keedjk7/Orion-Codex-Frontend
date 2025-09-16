@@ -80,3 +80,31 @@ Preferred communication style: Simple, everyday language.
 - **date-fns**: Date manipulation and formatting
 - **nanoid**: Unique ID generation
 - **zod**: Schema validation and type inference
+
+## วิธีที่ 2: ใช้ PowerShell syntax (วิธีเร็ว)
+
+รันคำสั่งนี้แทน:
+```powershell
+$env:NODE_ENV="development"; tsx server/index.ts
+```
+
+## วิธีที่ 3: ใช้ Command Prompt แทน PowerShell
+
+เปิด Command Prompt (cmd) แล้วรัน:
+```cmd
+set NODE_ENV=development && tsx server/index.ts
+```
+
+## วิธีที่ 4: แก้ไข package.json สำหรับ Windows
+
+แก้ไข package.json เป็น:
+```json
+"scripts": {
+  "dev": "cross-env NODE_ENV=development tsx server/index.ts",
+  "start": "cross-env NODE_ENV=production node dist/index.js"
+}
+```
+
+**แนะนำให้ใช้วิธีที่ 1 (cross-env)** เพราะจะทำงานได้ทั้ง Windows, macOS และ Linux ครับ
+
+คุณอยากลองวิธีไหนครับ?

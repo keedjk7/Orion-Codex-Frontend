@@ -12,7 +12,7 @@ import {
   SheetContent,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { ChevronDown, Sparkles, BarChart3, FileText, Target, Users, Settings, Home, Menu } from "lucide-react";
+import { ChevronDown, Sparkles, BarChart3, FileText, Target, Users, Settings, Home, Menu, Upload } from "lucide-react";
 
 export default function Navigation() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -240,8 +240,11 @@ export default function Navigation() {
                 <DropdownMenuContent className="w-80 bg-background dark:bg-slate-800 border-border dark:border-slate-700">
                   <div className="grid grid-cols-2 gap-4 p-4">
                     <div>
-                      <div className="text-xs font-semibold text-muted-foreground dark:text-slate-400 uppercase tracking-wide mb-2">Configuration</div>
+                      <div className="text-xs font-semibold text-muted-foreground dark:text-slate-400 uppercase tracking-wide mb-2">Data Management</div>
                       <div className="space-y-1">
+                        <DropdownMenuItem className="text-foreground dark:text-white hover:bg-muted dark:hover:bg-slate-700" data-testid="menu-upload" onSelect={() => handleNavigation('/upload')}>
+                          Upload Data
+                        </DropdownMenuItem>
                         <DropdownMenuItem className="text-foreground dark:text-white hover:bg-muted dark:hover:bg-slate-700" data-testid="menu-settings" onSelect={() => handleNavigation('/dashboard')}>
                           Settings
                         </DropdownMenuItem>
