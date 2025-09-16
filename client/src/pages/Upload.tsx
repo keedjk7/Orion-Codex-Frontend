@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -9,6 +9,8 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useToast } from "@/hooks/use-toast";
 import Navigation from "@/components/Navigation";
 import { 
@@ -22,11 +24,15 @@ import {
   TrendingUp,
   Activity,
   Clock,
-  Zap
+  Zap,
+  Building,
+  Check,
+  ChevronsUpDown,
+  Calendar
 } from "lucide-react";
 import heroBackground from "@assets/generated_images/Gradient_mesh_hero_background_83768b02.png";
 
-type DataType = "transaction" | "master-data" | "";
+type DataType = "transaction" | "master-data" | "actual" | "fix-asset" | "";
 type UploadStatus = "idle" | "uploading" | "success" | "error";
 
 interface MockFile {
@@ -44,14 +50,101 @@ interface UploadedFile {
   recordsProcessed?: number;
   error?: string;
   uploadedAt?: string;
+  companyId?: string;
+  companyName?: string;
+  year?: number;
+}
+
+interface Company {
+  id: string;
+  companyCode: string;
+  shortName: string;
+  fullName: string;
+  description?: string;
+  industry?: string;
+  headquarters?: string;
 }
 
 export default function Upload() {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [dataType, setDataType] = useState<DataType>("");
+  const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
+  const [selectedYear, setSelectedYear] = useState<number | null>(null);
+  const [companies, setCompanies] = useState<Company[]>([]);
+  const [companySearchOpen, setCompanySearchOpen] = useState(false);
+  const [companySearchValue, setCompanySearchValue] = useState("");
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [isUploading, setIsUploading] = useState(false);
+  const [isLoadingCompanies, setIsLoadingCompanies] = useState(false);
   const { toast } = useToast();
+
+  // Generate year options (current year to current year - 3)
+  const currentYear = new Date().getFullYear();
+  const yearOptions = Array.from({ length: 4 }, (_, i) => currentYear - i);
+
+  // Load companies on component mount - using same mock data as CompanyAccount
+  useEffect(() => {
+    const loadCompanies = async () => {
+      setIsLoadingCompanies(true);
+      
+      // Mock data matching CompanyAccount.tsx
+      const mockCompaniesData: Company[] = [
+        {
+          id: "1",
+          companyCode: "TCC001",
+          shortName: "TCC Tech",
+          fullName: "TCC Technology Co., Ltd.",
+          description: "Leading technology solutions provider",
+          industry: "Technology",
+          headquarters: "Bangkok, Thailand"
+        },
+        {
+          id: "2",
+          companyCode: "OFS002",
+          shortName: "Orion Finance",
+          fullName: "Orion Financial Services Co., Ltd.",
+          description: "Comprehensive financial management solutions",
+          industry: "Financial Services",
+          headquarters: "Singapore"
+        },
+        {
+          id: "3",
+          companyCode: "DIL003",
+          shortName: "Digital Labs",
+          fullName: "Digital Innovation Labs Co., Ltd.",
+          description: "Research and development in digital transformation",
+          industry: "Research & Development",
+          headquarters: "Tokyo, Japan"
+        },
+        {
+          id: "4",
+          companyCode: "GTC004",
+          shortName: "Global Trade",
+          fullName: "Global Trading Corporation",
+          description: "International trading and logistics",
+          industry: "Trading & Logistics",
+          headquarters: "Hong Kong"
+        },
+        {
+          id: "5",
+          companyCode: "SES005",
+          shortName: "Green Energy",
+          fullName: "Sustainable Energy Solutions Ltd.",
+          description: "Renewable energy and sustainability consulting",
+          industry: "Energy & Environment",
+          headquarters: "Seoul, South Korea"
+        }
+      ];
+      
+      // Simulate loading delay
+      setTimeout(() => {
+        setCompanies(mockCompaniesData);
+        setIsLoadingCompanies(false);
+      }, 500);
+    };
+    
+    loadCompanies();
+  }, []);
 
   // Mock some initial uploaded files for demonstration
   const [hasInitialData] = useState(() => {
@@ -68,7 +161,9 @@ export default function Upload() {
         progress: 100,
         id: 'mock-1',
         recordsProcessed: 1247,
-        uploadedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString() // 2 hours ago
+        uploadedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // 2 hours ago
+        companyName: 'TCC Technology Co., Ltd.',
+        year: 2024
       },
       {
         file: {
@@ -81,7 +176,23 @@ export default function Upload() {
         progress: 100,
         id: 'mock-2',
         recordsProcessed: 856,
-        uploadedAt: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString() // 5 hours ago
+        uploadedAt: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(), // 5 hours ago
+        companyName: 'Orion Financial Services Co., Ltd.'
+      },
+      {
+        file: {
+          name: 'actual_data_2023.json',
+          size: 128000, // 125KB
+          type: 'application/json'
+        },
+        dataType: 'actual',
+        status: 'success',
+        progress: 100,
+        id: 'mock-4',
+        recordsProcessed: 542,
+        uploadedAt: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(), // 12 hours ago
+        companyName: 'Digital Innovation Labs Co., Ltd.',
+        year: 2023
       },
       {
         file: {
@@ -94,7 +205,8 @@ export default function Upload() {
         progress: 100,
         id: 'mock-3',
         error: 'Invalid JSON format',
-        uploadedAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString() // 1 day ago
+        uploadedAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), // 1 day ago
+        companyName: 'Global Trading Corporation'
       }
     ];
     setUploadedFiles(mockHistoricalFiles);
@@ -116,10 +228,28 @@ export default function Upload() {
       return;
     }
 
+    if (!selectedCompany) {
+      toast({
+        title: "Company Required",
+        description: "Please select a company",
+        variant: "destructive",
+      });
+      return;
+    }
+
     if (!dataType) {
       toast({
         title: "Data Type Required",
-        description: "Please select a data type (Transaction or Master Data)",
+        description: "Please select a data type",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if ((dataType === 'actual' || dataType === 'fix-asset') && !selectedYear) {
+      toast({
+        title: "Year Required",
+        description: "Please select a year for Actual or FixAsset data",
         variant: "destructive",
       });
       return;
@@ -134,6 +264,9 @@ export default function Upload() {
       status: "uploading" as UploadStatus,
       progress: 0,
       id: Math.random().toString(36).substr(2, 9),
+      companyId: selectedCompany?.id,
+                companyName: selectedCompany?.fullName,
+      year: selectedYear || undefined,
     }));
 
     setUploadedFiles(prev => [...prev, ...newUploadedFiles]);
@@ -228,6 +361,8 @@ export default function Upload() {
     setIsUploading(false);
     setSelectedFiles([]);
     setDataType("");
+    setSelectedCompany(null);
+    setSelectedYear(null);
   };
 
   const removeFile = (fileId: string) => {
@@ -253,8 +388,27 @@ export default function Upload() {
         return <FileText className="w-4 h-4 text-blue-500" />;
       case "master-data":
         return <Database className="w-4 h-4 text-purple-500" />;
+      case "actual":
+        return <TrendingUp className="w-4 h-4 text-green-500" />;
+      case "fix-asset":
+        return <Building className="w-4 h-4 text-orange-500" />;
       default:
         return null;
+    }
+  };
+
+  const getDataTypeLabel = (type: DataType) => {
+    switch (type) {
+      case "transaction":
+        return "Transaction Data";
+      case "master-data":
+        return "Master Data";
+      case "actual":
+        return "Actual Data";
+      case "fix-asset":
+        return "Fixed Asset Data";
+      default:
+        return "";
     }
   };
 
@@ -385,10 +539,89 @@ export default function Upload() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
+              {/* Company Selection */}
+              <div className="space-y-2">
+                <Label htmlFor="company">Company *</Label>
+                <Popover open={companySearchOpen} onOpenChange={setCompanySearchOpen}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      role="combobox"
+                      aria-expanded={companySearchOpen}
+                      className="w-full justify-between"
+                      disabled={isLoadingCompanies}
+                    >
+                      {selectedCompany ? (
+                        <div className="flex items-center gap-2">
+                          <Building className="w-4 h-4 text-blue-500" />
+                          <span>{selectedCompany.fullName}</span>
+                          <span className="text-muted-foreground text-sm">({selectedCompany.companyCode})</span>
+                        </div>
+                      ) : (
+                        <span className="text-muted-foreground">
+                          {isLoadingCompanies ? "Loading companies..." : "Select company..."}
+                        </span>
+                      )}
+                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-full p-0" align="start">
+                    <Command>
+                      <CommandInput
+                        placeholder="Search companies..."
+                        value={companySearchValue}
+                        onValueChange={setCompanySearchValue}
+                      />
+                      <CommandList>
+                        <CommandEmpty>No companies found.</CommandEmpty>
+                        <CommandGroup>
+                          {companies
+                            .filter((company) => 
+                              company.shortName.toLowerCase().includes(companySearchValue.toLowerCase()) ||
+                              company.fullName.toLowerCase().includes(companySearchValue.toLowerCase()) ||
+                              company.companyCode.toLowerCase().includes(companySearchValue.toLowerCase())
+                            )
+                            .map((company) => (
+                            <CommandItem
+                              key={company.id}
+                              onSelect={() => {
+                                setSelectedCompany(company);
+                                setCompanySearchOpen(false);
+                                setCompanySearchValue("");
+                              }}
+                              className="flex items-center gap-2"
+                            >
+                              <Check
+                                className={`mr-2 h-4 w-4 ${
+                                  selectedCompany?.id === company.id ? "opacity-100" : "opacity-0"
+                                }`}
+                              />
+                              <Building className="w-4 h-4 text-blue-500" />
+                              <div className="flex flex-col">
+                                <span className="font-medium">{company.fullName}</span>
+                                <span className="text-sm text-muted-foreground">
+                                  {company.companyCode} • {company.shortName}
+                                </span>
+                              </div>
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+              </div>
+
               {/* Data Type Selection */}
               <div className="space-y-2">
                 <Label htmlFor="data-type">Data Type *</Label>
-                <Select value={dataType} onValueChange={(value: DataType) => setDataType(value)}>
+                <Select value={dataType} onValueChange={(value: DataType) => {
+                  setDataType(value);
+                  // Reset year selection when changing data type
+                  if (value !== 'actual' && value !== 'fix-asset') {
+                    setSelectedYear(null);
+                  }
+                }}>
                   <SelectTrigger id="data-type">
                     <SelectValue placeholder="Select data type" />
                   </SelectTrigger>
@@ -405,9 +638,43 @@ export default function Upload() {
                         Master Data
                       </div>
                     </SelectItem>
+                    <SelectItem value="actual">
+                      <div className="flex items-center gap-2">
+                        <TrendingUp className="w-4 h-4 text-green-500" />
+                        Actual Data
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="fix-asset">
+                      <div className="flex items-center gap-2">
+                        <Building className="w-4 h-4 text-orange-500" />
+                        Fixed Asset Data
+                      </div>
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
+
+              {/* Year Selection - only show for Actual and FixAsset */}
+              {(dataType === 'actual' || dataType === 'fix-asset') && (
+                <div className="space-y-2">
+                  <Label htmlFor="year">Year *</Label>
+                  <Select value={selectedYear?.toString() || ""} onValueChange={(value) => setSelectedYear(parseInt(value))}>
+                    <SelectTrigger id="year">
+                      <SelectValue placeholder="Select year" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {yearOptions.map((year) => (
+                        <SelectItem key={year} value={year.toString()}>
+                          <div className="flex items-center gap-2">
+                            <Calendar className="w-4 h-4 text-slate-500" />
+                            {year}
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
 
               {/* File Selection */}
               <div className="space-y-2">
@@ -448,7 +715,13 @@ export default function Upload() {
               {/* Upload Button */}
               <Button 
                 onClick={handleUpload} 
-                disabled={selectedFiles.length === 0 || !dataType || isUploading}
+                disabled={
+                  selectedFiles.length === 0 || 
+                  !selectedCompany || 
+                  !dataType || 
+                  ((dataType === 'actual' || dataType === 'fix-asset') && !selectedYear) ||
+                  isUploading
+                }
                 className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg hover:shadow-primary/25"
                 size="lg"
               >
@@ -491,9 +764,19 @@ export default function Upload() {
                               <p className="text-sm font-medium">{uploadedFile.file.name}</p>
                               <div className="flex items-center gap-2 text-xs text-muted-foreground">
                                 {getDataTypeIcon(uploadedFile.dataType)}
-                                <span>
-                                  {uploadedFile.dataType === "transaction" ? "Transaction Data" : "Master Data"}
-                                </span>
+                                <span>{getDataTypeLabel(uploadedFile.dataType)}</span>
+                                {uploadedFile.companyName && (
+                                  <>
+                                    <span>•</span>
+                                    <span>{uploadedFile.companyName}</span>
+                                  </>
+                                )}
+                                {uploadedFile.year && (
+                                  <>
+                                    <span>•</span>
+                                    <span>{uploadedFile.year}</span>
+                                  </>
+                                )}
                                 <span>•</span>
                                 <span>{formatFileSize(uploadedFile.file.size)}</span>
                                 {uploadedFile.recordsProcessed && (
@@ -566,7 +849,7 @@ export default function Upload() {
           )}
 
           {/* Info Cards */}
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             <Card className="bg-card/95 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 border-0">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -602,6 +885,38 @@ export default function Upload() {
             <Card className="bg-card/95 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 border-0">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
+                  <TrendingUp className="w-5 h-5 text-green-500" />
+                  Actual Data
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Actual financial performance data for specific years
+                </p>
+                <ul className="text-xs text-muted-foreground space-y-1">
+                  <li className="flex items-center gap-2">
+                    <div className="w-1 h-1 bg-green-500 rounded-full" />
+                    Requires year selection
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <div className="w-1 h-1 bg-green-500 rounded-full" />
+                    Company-specific data
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <div className="w-1 h-1 bg-green-500 rounded-full" />
+                    Historical performance tracking
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <div className="w-1 h-1 bg-green-500 rounded-full" />
+                    Maximum file size: 10MB
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-card/95 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 border-0">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
                   <Database className="w-5 h-5 text-purple-500" />
                   Master Data
                 </CardTitle>
@@ -625,6 +940,38 @@ export default function Upload() {
                   </li>
                   <li className="flex items-center gap-2">
                     <div className="w-1 h-1 bg-purple-500 rounded-full" />
+                    Maximum file size: 10MB
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-card/95 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 border-0">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Building className="w-5 h-5 text-orange-500" />
+                  Fixed Asset Data
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Fixed asset information including depreciation and asset lifecycle data
+                </p>
+                <ul className="text-xs text-muted-foreground space-y-1">
+                  <li className="flex items-center gap-2">
+                    <div className="w-1 h-1 bg-orange-500 rounded-full" />
+                    Requires year selection
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <div className="w-1 h-1 bg-orange-500 rounded-full" />
+                    Asset tracking and depreciation
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <div className="w-1 h-1 bg-orange-500 rounded-full" />
+                    Company-specific assets
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <div className="w-1 h-1 bg-orange-500 rounded-full" />
                     Maximum file size: 10MB
                   </li>
                 </ul>
