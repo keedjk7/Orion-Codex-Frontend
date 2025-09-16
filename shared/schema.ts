@@ -292,3 +292,22 @@ export const insertPlAccountSchema = createInsertSchema(plAccounts).omit({
 // Types for PL Account
 export type PlAccount = typeof plAccounts.$inferSelect;
 export type InsertPlAccount = z.infer<typeof insertPlAccountSchema>;
+
+// IO Mapping Table
+export const ioMappings = pgTable("io_mappings", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  description: text("description").notNull(),
+  accountId: varchar("account_id").notNull().references(() => plAccounts.id),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const insertIoMappingSchema = createInsertSchema(ioMappings).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+// Types for IO Mapping
+export type IoMapping = typeof ioMappings.$inferSelect;
+export type InsertIoMapping = z.infer<typeof insertIoMappingSchema>;

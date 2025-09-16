@@ -4,7 +4,9 @@ import { storage } from "./storage";
 import { 
   insertProfitLossStatementSchema,
   insertBalanceSheetSchema,
-  insertCashFlowStatementSchema
+  insertCashFlowStatementSchema,
+  insertPlAccountSchema,
+  insertIoMappingSchema
 } from "@shared/schema";
 import { ZodError } from "zod";
 
@@ -12,6 +14,8 @@ import { ZodError } from "zod";
 const updateProfitLossStatementSchema = insertProfitLossStatementSchema.partial();
 const updateBalanceSheetSchema = insertBalanceSheetSchema.partial();
 const updateCashFlowStatementSchema = insertCashFlowStatementSchema.partial();
+const updatePlAccountSchema = insertPlAccountSchema.partial();
+const updateIoMappingSchema = insertIoMappingSchema.partial();
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Dashboard API routes
@@ -256,6 +260,182 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       console.error("Error updating cash flow statement:", error);
       res.status(500).json({ message: "Failed to update cash flow statement" });
+    }
+  });
+
+  // PL Accounts API routes
+  app.get("/api/pl-accounts", async (req, res) => {
+    try {
+      const plAccounts = await storage.getAllPlAccounts();
+      res.json(plAccounts);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch PL accounts" });
+    }
+  });
+
+  app.get("/api/pl-accounts/search", async (req, res) => {
+    try {
+      const { q } = req.query;
+      if (!q || typeof q !== "string") {
+        return res.status(400).json({ message: "Search query is required" });
+      }
+      
+      const plAccounts = await storage.searchPlAccounts(q);
+      res.json(plAccounts);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to search PL accounts" });
+    }
+  });
+
+  app.post("/api/pl-accounts", async (req, res) => {
+    try {
+      const validationResult = insertPlAccountSchema.safeParse(req.body);
+      
+      if (!validationResult.success) {
+        return res.status(400).json({ 
+          message: "Invalid data", 
+          errors: validationResult.error.errors 
+        });
+      }
+      
+      const newPlAccount = await storage.createPlAccount(validationResult.data);
+      res.status(201).json(newPlAccount);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        return res.status(400).json({ 
+          message: "Validation failed", 
+          errors: error.errors 
+        });
+      }
+      res.status(500).json({ message: "Failed to create PL account" });
+    }
+  });
+
+  app.put("/api/pl-accounts/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      
+      const validationResult = updatePlAccountSchema.safeParse(req.body);
+      
+      if (!validationResult.success) {
+        return res.status(400).json({ 
+          message: "Invalid data", 
+          errors: validationResult.error.errors 
+        });
+      }
+      
+      const updates = validationResult.data;
+      const updatedPlAccount = await storage.updatePlAccount(id, updates);
+      
+      if (!updatedPlAccount) {
+        return res.status(404).json({ message: "PL account not found" });
+      }
+      
+      res.json(updatedPlAccount);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        return res.status(400).json({ 
+          message: "Validation failed", 
+          errors: error.errors 
+        });
+      }
+      res.status(500).json({ message: "Failed to update PL account" });
+    }
+  });
+
+  app.delete("/api/pl-accounts/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const success = await storage.deletePlAccount(id);
+      
+      if (!success) {
+        return res.status(404).json({ message: "PL account not found" });
+      }
+      
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete PL account" });
+    }
+  });
+
+  // IO Mappings API routes
+  app.get("/api/io-mappings", async (req, res) => {
+    try {
+      const ioMappings = await storage.getAllIoMappings();
+      res.json(ioMappings);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch IO mappings" });
+    }
+  });
+
+  app.post("/api/io-mappings", async (req, res) => {
+    try {
+      const validationResult = insertIoMappingSchema.safeParse(req.body);
+      
+      if (!validationResult.success) {
+        return res.status(400).json({ 
+          message: "Invalid data", 
+          errors: validationResult.error.errors 
+        });
+      }
+      
+      const newIoMapping = await storage.createIoMapping(validationResult.data);
+      res.status(201).json(newIoMapping);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        return res.status(400).json({ 
+          message: "Validation failed", 
+          errors: error.errors 
+        });
+      }
+      res.status(500).json({ message: "Failed to create IO mapping" });
+    }
+  });
+
+  app.put("/api/io-mappings/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      
+      const validationResult = updateIoMappingSchema.safeParse(req.body);
+      
+      if (!validationResult.success) {
+        return res.status(400).json({ 
+          message: "Invalid data", 
+          errors: validationResult.error.errors 
+        });
+      }
+      
+      const updates = validationResult.data;
+      const updatedIoMapping = await storage.updateIoMapping(id, updates);
+      
+      if (!updatedIoMapping) {
+        return res.status(404).json({ message: "IO mapping not found" });
+      }
+      
+      res.json(updatedIoMapping);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        return res.status(400).json({ 
+          message: "Validation failed", 
+          errors: error.errors 
+        });
+      }
+      res.status(500).json({ message: "Failed to update IO mapping" });
+    }
+  });
+
+  app.delete("/api/io-mappings/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const success = await storage.deleteIoMapping(id);
+      
+      if (!success) {
+        return res.status(404).json({ message: "IO mapping not found" });
+      }
+      
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete IO mapping" });
     }
   });
 

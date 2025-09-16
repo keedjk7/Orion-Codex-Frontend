@@ -14,7 +14,11 @@ import {
   type BalanceSheet,
   type InsertBalanceSheet,
   type CashFlowStatement,
-  type InsertCashFlowStatement
+  type InsertCashFlowStatement,
+  type PlAccount,
+  type InsertPlAccount,
+  type IoMapping,
+  type InsertIoMapping
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 
@@ -70,6 +74,21 @@ export interface IStorage {
   getCashFlowStatementsFiltered(topic?: string, startPeriod?: string, endPeriod?: string): Promise<CashFlowStatement[]>;
   createCashFlowStatement(statement: InsertCashFlowStatement): Promise<CashFlowStatement>;
   updateCashFlowStatement(id: string, statement: Partial<InsertCashFlowStatement>): Promise<CashFlowStatement | undefined>;
+  
+  // PL Account methods
+  getAllPlAccounts(): Promise<PlAccount[]>;
+  getPlAccountById(id: string): Promise<PlAccount | undefined>;
+  searchPlAccounts(query: string): Promise<PlAccount[]>;
+  createPlAccount(account: InsertPlAccount): Promise<PlAccount>;
+  updatePlAccount(id: string, account: Partial<InsertPlAccount>): Promise<PlAccount | undefined>;
+  deletePlAccount(id: string): Promise<boolean>;
+  
+  // IO Mapping methods
+  getAllIoMappings(): Promise<IoMapping[]>;
+  getIoMappingById(id: string): Promise<IoMapping | undefined>;
+  createIoMapping(mapping: InsertIoMapping): Promise<IoMapping>;
+  updateIoMapping(id: string, mapping: Partial<InsertIoMapping>): Promise<IoMapping | undefined>;
+  deleteIoMapping(id: string): Promise<boolean>;
 }
 
 export class MemStorage implements IStorage {
@@ -81,6 +100,8 @@ export class MemStorage implements IStorage {
   private profitLossStatements: Map<string, ProfitLossStatement>;
   private balanceSheets: Map<string, BalanceSheet>;
   private cashFlowStatements: Map<string, CashFlowStatement>;
+  private plAccounts: Map<string, PlAccount>;
+  private ioMappings: Map<string, IoMapping>;
 
   constructor() {
     this.users = new Map();
@@ -91,6 +112,8 @@ export class MemStorage implements IStorage {
     this.profitLossStatements = new Map();
     this.balanceSheets = new Map();
     this.cashFlowStatements = new Map();
+    this.plAccounts = new Map();
+    this.ioMappings = new Map();
     
     // Initialize with sample data synchronously
     this.initializeSampleDataSync();
@@ -1439,6 +1462,151 @@ export class MemStorage implements IStorage {
       };
       this.cashFlowStatements.set(id, statement);
     }
+
+    // Initialize PL Accounts
+    const mockPlAccounts = [
+      {
+        plAccount: "Revenue - Sales"
+      },
+      {
+        plAccount: "Cost of Goods Sold"
+      },
+      {
+        plAccount: "Operating Expenses"
+      },
+      {
+        plAccount: "Marketing & Advertising"
+      },
+      {
+        plAccount: "Research & Development"
+      }
+    ];
+
+    for (const accountData of mockPlAccounts) {
+      const id = randomUUID();
+      const account: PlAccount = {
+        id,
+        ...accountData,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+      this.plAccounts.set(id, account);
+    }
+
+    // Initialize IO Mappings
+    const plAccountsArray = Array.from(this.plAccounts.values());
+    const mockIoMappings = [
+      {
+        description: "Sales revenue from e-commerce platform",
+        accountId: plAccountsArray[0].id
+      },
+      {
+        description: "Direct material costs for production", 
+        accountId: plAccountsArray[1].id
+      },
+      {
+        description: "Office rent and utilities",
+        accountId: plAccountsArray[2].id
+      },
+      {
+        description: "Digital marketing campaigns",
+        accountId: plAccountsArray[3].id
+      }
+    ];
+
+    for (const mappingData of mockIoMappings) {
+      const id = randomUUID();
+      const mapping: IoMapping = {
+        id,
+        ...mappingData,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+      this.ioMappings.set(id, mapping);
+    }
+  }
+
+  // PL Account methods
+  async getAllPlAccounts(): Promise<PlAccount[]> {
+    return Array.from(this.plAccounts.values());
+  }
+
+  async getPlAccountById(id: string): Promise<PlAccount | undefined> {
+    return this.plAccounts.get(id);
+  }
+
+  async searchPlAccounts(query: string): Promise<PlAccount[]> {
+    const allAccounts = Array.from(this.plAccounts.values());
+    return allAccounts.filter(account => 
+      account.plAccount.toLowerCase().includes(query.toLowerCase())
+    );
+  }
+
+  async createPlAccount(accountData: InsertPlAccount): Promise<PlAccount> {
+    const id = randomUUID();
+    const account: PlAccount = {
+      id,
+      ...accountData,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    this.plAccounts.set(id, account);
+    return account;
+  }
+
+  async updatePlAccount(id: string, updates: Partial<InsertPlAccount>): Promise<PlAccount | undefined> {
+    const existing = this.plAccounts.get(id);
+    if (!existing) return undefined;
+
+    const updated: PlAccount = {
+      ...existing,
+      ...updates,
+      updatedAt: new Date()
+    };
+    this.plAccounts.set(id, updated);
+    return updated;
+  }
+
+  async deletePlAccount(id: string): Promise<boolean> {
+    return this.plAccounts.delete(id);
+  }
+
+  // IO Mapping methods
+  async getAllIoMappings(): Promise<IoMapping[]> {
+    return Array.from(this.ioMappings.values());
+  }
+
+  async getIoMappingById(id: string): Promise<IoMapping | undefined> {
+    return this.ioMappings.get(id);
+  }
+
+  async createIoMapping(mappingData: InsertIoMapping): Promise<IoMapping> {
+    const id = randomUUID();
+    const mapping: IoMapping = {
+      id,
+      ...mappingData,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    this.ioMappings.set(id, mapping);
+    return mapping;
+  }
+
+  async updateIoMapping(id: string, updates: Partial<InsertIoMapping>): Promise<IoMapping | undefined> {
+    const existing = this.ioMappings.get(id);
+    if (!existing) return undefined;
+
+    const updated: IoMapping = {
+      ...existing,
+      ...updates,
+      updatedAt: new Date()
+    };
+    this.ioMappings.set(id, updated);
+    return updated;
+  }
+
+  async deleteIoMapping(id: string): Promise<boolean> {
+    return this.ioMappings.delete(id);
   }
 }
 

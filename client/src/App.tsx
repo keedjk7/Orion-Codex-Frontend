@@ -8,6 +8,7 @@ import Dashboard from "@/pages/Dashboard";
 import FinancialReports from "@/pages/FinancialReportsClean";
 import Upload from "@/pages/Upload";
 import PlAccount from "@/pages/PlAccount";
+import IoMapping from "@/pages/IoMapping";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -18,6 +19,7 @@ function Router() {
       <Route path="/financial-reports" component={FinancialReports} />
       <Route path="/upload" component={Upload} />
       <Route path="/pl-account" component={PlAccount} />
+      <Route path="/io-mapping" component={IoMapping} />
       {/* Fallback to 404 */}
       <Route component={NotFound} />
     </Switch>

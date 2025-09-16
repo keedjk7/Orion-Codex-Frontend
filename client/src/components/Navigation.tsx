@@ -200,6 +200,9 @@ export default function Navigation() {
                         <DropdownMenuItem className="text-foreground dark:text-white hover:bg-muted dark:hover:bg-slate-700" data-testid="menu-pl-accounts" onSelect={() => handleNavigation('/pl-account')}>
                           PL Accounts
                         </DropdownMenuItem>
+                        <DropdownMenuItem className="text-foreground dark:text-white hover:bg-muted dark:hover:bg-slate-700" data-testid="menu-io-mapping" onSelect={() => handleNavigation('/io-mapping')}>
+                          IO Mapping
+                        </DropdownMenuItem>
                         <DropdownMenuItem className="text-foreground dark:text-white hover:bg-muted dark:hover:bg-slate-700" data-testid="menu-account-categories" onSelect={() => handleNavigation('/pl-account')}>
                           Account Categories
                         </DropdownMenuItem>
@@ -330,6 +333,7 @@ export default function Navigation() {
                       <div className="space-y-2">
                         <div className="text-sm font-semibold text-muted-foreground dark:text-slate-400">PL</div>
                         <div className="block p-2 rounded hover:bg-muted dark:hover:bg-slate-800 ml-4 cursor-pointer" onClick={() => handleNavigation('/pl-account')}>PL Accounts</div>
+                        <div className="block p-2 rounded hover:bg-muted dark:hover:bg-slate-800 ml-4 cursor-pointer" onClick={() => handleNavigation('/io-mapping')}>IO Mapping</div>
                         <div className="block p-2 rounded hover:bg-muted dark:hover:bg-slate-800 ml-4 cursor-pointer" onClick={() => handleNavigation('/pl-account')}>Account Categories</div>
                       </div>
                       
