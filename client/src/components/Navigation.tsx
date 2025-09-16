@@ -186,10 +186,10 @@ export default function Navigation() {
                   <Button 
                     variant="ghost" 
                     className="gap-1 text-foreground dark:text-white hover:bg-muted dark:hover:bg-slate-800 px-4 py-2" 
-                    data-testid="dropdown-pl"
+                    data-testid="dropdown-master-data"
                   >
                     <Shield className="w-4 h-4" />
-                    PL <ChevronDown className="w-4 h-4" />
+                    Master Data <ChevronDown className="w-4 h-4" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-80 bg-background dark:bg-slate-800 border-border dark:border-slate-700">
@@ -334,7 +334,7 @@ export default function Navigation() {
                       </div>
                       
                       <div className="space-y-2">
-                        <div className="text-sm font-semibold text-muted-foreground dark:text-slate-400">PL</div>
+                        <div className="text-sm font-semibold text-muted-foreground dark:text-slate-400">Master Data</div>
                         <div className="block p-2 rounded hover:bg-muted dark:hover:bg-slate-800 ml-4 cursor-pointer" onClick={() => handleNavigation('/pl-account')}>PL Accounts</div>
                         <div className="block p-2 rounded hover:bg-muted dark:hover:bg-slate-800 ml-4 cursor-pointer" onClick={() => handleNavigation('/io-mapping')}>IO Mapping</div>
                         <div className="block p-2 rounded hover:bg-muted dark:hover:bg-slate-800 ml-4 cursor-pointer" onClick={() => handleNavigation('/company-account')}>Company Account</div>
