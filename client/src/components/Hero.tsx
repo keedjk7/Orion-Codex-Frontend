@@ -5,8 +5,22 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { BarChart3, DollarSign, TrendingUp, CheckCircle, MessageSquare, Bot, PieChart } from "lucide-react";
 import heroBackground from "@assets/generated_images/Gradient_mesh_hero_background_83768b02.png";
+import { AuthDialog } from "@/components/AuthDialog";
+import { useKeycloak } from "@/contexts/KeycloakContext";
 
 export default function Hero() {
+  const [authDialogOpen, setAuthDialogOpen] = useState(false);
+  const { authenticated } = useKeycloak();
+
+  const handleGetStartedClick = () => {
+    if (authenticated) {
+      // Navigate to dashboard if already authenticated
+      window.location.href = '/dashboard';
+    } else {
+      // Show auth dialog if not authenticated
+      setAuthDialogOpen(true);
+    }
+  };
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
@@ -144,11 +158,14 @@ export default function Hero() {
         </div>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
-          <Link href="/dashboard">
-            <Button size="lg" className="text-lg px-8 py-4 hover-elevate active-elevate-2" data-testid="button-get-started">
-              Get Started →
-            </Button>
-          </Link>
+          <Button 
+            size="lg" 
+            className="text-lg px-8 py-4 hover-elevate active-elevate-2" 
+            data-testid="button-get-started"
+            onClick={handleGetStartedClick}
+          >
+            {authenticated ? 'Go to Dashboard →' : 'Get Started →'}
+          </Button>
         </div>
 
         {/* Key Finance Features */}
@@ -206,6 +223,14 @@ export default function Hero() {
           </div>
         </div>
       </div>
+
+      {/* Auth Dialog */}
+      <AuthDialog 
+        open={authDialogOpen} 
+        onOpenChange={setAuthDialogOpen}
+        title="Get Started with Orion"
+        description="Sign in to unlock the full power of AI-driven financial analysis"
+      />
     </section>
   );
 }

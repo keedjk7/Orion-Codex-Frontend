@@ -11,17 +11,26 @@ import {
   Sheet,
   SheetContent,
   SheetTrigger,
-} from "@/components/ui/sheet";
-import { ChevronDown, Sparkles, BarChart3, FileText, Target, Shield, Settings, Home, Menu, Upload } from "lucide-react";
+  } from "@/components/ui/sheet";
+  import { ChevronDown, Sparkles, BarChart3, FileText, Target, Shield, Settings, Home, Menu, Upload } from "lucide-react";
+  import { AuthDialog } from "@/components/AuthDialog";
+  import { UserProfile } from "@/components/UserProfile";
+  import { useKeycloak } from "@/contexts/KeycloakContext";
+  
+  export default function Navigation() {
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [authDialogOpen, setAuthDialogOpen] = useState(false);
+    const [, setLocation] = useLocation();
+    const { authenticated } = useKeycloak();
+  
+    const handleNavigation = (href: string) => {
+      setMobileMenuOpen(false);
+      setLocation(href);
+    };
 
-export default function Navigation() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [, setLocation] = useLocation();
-
-  const handleNavigation = (href: string) => {
-    setMobileMenuOpen(false);
-    setLocation(href);
-  };
+    const handleSignInClick = () => {
+      setAuthDialogOpen(true);
+    };
 
   return (
     <>
@@ -281,15 +290,30 @@ export default function Navigation() {
               </DropdownMenu>
             </div>
 
-            {/* Desktop User Actions */}
-            <div className="hidden lg:flex items-center gap-3">
-              <Button variant="ghost" className="text-foreground dark:text-white hover:bg-muted dark:hover:bg-slate-800" data-testid="button-sign-in">
-                Sign In
-              </Button>
-              <Button className="bg-primary hover:bg-primary/90 dark:bg-blue-600 dark:hover:bg-blue-700 text-primary-foreground dark:text-white" data-testid="button-subscribe">
-                Subscribe
-              </Button>
-            </div>
+              {/* Desktop User Actions */}
+              <div className="hidden lg:flex items-center gap-3">
+                {authenticated ? (
+                  <UserProfile />
+                ) : (
+                  <>
+                    <Button 
+                      variant="ghost" 
+                      className="text-foreground dark:text-white hover:bg-muted dark:hover:bg-slate-800" 
+                      data-testid="button-sign-in"
+                      onClick={handleSignInClick}
+                    >
+                      Sign In
+                    </Button>
+                    <Button 
+                      className="bg-primary hover:bg-primary/90 dark:bg-blue-600 dark:hover:bg-blue-700 text-primary-foreground dark:text-white" 
+                      data-testid="button-subscribe"
+                      onClick={handleSignInClick}
+                    >
+                      Subscribe
+                    </Button>
+                  </>
+                )}
+              </div>
 
             {/* Mobile Menu */}
             <div className="lg:hidden">
@@ -348,21 +372,44 @@ export default function Navigation() {
                       </div>
                     </div>
                     
-                    <div className="mt-8 pt-6 border-t border-border dark:border-slate-700 space-y-2">
-                      <Button variant="ghost" className="w-full justify-start" data-testid="mobile-button-sign-in">
-                        Sign In
-                      </Button>
-                      <Button className="w-full bg-primary hover:bg-primary/90 dark:bg-blue-600 dark:hover:bg-blue-700" data-testid="mobile-button-subscribe">
-                        Subscribe
-                      </Button>
-                    </div>
+                      <div className="mt-8 pt-6 border-t border-border dark:border-slate-700 space-y-2">
+                        {authenticated ? (
+                          <div className="flex items-center justify-center">
+                            <UserProfile />
+                          </div>
+                        ) : (
+                          <>
+                            <Button 
+                              variant="ghost" 
+                              className="w-full justify-start" 
+                              data-testid="mobile-button-sign-in"
+                              onClick={handleSignInClick}
+                            >
+                              Sign In
+                            </Button>
+                            <Button 
+                              className="w-full bg-primary hover:bg-primary/90 dark:bg-blue-600 dark:hover:bg-blue-700" 
+                              data-testid="mobile-button-subscribe"
+                              onClick={handleSignInClick}
+                            >
+                              Subscribe
+                            </Button>
+                          </>
+                        )}
+                      </div>
                   </div>
                 </SheetContent>
               </Sheet>
             </div>
           </div>
         </div>
-      </nav>
-    </>
-  );
-}
+        </nav>
+
+        {/* Auth Dialog */}
+        <AuthDialog 
+          open={authDialogOpen} 
+          onOpenChange={setAuthDialogOpen}
+        />
+      </>
+    );
+  }
