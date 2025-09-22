@@ -1,13 +1,16 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
+import path from "path";
+import fs from "fs";
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// Simple logging middleware
 app.use((req, res, next) => {
   const start = Date.now();
-  const path = req.path;
+  const requestPath = req.path;
   let capturedJsonResponse: Record<string, any> | undefined = undefined;
 
   const originalResJson = res.json;
@@ -18,8 +21,8 @@ app.use((req, res, next) => {
 
   res.on("finish", () => {
     const duration = Date.now() - start;
-    if (path.startsWith("/api")) {
-      let logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms`;
+    if (requestPath.startsWith("/api")) {
+      let logLine = `${req.method} ${requestPath} ${res.statusCode} in ${duration}ms`;
       if (capturedJsonResponse) {
         logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
       }
@@ -28,7 +31,6 @@ app.use((req, res, next) => {
         logLine = logLine.slice(0, 79) + "…";
       }
 
-      // Simple console.log for now, will be replaced by imported log function
       console.log(logLine);
     }
   });
@@ -47,35 +49,30 @@ app.use((req, res, next) => {
     throw err;
   });
 
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
-  if (app.get("env") === "development") {
-    const { setupVite, log } = await import("./vite");
-    await setupVite(app, server);
+  // Serve static files in production
+  const distPath = path.resolve(import.meta.dirname, "..", "dist", "public");
+  
+  if (fs.existsSync(distPath)) {
+    app.use(express.static(distPath));
+    
+    // SPA fallback
+    app.use("*", (_req, res) => {
+      res.sendFile(path.resolve(distPath, "index.html"));
+    });
   } else {
-    const { serveStatic, log } = await import("./production");
-    serveStatic(app);
+    console.error(`Build directory not found: ${distPath}`);
+    process.exit(1);
   }
 
-  // ALWAYS serve the app on the port specified in the environment variable PORT
-  // Other ports are firewalled. Default to 5000 if not specified.
-  // this serves both the API and the client.
-  // It is the only port that is not firewalled.
   const port = parseInt(process.env.PORT || '5000', 10);
   
-  // Simple log function for production
-  const logFn = (message: string, source = "express") => {
+  server.listen(port, '0.0.0.0', () => {
     const formattedTime = new Date().toLocaleTimeString("en-US", {
       hour: "numeric",
-      minute: "2-digit", 
+      minute: "2-digit",
       second: "2-digit",
       hour12: true,
     });
-    console.log(`${formattedTime} [${source}] ${message}`);
-  };
-  
-  server.listen(port, 'localhost', () => {
-    logFn(`serving on port ${port}`);
+    console.log(`${formattedTime} [express] serving on port ${port}`);
   });
 })();
