@@ -1,142 +1,140 @@
-# Orion Landing Page
+# Orion Login System
 
-A beautiful, modern landing page for Orion - Your AI-Powered Finance Team Companion.
+A clean, modern login interface with built-in authentication for immediate development use.
 
-**🎯 This is a standalone, simplified version extracted from the full application, focusing purely on the landing page experience.**
+## 🚀 Quick Start
 
-## Features
+```bash
+# 1. Install dependencies
+npm install
 
-- **Modern Design**: Clean, professional design with smooth animations and micro-interactions
-- **Responsive**: Works perfectly on desktop, tablet, and mobile devices  
-- **Fast Loading**: Built with Vite for optimal performance and hot reload
-- **Accessible**: Follows WCAG 2.1 accessibility best practices
-- **SEO Optimized**: Proper meta tags and semantic HTML structure
-- **No Authentication**: Pure frontend experience without login complexity
+# 2. Start development server
+npm run dev
 
-## Tech Stack
+# 3. Open http://localhost:5173
+# 4. Click "Get Started" and login with test accounts
+```
+
+## 🔑 Test Accounts
+
+| Username | Password | Role |
+|----------|----------|------|
+| `admin` | `admin123` | Administrator |
+| `testuser` | `test123` | Standard User |
+| `demo` | `demo123` | Demo Account |
+
+*You can also use email addresses: admin@orion.com, test@orion.com, demo@orion.com*
+
+## ✨ Features
+
+- **Clean UI Design** - Figma-inspired minimal interface
+- **Built-in Authentication** - No external setup required
+- **Session Management** - Automatic login persistence
+- **Protected Routes** - Dashboard access control
+- **Responsive Design** - Works on all devices
+- **TypeScript** - Full type safety
+- **Modern Stack** - React 18, Vite, Tailwind CSS
+
+## 🏗️ Project Structure
+
+```
+client/src/
+├── components/          # UI components
+│   ├── ui/             # Base components (button, input, etc.)
+│   └── ProtectedRoute.tsx # Authentication wrapper
+├── contexts/           # React contexts
+│   └── KeycloakContext.tsx # Auth state management
+├── lib/                # Utilities
+│   └── keycloak.ts     # Authentication logic + test accounts
+├── pages/              # Page components
+│   ├── Home.tsx        # Landing page
+│   ├── LoginFigmaInspired.tsx # Login form
+│   └── Dashboard.tsx   # Protected dashboard
+└── main.tsx           # App entry point
+```
+
+## 🔧 Development
+
+```bash
+npm run dev          # Start dev server
+npm run build        # Build for production
+npm run preview      # Preview production build
+npm run check        # TypeScript type checking
+```
+
+## 🎯 How It Works
+
+### Authentication Flow
+1. User enters credentials on login form
+2. System validates against built-in test accounts
+3. Creates session and stores in localStorage
+4. Redirects to protected dashboard
+5. Session persists across browser refreshes
+
+### Key Files
+- `client/src/lib/keycloak.ts` - Test accounts and auth logic
+- `client/src/contexts/KeycloakContext.tsx` - Auth state provider
+- `client/src/pages/LoginFigmaInspired.tsx` - Login form
+- `client/src/components/ProtectedRoute.tsx` - Route protection
+
+## 🔐 Security Notes
+
+**Current (Development):**
+- ✅ Built-in test accounts for immediate testing
+- ✅ Session management with localStorage
+- ✅ Protected routes working
+
+**For Production:**
+- Replace test accounts with real authentication
+- Implement proper JWT validation
+- Use HTTPS and secure session management
+
+## 🚀 Deployment
+
+```bash
+npm run build    # Creates dist/ folder
+# Deploy dist/ folder to any static hosting service
+```
+
+## 🔄 Future Keycloak Integration
+
+The code is ready for real Keycloak integration:
+
+1. Set environment variables:
+   ```env
+   VITE_KEYCLOAK_URL=your-keycloak-url
+   VITE_KEYCLOAK_REALM=your-realm
+   VITE_KEYCLOAK_CLIENT_ID=your-client-id
+   ```
+
+2. The system will automatically try real Keycloak first, then fall back to test accounts
+
+## 🛠️ Tech Stack
 
 - **React 18** - Modern React with hooks
 - **TypeScript** - Type-safe development
-- **Tailwind CSS** - Utility-first CSS framework
-- **Vite** - Fast build tool and dev server
-- **Radix UI** - Accessible component primitives
-- **Lucide React** - Beautiful icons
-- **Framer Motion** - Smooth animations
+- **Vite** - Fast build tool
+- **Tailwind CSS** - Utility-first styling
+- **Wouter** - Lightweight routing
+- **shadcn/ui** - High-quality components
 
-## Getting Started
+## 📱 Usage
 
-### Prerequisites
+1. **Home Page** - Landing page with features showcase
+2. **Login** - Click "Get Started" to access login form
+3. **Test Login** - Use any test account to authenticate
+4. **Dashboard** - Access protected area after login
+5. **Logout** - Session cleanup and redirect
 
-- Node.js 18+ 
-- npm or yarn
+## 🤝 Contributing
 
-### Installation
+This project is ready for immediate development:
 
-1. Clone the repository
-```bash
-git clone <repository-url>
-cd OrionCodex
-git checkout feature/landing-page
-```
+1. Clone and install: `npm install`
+2. Start development: `npm run dev`
+3. Test with provided accounts
+4. Start building features!
 
-2. Install dependencies
-```bash
-npm install
-```
+## 📄 License
 
-3. Start the development server
-```bash
-npm run dev
-```
-
-4. Open your browser and navigate to `http://localhost:5173`
-
-## Project Structure
-
-```
-client/
-├── src/
-│   ├── components/          # React components
-│   │   ├── ui/             # Reusable UI components (Radix UI)
-│   │   ├── Hero.tsx        # Hero section
-│   │   ├── Navigation.tsx  # Navigation bar
-│   │   ├── Footer.tsx      # Footer
-│   │   └── ...             # Other landing page components
-│   ├── pages/
-│   │   └── Home.tsx        # Main landing page
-│   ├── lib/
-│   │   └── utils.ts        # Utility functions
-│   ├── index.css           # Global styles
-│   └── main.tsx            # App entry point
-├── public/                 # Static assets
-└── index.html              # HTML template
-```
-
-## Available Scripts
-
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build
-- `npm run check` - Type check
-
-## Landing Page Sections
-
-1. **Hero Section** - Main value proposition with animated gradient background and floating demo cards
-2. **Features Overview** - 5 core features with interactive hover effects and detailed descriptions  
-3. **Value Proposition** - Key metrics (10x faster, 99.9% accuracy, 95% forecast accuracy) with capability highlights
-4. **Feature Deep Dive** - Detailed explanations with mockup images for Smart Reporting, Scenario Modeling, and Cost Intelligence
-5. **Use Cases** - Interactive role-based stories for Finance Analyst, Controller, CFO, and Department Head
-6. **Footer** - Comprehensive company information with organized link sections and social media
-
-## Customization
-
-### Colors
-The color scheme is defined in `tailwind.config.ts` and can be customized by modifying the CSS variables in `client/src/index.css`.
-
-### Content
-All text content can be found in the respective component files under `client/src/components/`.
-
-### Images
-Background images and mockups are stored in `attached_assets/generated_images/`.
-
-## Deployment
-
-Build the project for production:
-
-```bash
-npm run build
-```
-
-The built files will be in the `dist/` directory, ready for deployment to any static hosting service.
-
-## What's Different from Full Version?
-
-This landing page version has been **simplified and optimized** by removing:
-
-- ❌ Server-side components (Express.js, API routes)
-- ❌ Database integration (PostgreSQL, Drizzle ORM) 
-- ❌ Authentication system (Keycloak)
-- ❌ Complex routing and navigation
-- ❌ Admin dashboards and panels
-- ❌ File upload functionality
-- ❌ WebSocket connections
-
-**✅ What remains**: Pure frontend React experience focused on showcasing Orion's value proposition.
-
-## Version History
-
-- **v1.0.0** (2024-09-23) - Initial landing page extraction from `draft/mocking-frontend` branch
-- Simplified architecture with 25 production dependencies (down from 70+)
-- Clean, maintainable codebase ready for deployment
-
-## Contributing
-
-1. Create a feature branch from `feature/landing-page`
-2. Make your changes following the existing patterns
-3. Test across different devices and browsers
-4. Ensure accessibility compliance
-5. Submit a pull request with clear description
-
-## License
-
-MIT License - see LICENSE file for details.
+MIT License

@@ -5,8 +5,8 @@ import heroBackground from "@assets/generated_images/Gradient_mesh_hero_backgrou
 
 export default function Hero() {
   const handleGetStartedClick = () => {
-    // For demo purposes, just show an alert
-    alert('Get Started functionality would be implemented here');
+    // Navigate to login page (now using figma design)
+    window.location.href = '/login';
   };
 
   return (
@@ -152,6 +152,15 @@ export default function Hero() {
             onClick={handleGetStartedClick}
           >
             Get Started →
+          </Button>
+          <Button 
+            size="lg" 
+            variant="outline"
+            className="text-lg px-8 py-4 hover-elevate active-elevate-2" 
+            data-testid="button-learn-more"
+            onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
+          >
+            Learn More →
           </Button>
         </div>
 
