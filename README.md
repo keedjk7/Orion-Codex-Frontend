@@ -1,93 +1,142 @@
-# orion-frontend
+# Orion Landing Page
 
+A beautiful, modern landing page for Orion - Your AI-Powered Finance Team Companion.
 
+**🎯 This is a standalone, simplified version extracted from the full application, focusing purely on the landing page experience.**
 
-## Getting started
+## Features
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+- **Modern Design**: Clean, professional design with smooth animations and micro-interactions
+- **Responsive**: Works perfectly on desktop, tablet, and mobile devices  
+- **Fast Loading**: Built with Vite for optimal performance and hot reload
+- **Accessible**: Follows WCAG 2.1 accessibility best practices
+- **SEO Optimized**: Proper meta tags and semantic HTML structure
+- **No Authentication**: Pure frontend experience without login complexity
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+## Tech Stack
 
-## Add your files
+- **React 18** - Modern React with hooks
+- **TypeScript** - Type-safe development
+- **Tailwind CSS** - Utility-first CSS framework
+- **Vite** - Fast build tool and dev server
+- **Radix UI** - Accessible component primitives
+- **Lucide React** - Beautiful icons
+- **Framer Motion** - Smooth animations
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+## Getting Started
+
+### Prerequisites
+
+- Node.js 18+ 
+- npm or yarn
+
+### Installation
+
+1. Clone the repository
+```bash
+git clone <repository-url>
+cd OrionCodex
+git checkout feature/landing-page
+```
+
+2. Install dependencies
+```bash
+npm install
+```
+
+3. Start the development server
+```bash
+npm run dev
+```
+
+4. Open your browser and navigate to `http://localhost:5173`
+
+## Project Structure
 
 ```
-cd existing_repo
-git remote add origin https://git.lab.tcctech.app/ds-and-ml-research-sandbox/orion-project/orion-frontend.git
-git branch -M trunk
-git push -uf origin trunk
+client/
+├── src/
+│   ├── components/          # React components
+│   │   ├── ui/             # Reusable UI components (Radix UI)
+│   │   ├── Hero.tsx        # Hero section
+│   │   ├── Navigation.tsx  # Navigation bar
+│   │   ├── Footer.tsx      # Footer
+│   │   └── ...             # Other landing page components
+│   ├── pages/
+│   │   └── Home.tsx        # Main landing page
+│   ├── lib/
+│   │   └── utils.ts        # Utility functions
+│   ├── index.css           # Global styles
+│   └── main.tsx            # App entry point
+├── public/                 # Static assets
+└── index.html              # HTML template
 ```
 
-## Integrate with your tools
+## Available Scripts
 
-- [ ] [Set up project integrations](https://git.lab.tcctech.app/ds-and-ml-research-sandbox/orion-project/orion-frontend/-/settings/integrations)
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build
+- `npm run check` - Type check
 
-## Collaborate with your team
+## Landing Page Sections
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+1. **Hero Section** - Main value proposition with animated gradient background and floating demo cards
+2. **Features Overview** - 5 core features with interactive hover effects and detailed descriptions  
+3. **Value Proposition** - Key metrics (10x faster, 99.9% accuracy, 95% forecast accuracy) with capability highlights
+4. **Feature Deep Dive** - Detailed explanations with mockup images for Smart Reporting, Scenario Modeling, and Cost Intelligence
+5. **Use Cases** - Interactive role-based stories for Finance Analyst, Controller, CFO, and Department Head
+6. **Footer** - Comprehensive company information with organized link sections and social media
 
-## Test and Deploy
+## Customization
 
-Use the built-in continuous integration in GitLab.
+### Colors
+The color scheme is defined in `tailwind.config.ts` and can be customized by modifying the CSS variables in `client/src/index.css`.
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+### Content
+All text content can be found in the respective component files under `client/src/components/`.
 
-***
+### Images
+Background images and mockups are stored in `attached_assets/generated_images/`.
 
-# Editing this README
+## Deployment
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+Build the project for production:
 
-## Suggestions for a good README
+```bash
+npm run build
+```
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+The built files will be in the `dist/` directory, ready for deployment to any static hosting service.
 
-## Name
-Choose a self-explaining name for your project.
+## What's Different from Full Version?
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+This landing page version has been **simplified and optimized** by removing:
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+- ❌ Server-side components (Express.js, API routes)
+- ❌ Database integration (PostgreSQL, Drizzle ORM) 
+- ❌ Authentication system (Keycloak)
+- ❌ Complex routing and navigation
+- ❌ Admin dashboards and panels
+- ❌ File upload functionality
+- ❌ WebSocket connections
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+**✅ What remains**: Pure frontend React experience focused on showcasing Orion's value proposition.
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+## Version History
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+- **v1.0.0** (2024-09-23) - Initial landing page extraction from `draft/mocking-frontend` branch
+- Simplified architecture with 25 production dependencies (down from 70+)
+- Clean, maintainable codebase ready for deployment
 
 ## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+1. Create a feature branch from `feature/landing-page`
+2. Make your changes following the existing patterns
+3. Test across different devices and browsers
+4. Ensure accessibility compliance
+5. Submit a pull request with clear description
 
 ## License
-For open source projects, say how it is licensed.
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+MIT License - see LICENSE file for details.
