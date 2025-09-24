@@ -1,0 +1,97 @@
+services:
+  # Keycloak Service
+  keycloak:
+    image: quay.io/keycloak/keycloak:23.0
+    container_name: orion-keycloak
+    environment:
+      # Database configuration
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
+      KC_DB_USERNAME: postgres
+      KC_DB_PASSWORD: postgres123
+      
+      # Keycloak admin credentials
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin123
+      
+      # Keycloak configuration
+      KC_HOSTNAME_STRICT: false
+      KC_HOSTNAME_STRICT_HTTPS: false
+      KC_HTTP_ENABLED: true
+      KC_HEALTH_ENABLED: true
+      KC_METRICS_ENABLED: true
+    
+    ports:
+      - "8080:8080"
+    
+    volumes:
+      - keycloak_data:/opt/keycloak/data
+    
+    command: ["start-dev"]
+    
+    depends_on:
+      postgres:
+        condition: service_healthy
+    
+    networks:
+      - orion-network
+    
+    healthcheck:
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/8080 && echo -e 'GET /health/ready HTTP/1.1\\r\\nhost: 127.0.0.1:8080\\r\\nConnection: close\\r\\n\\r\\n' >&3 && cat <&3 | grep -q '200 OK'"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 90s
+
+  # PostgreSQL Database for Keycloak
+  postgres:
+    image: postgres:15-alpine
+    container_name: orion-postgres
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres123
+    
+    ports:
+      - "5432:5432"
+    
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    
+    networks:
+      - orion-network
+    
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d keycloak"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Frontend Application (optional - for production)
+  # Commented out for now - use 'npm run dev' for development
+  # frontend:
+  #   build:
+  #     context: ./client
+  #     dockerfile: Dockerfile
+  #   container_name: orion-frontend
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     - VITE_KEYCLOAK_URL=http://localhost:8080
+  #     - VITE_KEYCLOAK_REALM=orion
+  #     - VITE_KEYCLOAK_CLIENT_ID=orion-client
+  #   depends_on:
+  #     keycloak:
+  #       condition: service_healthy
+  #   networks:
+  #     - orion-network
+
+volumes:
+  postgres_data:
+    driver: local
+  keycloak_data:
+    driver: local
+
+networks:
+  orion-network:
+    driver: bridge

@@ -49,9 +49,8 @@ export const KeycloakProvider: React.FC<KeycloakProviderProps> = ({ children }) 
           return;
         }
         
-        // Only try Keycloak init if we have a real server configured
-        const isKeycloakConfigured = import.meta.env.VITE_KEYCLOAK_URL && 
-                                    import.meta.env.VITE_KEYCLOAK_URL !== 'http://localhost:8080';
+        // Try Keycloak init if we have a server configured (including localhost:8080)
+        const isKeycloakConfigured = import.meta.env.VITE_KEYCLOAK_URL;
         
         if (isKeycloakConfigured) {
           const authenticated = await keycloak.init(keycloakInitOptions);
