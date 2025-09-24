@@ -77,14 +77,14 @@ const testAccounts = [
 
 // Direct login function - supports both test accounts and real Keycloak
 export const directLogin = async (username: string, password: string) => {
-  // Try test accounts first for demo/development
+  // Try test accounts first for demo/development - this is much faster than network calls
   const testAccount = testAccounts.find(account => 
     (account.username === username || account.email === username) && account.password === password
   );
 
   if (testAccount) {
-    
-    // Create mock token
+    // Create mock token with better performance
+    const now = Math.floor(Date.now() / 1000);
     const mockTokenData = {
       sub: testAccount.username,
       email: testAccount.email,
@@ -92,29 +92,39 @@ export const directLogin = async (username: string, password: string) => {
       family_name: testAccount.lastName,
       preferred_username: testAccount.username,
       role: testAccount.role,
-      exp: Math.floor(Date.now() / 1000) + 3600, // 1 hour
-      iat: Math.floor(Date.now() / 1000),
+      exp: now + 3600, // 1 hour
+      iat: now,
       iss: 'orion-demo'
     };
 
-    const mockToken = btoa(JSON.stringify({ alg: 'none', typ: 'JWT' })) + '.' + 
-                     btoa(JSON.stringify(mockTokenData)) + '.';
+    // Use more efficient token generation
+    const header = btoa(JSON.stringify({ alg: 'none', typ: 'JWT' }));
+    const payload = btoa(JSON.stringify(mockTokenData));
+    const mockToken = `${header}.${payload}.`;
 
-    // Set token values in Keycloak instance
-    keycloak.token = mockToken;
-    keycloak.refreshToken = 'mock-refresh-token';
-    keycloak.tokenParsed = mockTokenData;
-    keycloak.authenticated = true;
-    keycloak.timeSkew = 0;
+    // Batch all Keycloak instance updates
+    Object.assign(keycloak, {
+      token: mockToken,
+      refreshToken: 'mock-refresh-token',
+      tokenParsed: mockTokenData,
+      authenticated: true,
+      timeSkew: 0
+    });
     
-    // Store token in localStorage for persistence
-    localStorage.setItem('kc-token', mockToken);
-    localStorage.setItem('kc-refresh-token', 'mock-refresh-token');
-    localStorage.setItem('kc-token-parsed', JSON.stringify(mockTokenData));
+    // Batch localStorage operations for better performance
+    const tokenData = {
+      'kc-token': mockToken,
+      'kc-refresh-token': 'mock-refresh-token',
+      'kc-token-parsed': JSON.stringify(mockTokenData)
+    };
     
-    // Trigger callback events
+    Object.entries(tokenData).forEach(([key, value]) => {
+      localStorage.setItem(key, value);
+    });
+    
+    // Trigger callback events asynchronously to avoid blocking
     if (keycloak.onAuthSuccess) {
-      keycloak.onAuthSuccess();
+      setTimeout(() => keycloak.onAuthSuccess(), 0);
     }
     
     return {
@@ -189,24 +199,38 @@ export const directLogin = async (username: string, password: string) => {
 };
 
 export const logout = () => {
-  // Clear token from localStorage
+  // Clear token from localStorage immediately for instant feedback
   clearTokenStorage();
+  
+  // Clear keycloak instance state immediately
+  Object.assign(keycloak, {
+    token: null,
+    refreshToken: null,
+    tokenParsed: null,
+    authenticated: false
+  });
   
   try {
     if (keycloak && typeof keycloak.logout === 'function') {
+      // Use async logout to avoid blocking UI
       return keycloak.logout({
         redirectUri: window.location.origin, // logout and return to home page
       });
     } else {
       // If keycloak is not available, redirect to home page directly
       console.warn('Keycloak instance not available, redirecting to home page');
-      window.location.href = window.location.origin;
+      // Use setTimeout to avoid blocking the current execution
+      setTimeout(() => {
+        window.location.href = window.location.origin;
+      }, 0);
       return Promise.resolve();
     }
   } catch (error) {
     console.error('Error during logout:', error);
     // If error occurs, redirect to home page directly
-    window.location.href = window.location.origin;
+    setTimeout(() => {
+      window.location.href = window.location.origin;
+    }, 0);
     return Promise.resolve();
   }
 };

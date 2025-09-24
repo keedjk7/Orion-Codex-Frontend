@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useLocation } from 'wouter';
 import { useKeycloak } from '@/contexts/KeycloakContext';
 import { Button } from '@/components/ui/button';
@@ -26,7 +26,7 @@ export default function LoginFigmaInspired() {
     }
   }, [authenticated, setLocation]);
 
-  const handleKeycloakLogin = async () => {
+  const handleKeycloakLogin = useCallback(async () => {
     setIsLoggingIn(true);
     try {
       await login();
@@ -36,9 +36,9 @@ export default function LoginFigmaInspired() {
     } finally {
       setIsLoggingIn(false);
     }
-  };
+  }, [login]);
 
-  const handleFormLogin = async (e: React.FormEvent) => {
+  const handleFormLogin = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoggingIn(true);
     setLoginError('');
@@ -55,9 +55,11 @@ export default function LoginFigmaInspired() {
     } finally {
       setIsLoggingIn(false);
     }
-  };
+  }, [directLogin, email, password, setLocation]);
 
-  if (loading) {
+  // Memoize loading component to prevent unnecessary re-renders
+  const loadingComponent = useMemo(() => {
+    if (!loading) return null;
     return (
       <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
         <div className="text-center">
@@ -66,6 +68,10 @@ export default function LoginFigmaInspired() {
         </div>
       </div>
     );
+  }, [loading]);
+
+  if (loading) {
+    return loadingComponent;
   }
 
   return (

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useKeycloak } from '@/contexts/KeycloakContext';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
@@ -27,6 +27,11 @@ interface DashboardHeaderProps {
 
 export default function DashboardHeader({ title, subtitle, onMenuClick }: DashboardHeaderProps) {
   const { user, logout } = useKeycloak();
+
+  // Optimized logout function
+  const handleLogout = useCallback(() => {
+    logout();
+  }, [logout]);
 
   const getUserInitials = () => {
     if (user?.preferred_username) {
@@ -112,7 +117,7 @@ export default function DashboardHeader({ title, subtitle, onMenuClick }: Dashbo
                 <span>Settings</span>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={logout}>
+              <DropdownMenuItem onClick={handleLogout}>
                 <LogOut className="mr-2 h-4 w-4" />
                 <span>Log out</span>
               </DropdownMenuItem>
