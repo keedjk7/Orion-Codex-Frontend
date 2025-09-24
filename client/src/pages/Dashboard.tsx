@@ -1,14 +1,130 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useKeycloak } from '@/contexts/KeycloakContext';
-import { Button } from '@/components/ui/button';
-import { User, LogOut, Shield } from 'lucide-react';
+import DashboardSidebar from '@/components/DashboardSidebar';
+import DashboardHeader from '@/components/DashboardHeader';
+import DashboardOverview from '@/components/DashboardOverview';
+
+// Placeholder components for other tabs
+const FinancialAnalysis = () => (
+  <div className="p-6">
+    <h2 className="text-2xl font-bold mb-4">Financial Analysis</h2>
+    <p className="text-gray-600">Financial analysis tools and reports will be displayed here.</p>
+  </div>
+);
+
+const BudgetPlanning = () => (
+  <div className="p-6">
+    <h2 className="text-2xl font-bold mb-4">Budget Planning</h2>
+    <p className="text-gray-600">Budget planning and allocation tools will be displayed here.</p>
+  </div>
+);
+
+const Forecasting = () => (
+  <div className="p-6">
+    <h2 className="text-2xl font-bold mb-4">Forecasting</h2>
+    <p className="text-gray-600">Forecasting models and predictions will be displayed here.</p>
+  </div>
+);
+
+const Reporting = () => (
+  <div className="p-6">
+    <h2 className="text-2xl font-bold mb-4">Reports</h2>
+    <p className="text-gray-600">Financial reports and analytics will be displayed here.</p>
+  </div>
+);
+
+const Analytics = () => (
+  <div className="p-6">
+    <h2 className="text-2xl font-bold mb-4">Analytics</h2>
+    <p className="text-gray-600">Advanced analytics and data visualization will be displayed here.</p>
+  </div>
+);
+
+const TM1Models = () => (
+  <div className="p-6">
+    <h2 className="text-2xl font-bold mb-4">TM1 Models</h2>
+    <p className="text-gray-600">TM1 model management and configuration will be displayed here.</p>
+  </div>
+);
+
+const Calculations = () => (
+  <div className="p-6">
+    <h2 className="text-2xl font-bold mb-4">Calculations</h2>
+    <p className="text-gray-600">Calculation engines and formulas will be displayed here.</p>
+  </div>
+);
+
+const PlanningCalendar = () => (
+  <div className="p-6">
+    <h2 className="text-2xl font-bold mb-4">Planning Calendar</h2>
+    <p className="text-gray-600">Planning calendar and scheduling will be displayed here.</p>
+  </div>
+);
+
+const UserManagement = () => (
+  <div className="p-6">
+    <h2 className="text-2xl font-bold mb-4">User Management</h2>
+    <p className="text-gray-600">User management and permissions will be displayed here.</p>
+  </div>
+);
+
+const Settings = () => (
+  <div className="p-6">
+    <h2 className="text-2xl font-bold mb-4">Settings</h2>
+    <p className="text-gray-600">System settings and configuration will be displayed here.</p>
+  </div>
+);
+
+const tabComponents = {
+  overview: DashboardOverview,
+  financial: FinancialAnalysis,
+  budgets: BudgetPlanning,
+  forecasting: Forecasting,
+  reporting: Reporting,
+  analytics: Analytics,
+  models: TM1Models,
+  calculations: Calculations,
+  calendar: PlanningCalendar,
+  users: UserManagement,
+  settings: Settings,
+};
+
+const tabTitles = {
+  overview: 'Dashboard Overview',
+  financial: 'Financial Analysis',
+  budgets: 'Budget Planning',
+  forecasting: 'Forecasting',
+  reporting: 'Reports',
+  analytics: 'Analytics',
+  models: 'TM1 Models',
+  calculations: 'Calculations',
+  calendar: 'Planning Calendar',
+  users: 'User Management',
+  settings: 'Settings',
+};
+
+const tabSubtitles = {
+  overview: 'Real-time insights and key performance indicators',
+  financial: 'Comprehensive financial analysis and reporting',
+  budgets: 'Budget planning and allocation management',
+  forecasting: 'Predictive modeling and forecasting tools',
+  reporting: 'Financial reports and business intelligence',
+  analytics: 'Advanced analytics and data visualization',
+  models: 'TM1 model management and configuration',
+  calculations: 'Calculation engines and business rules',
+  calendar: 'Planning calendar and workflow management',
+  users: 'User access control and permissions',
+  settings: 'System configuration and preferences',
+};
 
 export default function Dashboard() {
-  const { user, logout, authenticated } = useKeycloak();
+  const { authenticated } = useKeycloak();
+  const [activeTab, setActiveTab] = useState('overview');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   if (!authenticated) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-4">Access Denied</h1>
           <p className="text-gray-600">You need to login to access this page.</p>
@@ -17,57 +133,36 @@ export default function Dashboard() {
     );
   }
 
+  const ActiveComponent = tabComponents[activeTab as keyof typeof tabComponents];
+
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab);
+    setSidebarOpen(false); // Close sidebar on mobile when tab changes
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-gray-50 flex">
+      {/* Sidebar */}
+      <DashboardSidebar 
+        activeTab={activeTab} 
+        onTabChange={handleTabChange}
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+      />
+      
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col lg:ml-0">
         {/* Header */}
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-            <p className="text-gray-600 mt-1">Welcome to Orion AI Finance Platform</p>
-          </div>
-          <Button 
-            onClick={logout}
-            variant="outline"
-            className="flex items-center gap-2"
-          >
-            <LogOut className="h-4 w-4" />
-            Logout
-          </Button>
-        </div>
-
-        {/* Success Message */}
-        <div className="bg-white rounded-lg shadow p-6 mb-6">
-          <div className="text-center">
-            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Shield className="w-8 h-8 text-green-600" />
-            </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">🎉 Login Successful!</h2>
-            <p className="text-gray-600">
-              Keycloak authentication is working correctly.
-            </p>
-          </div>
-        </div>
-
-        {/* User Info */}
-        {user && (
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex items-center gap-3 mb-4">
-              <User className="h-5 w-5 text-gray-500" />
-              <h3 className="text-lg font-semibold">User Information</h3>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="text-sm font-medium text-gray-500">Username</label>
-                <p className="text-lg">{user.preferred_username || user.sub || 'N/A'}</p>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-gray-500">Email</label>
-                <p className="text-lg">{user.email || 'N/A'}</p>
-              </div>
-            </div>
-          </div>
-        )}
+        <DashboardHeader 
+          title={tabTitles[activeTab as keyof typeof tabTitles]}
+          subtitle={tabSubtitles[activeTab as keyof typeof tabSubtitles]}
+          onMenuClick={() => setSidebarOpen(true)}
+        />
+        
+        {/* Content */}
+        <main className="flex-1 p-4 lg:p-6 overflow-auto">
+          <ActiveComponent />
+        </main>
       </div>
     </div>
   );
