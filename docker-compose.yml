@@ -67,24 +67,36 @@ services:
       timeout: 5s
       retries: 5
 
-  # Frontend Application (optional - for production)
-  # Commented out for now - use 'npm run dev' for development
-  # frontend:
-  #   build:
-  #     context: ./client
-  #     dockerfile: Dockerfile
-  #   container_name: orion-frontend
-  #   ports:
-  #     - "3000:3000"
-  #   environment:
-  #     - VITE_KEYCLOAK_URL=http://localhost:8080
-  #     - VITE_KEYCLOAK_REALM=orion
-  #     - VITE_KEYCLOAK_CLIENT_ID=orion-client
-  #   depends_on:
-  #     keycloak:
-  #       condition: service_healthy
-  #   networks:
-  #     - orion-network
+  # Frontend Application (Orion App)
+  frontend:
+    build:
+      context: .
+      dockerfile: client/Dockerfile
+      args:
+        - VITE_KEYCLOAK_URL=http://keycloak:8080
+        - VITE_KEYCLOAK_REALM=orion
+        - VITE_KEYCLOAK_CLIENT_ID=orion-client
+    container_name: orion-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      keycloak:
+        condition: service_healthy
+    networks:
+      - orion-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.orion-frontend.rule=Host(`localhost`)"
+      - "traefik.http.services.orion-frontend.loadbalancer.server.port=3000"
 
 volumes:
   postgres_data:
