@@ -1,20 +1,11 @@
 /* ==========================================================================
-   ORION CODEX - MAIN STYLESHEET
+   ORION CODEX - CSS MODULES DOCUMENTATION
    ========================================================================== */
 
-/* Import Tailwind CSS */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-/* Import our organized CSS modules */
-@import './globals.css';
-@import './base.css';
-@import './components.css';
-@import './animations.css';
-@import './elevation.css';
-
-/* ==========================================================================
+/* 
+   This file serves as documentation for the CSS organization structure.
+   The actual imports are handled in the main index.css file.
+   
    STYLE ORGANIZATION STRUCTURE:
    
    1. globals.css    - CSS Custom Properties (Variables) & Theme System
@@ -22,4 +13,6 @@
    3. components.css - Reusable component styles and patterns
    4. animations.css - Keyframes, transitions, and animation utilities
    5. elevation.css  - Hover/active states and elevation system
-   ========================================================================== */
+   
+   All modules are imported in client/src/index.css
+*/

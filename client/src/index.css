@@ -1,14 +1,15 @@
 /* ==========================================================================
-   ORION CODEX - LEGACY STYLESHEET (DEPRECATED)
-   
-   This file is now deprecated. Please use the new organized structure:
-   - client/src/styles/index.css (main entry point)
-   - client/src/styles/globals.css (CSS variables & theme)
-   - client/src/styles/base.css (foundation styles)
-   - client/src/styles/components.css (component styles)
-   - client/src/styles/animations.css (animations & keyframes)
-   - client/src/styles/elevation.css (hover/active states)
+   ORION CODEX - MAIN STYLESHEET
    ========================================================================== */
 
-/* Import the new organized CSS structure */
-@import './styles/index.css';
+/* Import Tailwind CSS */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Import our organized CSS modules */
+@import './styles/globals.css';
+@import './styles/base.css';
+@import './styles/components.css';
+@import './styles/animations.css';
+@import './styles/elevation.css';
