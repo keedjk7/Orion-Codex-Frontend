@@ -24,64 +24,64 @@ import {
 
 // Sample data for charts
 const revenueData = [
-  { month: 'Jan', Engineering: 45000, Marketing: 32000, Operations: 28000, Sales: 15000 },
-  { month: 'Feb', Engineering: 52000, Marketing: 28000, Operations: 35000, Sales: 22000 },
-  { month: 'Mar', Engineering: 48000, Marketing: 42000, Operations: 31000, Sales: 28000 },
-  { month: 'Apr', Engineering: 61000, Marketing: 35000, Operations: 38000, Sales: 35000 },
-  { month: 'May', Engineering: 55000, Marketing: 48000, Operations: 42000, Sales: 45000 },
-  { month: 'Jun', Engineering: 58000, Marketing: 52000, Operations: 45000, Sales: 38000 },
-  { month: 'Jul', Engineering: 62000, Marketing: 45000, Operations: 48000, Sales: 42000 },
-  { month: 'Aug', Engineering: 59000, Marketing: 58000, Operations: 52000, Sales: 48000 },
-  { month: 'Sep', Engineering: 65000, Marketing: 55000, Operations: 55000, Sales: 52000 },
-  { month: 'Oct', Engineering: 68000, Marketing: 62000, Operations: 58000, Sales: 55000 },
-  { month: 'Nov', Engineering: 72000, Marketing: 65000, Operations: 62000, Sales: 58000 },
-  { month: 'Dec', Engineering: 75000, Marketing: 68000, Operations: 65000, Sales: 62000 },
+  { month: 'Jan', Revenue: 450000, Expenses: 320000, Profit: 130000 },
+  { month: 'Feb', Revenue: 520000, Expenses: 380000, Profit: 140000 },
+  { month: 'Mar', Revenue: 480000, Expenses: 350000, Profit: 130000 },
+  { month: 'Apr', Revenue: 610000, Expenses: 420000, Profit: 190000 },
+  { month: 'May', Revenue: 550000, Expenses: 400000, Profit: 150000 },
+  { month: 'Jun', Revenue: 580000, Expenses: 430000, Profit: 150000 },
+  { month: 'Jul', Revenue: 620000, Expenses: 450000, Profit: 170000 },
+  { month: 'Aug', Revenue: 590000, Expenses: 420000, Profit: 170000 },
+  { month: 'Sep', Revenue: 650000, Expenses: 480000, Profit: 170000 },
+  { month: 'Oct', Revenue: 680000, Expenses: 500000, Profit: 180000 },
+  { month: 'Nov', Revenue: 720000, Expenses: 520000, Profit: 200000 },
+  { month: 'Dec', Revenue: 750000, Expenses: 540000, Profit: 210000 },
 ];
 
-const departmentData = [
-  { name: 'Sales', value: 35, color: '#06d6a0' },
-  { name: 'Marketing', value: 25, color: '#8b5cf6' },
-  { name: 'Operations', value: 20, color: '#ec4899' },
-  { name: 'R&D', value: 15, color: '#3b82f6' },
-  { name: 'Other', value: 5, color: '#f59e0b' },
+const expenseCategoryData = [
+  { name: 'Cost of Goods Sold', value: 35, color: '#06d6a0' },
+  { name: 'Operating Expenses', value: 25, color: '#8b5cf6' },
+  { name: 'Marketing & Sales', value: 20, color: '#ec4899' },
+  { name: 'Research & Development', value: 15, color: '#3b82f6' },
+  { name: 'Administrative', value: 5, color: '#f59e0b' },
 ];
 
 const kpiData = [
   {
     title: 'Total Revenue',
-    value: '100,000',
-    change: '+12.5%',
+    value: '3,000,000',
+    change: '+15.2%',
     trend: 'up',
     icon: DollarSign,
-    description: 'First time visitors (YTD)',
+    description: 'Total revenue for Q1, 2025',
     color: 'blue'
   },
   {
-    title: 'All Reports',
-    value: '127',
-    change: '+2.1%',
+    title: 'Total Expenses',
+    value: '2,100,000',
+    change: '+8.7%',
     trend: 'up',
-    icon: BarChart3,
-    description: 'All reports created (YTD)',
-    color: 'purple'
+    icon: TrendingUp,
+    description: 'Total expenses for Q1, 2025',
+    color: 'red'
   },
   {
-    title: 'Sessions',
-    value: '20',
-    change: '+3',
+    title: 'Net Profit',
+    value: '900,000',
+    change: '+28.5%',
     trend: 'up',
     icon: Target,
-    description: 'Sessions created (YTD)',
+    description: 'Net profit margin: 30%',
     color: 'green'
   },
   {
-    title: 'Bounce Rate',
-    value: '50',
-    change: '+12',
+    title: 'Cash Flow',
+    value: '750,000',
+    change: '+22.1%',
     trend: 'up',
-    icon: TrendingUp,
-    description: 'Bounce rate (YTD)',
-    color: 'orange'
+    icon: BarChart3,
+    description: 'Operating cash flow Q1, 2025',
+    color: 'purple'
   }
 ];
 
@@ -180,20 +180,20 @@ export default function DashboardOverview() {
 
       {/* Charts Row */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 lg:gap-6">
-        {/* Revenue Trends Chart */}
+        {/* P&L Trends Chart */}
         <Card>
           <CardHeader>
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle>Revenue Trends</CardTitle>
-                <CardDescription>Monthly revenue performance</CardDescription>
+                <CardTitle>Profit & Loss Trends</CardTitle>
+                <CardDescription>Monthly P&L performance for 2025</CardDescription>
               </div>
               <div className="flex space-x-2">
                 <select className="text-sm border border-gray-200 rounded px-2 py-1">
-                  <option>Category</option>
+                  <option>Annual</option>
                 </select>
                 <select className="text-sm border border-gray-200 rounded px-2 py-1">
-                  <option>Today</option>
+                  <option>Q1 2025</option>
                 </select>
               </div>
             </div>
@@ -202,19 +202,19 @@ export default function DashboardOverview() {
             <ResponsiveContainer width="100%" height={280}>
               <LineChart data={revenueData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                <XAxis 
-                  dataKey="month" 
+                <XAxis
+                  dataKey="month"
                   axisLine={false}
                   tickLine={false}
                   tick={{ fontSize: 12, fill: '#666' }}
                 />
-                <YAxis 
+                <YAxis
                   axisLine={false}
                   tickLine={false}
                   tick={{ fontSize: 12, fill: '#666' }}
                   tickFormatter={(value) => `$${(value / 1000).toFixed(0)}K`}
                 />
-                <Tooltip 
+                <Tooltip
                   contentStyle={{
                     backgroundColor: 'white',
                     border: '1px solid #e5e7eb',
@@ -223,165 +223,145 @@ export default function DashboardOverview() {
                   }}
                   formatter={(value) => [`$${(value as number / 1000).toFixed(0)}K`, '']}
                 />
-                <Legend 
+                <Legend
                   wrapperStyle={{ paddingTop: '20px' }}
                   iconType="circle"
                 />
-                <Line 
-                  type="monotone" 
-                  dataKey="Engineering" 
-                  stroke="#3b82f6" 
+                <Line
+                  type="monotone"
+                  dataKey="Revenue"
+                  stroke="#10b981"
+                  strokeWidth={3}
+                  dot={{ fill: '#10b981', strokeWidth: 2, r: 4 }}
+                  activeDot={{ r: 6, stroke: '#10b981', strokeWidth: 2 }}
+                  name="Revenue"
+                />
+                <Line
+                  type="monotone"
+                  dataKey="Expenses"
+                  stroke="#ef4444"
+                  strokeWidth={3}
+                  dot={{ fill: '#ef4444', strokeWidth: 2, r: 4 }}
+                  activeDot={{ r: 6, stroke: '#ef4444', strokeWidth: 2 }}
+                  name="Expenses"
+                />
+                <Line
+                  type="monotone"
+                  dataKey="Profit"
+                  stroke="#3b82f6"
                   strokeWidth={3}
                   dot={{ fill: '#3b82f6', strokeWidth: 2, r: 4 }}
                   activeDot={{ r: 6, stroke: '#3b82f6', strokeWidth: 2 }}
-                  name="Engineering"
-                />
-                <Line 
-                  type="monotone" 
-                  dataKey="Marketing" 
-                  stroke="#8b5cf6" 
-                  strokeWidth={3}
-                  dot={{ fill: '#8b5cf6', strokeWidth: 2, r: 4 }}
-                  activeDot={{ r: 6, stroke: '#8b5cf6', strokeWidth: 2 }}
-                  name="Marketing"
-                />
-                <Line 
-                  type="monotone" 
-                  dataKey="Operations" 
-                  stroke="#ec4899" 
-                  strokeWidth={3}
-                  dot={{ fill: '#ec4899', strokeWidth: 2, r: 4 }}
-                  activeDot={{ r: 6, stroke: '#ec4899', strokeWidth: 2 }}
-                  name="Operations"
-                />
-                <Line 
-                  type="monotone" 
-                  dataKey="Sales" 
-                  stroke="#06d6a0" 
-                  strokeWidth={3}
-                  dot={{ fill: '#06d6a0', strokeWidth: 2, r: 4 }}
-                  activeDot={{ r: 6, stroke: '#06d6a0', strokeWidth: 2 }}
-                  name="Sales"
+                  name="Net Profit"
                 />
               </LineChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
 
-        {/* Department Overview */}
+        {/* Expense Categories */}
         <Card>
           <CardHeader>
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle>Department Overview</CardTitle>
-                <CardDescription>Performance by department</CardDescription>
+                <CardTitle>Expense Categories</CardTitle>
+                <CardDescription>Breakdown by expense category</CardDescription>
               </div>
               <div className="flex space-x-2">
                 <select className="text-sm border border-gray-200 rounded px-2 py-1">
-                  <option>All</option>
+                  <option>Q1 2025</option>
                 </select>
                 <select className="text-sm border border-gray-200 rounded px-2 py-1">
-                  <option>Today</option>
+                  <option>Budget vs Actual</option>
                 </select>
               </div>
             </div>
           </CardHeader>
           <CardContent>
             <div className="max-h-80 overflow-y-auto pr-2">
-              <div className="grid grid-cols-2 gap-4">
-                {/* Sales */}
-                <div className="p-4 bg-green-50 rounded-lg">
+              <div className="grid grid-cols-1 gap-4">
+                {/* Cost of Goods Sold */}
+                <div className="p-4 bg-green-50 rounded-lg border-l-4 border-green-500">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-gray-700">Sales</span>
-                    <span className="px-2 py-1 bg-green-500 text-white text-xs rounded">Active</span>
+                    <span className="text-sm font-medium text-gray-700">Cost of Goods Sold</span>
+                    <span className="px-2 py-1 bg-green-500 text-white text-xs rounded">On Track</span>
                   </div>
                   <p className="text-xs text-gray-500 mb-3">
-                    Q4 sales performance exceeded expectations with 125% target achievement. Key accounts showing strong growth in enterprise segment. Pipeline value increased by 40% compared to last quarter.
-                  </p>
-                  <div className="text-xs text-gray-400 mb-2">Updated 2 hours ago</div>
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="text-green-600 font-medium">Revenue: $2.4M</span>
-                    <span className="text-blue-600 font-medium">Growth: +25%</span>
-                  </div>
-                </div>
-
-                {/* Marketing */}
-                <div className="p-4 bg-red-50 rounded-lg">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-gray-700">Marketing</span>
-                    <span className="px-2 py-1 bg-red-500 text-white text-xs rounded">Overdue</span>
-                  </div>
-                  <p className="text-xs text-gray-500 mb-3">
-                    Digital marketing campaigns need immediate attention. Budget allocation review pending for Q1 2024. Social media engagement down 15% this month requiring strategy adjustment.
-                  </p>
-                  <div className="text-xs text-gray-400 mb-2">Updated 4 hours ago</div>
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="text-red-600 font-medium">Budget: $850K</span>
-                    <span className="text-orange-600 font-medium">ROI: -8%</span>
-                  </div>
-                </div>
-
-                {/* Operations */}
-                <div className="p-4 bg-green-50 rounded-lg">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-gray-700">Operations</span>
-                    <span className="px-2 py-1 bg-green-500 text-white text-xs rounded">Active</span>
-                  </div>
-                  <p className="text-xs text-gray-500 mb-3">
-                    Supply chain optimization project completed successfully. New warehouse management system deployed. Operational efficiency improved by 18% with reduced processing time.
+                    COGS tracking well against budget. Raw material costs stable with 2% decrease from Q4. Manufacturing efficiency improved by 5% through process optimization.
                   </p>
                   <div className="text-xs text-gray-400 mb-2">Updated 1 hour ago</div>
                   <div className="flex items-center justify-between text-xs">
-                    <span className="text-green-600 font-medium">Cost: $1.2M</span>
-                    <span className="text-blue-600 font-medium">Efficiency: +18%</span>
+                    <span className="text-green-600 font-medium">Budget: $1.05M</span>
+                    <span className="text-blue-600 font-medium">Actual: $1.02M</span>
+                    <span className="text-green-600 font-medium">Variance: +2.8%</span>
                   </div>
                 </div>
 
-                {/* Customer Success */}
-                <div className="p-4 bg-green-50 rounded-lg">
+                {/* Operating Expenses */}
+                <div className="p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-gray-700">Customer Success</span>
-                    <span className="px-2 py-1 bg-green-500 text-white text-xs rounded">Active</span>
+                    <span className="text-sm font-medium text-gray-700">Operating Expenses</span>
+                    <span className="px-2 py-1 bg-blue-500 text-white text-xs rounded">Under Budget</span>
                   </div>
                   <p className="text-xs text-gray-500 mb-3">
-                    Customer satisfaction scores reached all-time high of 94%. Churn rate decreased to 2.1%. New onboarding process reduced time-to-value by 35% for enterprise clients.
+                    Operating expenses 8% below budget due to successful cost control measures. Office utilities reduced by 15% through energy efficiency initiatives.
+                  </p>
+                  <div className="text-xs text-gray-400 mb-2">Updated 2 hours ago</div>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-blue-600 font-medium">Budget: $525K</span>
+                    <span className="text-green-600 font-medium">Actual: $483K</span>
+                    <span className="text-green-600 font-medium">Variance: +8.0%</span>
+                  </div>
+                </div>
+
+                {/* Marketing & Sales */}
+                <div className="p-4 bg-orange-50 rounded-lg border-l-4 border-orange-500">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium text-gray-700">Marketing & Sales</span>
+                    <span className="px-2 py-1 bg-orange-500 text-white text-xs rounded">Overspend</span>
+                  </div>
+                  <p className="text-xs text-gray-500 mb-3">
+                    Marketing spend exceeded budget by 12% due to Q1 campaign launches. Sales team expanded headcount driving higher commission expenses.
                   </p>
                   <div className="text-xs text-gray-400 mb-2">Updated 3 hours ago</div>
                   <div className="flex items-center justify-between text-xs">
-                    <span className="text-green-600 font-medium">CSAT: 94%</span>
-                    <span className="text-blue-600 font-medium">Churn: 2.1%</span>
+                    <span className="text-orange-600 font-medium">Budget: $420K</span>
+                    <span className="text-red-600 font-medium">Actual: $470K</span>
+                    <span className="text-red-600 font-medium">Variance: -12%</span>
                   </div>
                 </div>
 
-                {/* Finance */}
-                <div className="p-4 bg-blue-50 rounded-lg">
+                {/* Research & Development */}
+                <div className="p-4 bg-purple-50 rounded-lg border-l-4 border-purple-500">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-gray-700">Finance</span>
-                    <span className="px-2 py-1 bg-blue-500 text-white text-xs rounded">Review</span>
+                    <span className="text-sm font-medium text-gray-700">Research & Development</span>
+                    <span className="px-2 py-1 bg-purple-500 text-white text-xs rounded">On Track</span>
                   </div>
                   <p className="text-xs text-gray-500 mb-3">
-                    Monthly financial close completed ahead of schedule. Cash flow positive for 6 consecutive months. Investment portfolio showing 12% YTD returns above benchmark.
+                    R&D investment aligned with strategic plan. Two new product prototypes completed. Patent applications filed for 3 innovations this quarter.
+                  </p>
+                  <div className="text-xs text-gray-400 mb-2">Updated 4 hours ago</div>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-purple-600 font-medium">Budget: $315K</span>
+                    <span className="text-blue-600 font-medium">Actual: $308K</span>
+                    <span className="text-green-600 font-medium">Variance: +2.2%</span>
+                  </div>
+                </div>
+
+                {/* Administrative */}
+                <div className="p-4 bg-gray-50 rounded-lg border-l-4 border-gray-500">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium text-gray-700">Administrative</span>
+                    <span className="px-2 py-1 bg-gray-500 text-white text-xs rounded">Under Budget</span>
+                  </div>
+                  <p className="text-xs text-gray-500 mb-3">
+                    Administrative costs well managed. Professional services fees reduced by 20% through vendor negotiations. Insurance premiums stable for the quarter.
                   </p>
                   <div className="text-xs text-gray-400 mb-2">Updated 5 hours ago</div>
                   <div className="flex items-center justify-between text-xs">
-                    <span className="text-green-600 font-medium">Cash: $5.2M</span>
-                    <span className="text-blue-600 font-medium">ROI: +12%</span>
-                  </div>
-                </div>
-
-                {/* HR */}
-                <div className="p-4 bg-purple-50 rounded-lg">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-gray-700">Human Resources</span>
-                    <span className="px-2 py-1 bg-purple-500 text-white text-xs rounded">Planning</span>
-                  </div>
-                  <p className="text-xs text-gray-500 mb-3">
-                    Q1 2024 hiring plan approved for 25 new positions. Employee engagement survey results show 87% satisfaction. New benefits package implementation scheduled for January.
-                  </p>
-                  <div className="text-xs text-gray-400 mb-2">Updated 6 hours ago</div>
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="text-purple-600 font-medium">Headcount: 245</span>
-                    <span className="text-green-600 font-medium">Satisfaction: 87%</span>
+                    <span className="text-gray-600 font-medium">Budget: $105K</span>
+                    <span className="text-green-600 font-medium">Actual: $89K</span>
+                    <span className="text-green-600 font-medium">Variance: +15.2%</span>
                   </div>
                 </div>
               </div>
@@ -392,11 +372,11 @@ export default function DashboardOverview() {
 
       {/* Bottom Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
-        {/* Active Projects */}
+        {/* Financial Initiatives */}
         <Card>
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle>Active Projects</CardTitle>
+              <CardTitle>Financial Initiatives</CardTitle>
               <button className="text-gray-400 hover:text-gray-600">
                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
@@ -407,134 +387,44 @@ export default function DashboardOverview() {
           <CardContent>
             <div className="max-h-80 overflow-y-auto pr-2">
               <div className="space-y-4">
-                {/* Q4 Product Launch */}
-                <div className="p-4 bg-gray-50 rounded-lg">
+                {/* Cost Optimization Program */}
+                <div className="p-4 bg-green-50 rounded-lg border-l-4 border-green-500">
                   <div className="flex items-center justify-between mb-3">
-                    <h4 className="font-medium text-gray-900">Q4 Product Launch</h4>
-                    <span className="px-2 py-1 bg-green-500 text-white text-xs rounded">Active</span>
+                    <h4 className="font-medium text-gray-900">Cost Optimization Program</h4>
+                    <span className="px-2 py-1 bg-green-500 text-white text-xs rounded">On Track</span>
                   </div>
                   <p className="text-xs text-gray-600 mb-3">
-                    Major product release featuring AI-powered analytics dashboard, enhanced user interface, and advanced reporting capabilities. Currently in final testing phase.
+                    Comprehensive cost reduction initiative targeting 15% savings across all departments. Supply chain optimization and vendor consolidation showing early success.
                   </p>
                   <div className="grid grid-cols-2 gap-4 text-sm text-gray-600 mb-3">
                     <div>
                       <span className="text-blue-600 font-medium">Progress</span>
-                      <div className="text-gray-900 font-semibold">75%</div>
+                      <div className="text-gray-900 font-semibold">65%</div>
                     </div>
                     <div>
-                      <span className="text-green-600 font-medium">Timeline</span>
-                      <div className="text-gray-900 font-semibold">2 weeks</div>
+                      <span className="text-green-600 font-medium">Savings</span>
+                      <div className="text-gray-900 font-semibold">$180K</div>
                     </div>
                     <div>
                       <span className="text-purple-600 font-medium">Budget</span>
-                      <div className="text-gray-900 font-semibold">$280K</div>
+                      <div className="text-gray-900 font-semibold">$50K</div>
                     </div>
                     <div>
-                      <span className="text-orange-600 font-medium">Status</span>
-                      <div className="text-gray-900 font-semibold">Planning</div>
+                      <span className="text-orange-600 font-medium">Timeline</span>
+                      <div className="text-gray-900 font-semibold">Q2 2025</div>
                     </div>
                   </div>
-                  <div className="text-xs text-gray-400">Last updated: 2 hours ago</div>
+                  <div className="text-xs text-gray-400">Last updated: 1 hour ago</div>
                 </div>
 
-                {/* Mobile App Redesign */}
-                <div className="p-4 bg-blue-50 rounded-lg">
+                {/* Working Capital Improvement */}
+                <div className="p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500">
                   <div className="flex items-center justify-between mb-3">
-                    <h4 className="font-medium text-gray-900">Mobile App Redesign</h4>
+                    <h4 className="font-medium text-gray-900">Working Capital Optimization</h4>
                     <span className="px-2 py-1 bg-blue-500 text-white text-xs rounded">In Progress</span>
                   </div>
                   <p className="text-xs text-gray-600 mb-3">
-                    Complete overhaul of mobile application with new UX/UI design, improved performance, and offline capabilities. User testing phase completed with positive feedback.
-                  </p>
-                  <div className="grid grid-cols-2 gap-4 text-sm text-gray-600 mb-3">
-                    <div>
-                      <span className="text-blue-600 font-medium">Progress</span>
-                      <div className="text-gray-900 font-semibold">60%</div>
-                    </div>
-                    <div>
-                      <span className="text-green-600 font-medium">Timeline</span>
-                      <div className="text-gray-900 font-semibold">4 weeks</div>
-                    </div>
-                    <div>
-                      <span className="text-purple-600 font-medium">Budget</span>
-                      <div className="text-gray-900 font-semibold">$150K</div>
-                    </div>
-                    <div>
-                      <span className="text-orange-600 font-medium">Status</span>
-                      <div className="text-gray-900 font-semibold">Development</div>
-                    </div>
-                  </div>
-                  <div className="text-xs text-gray-400">Last updated: 4 hours ago</div>
-                </div>
-
-                {/* Cloud Migration */}
-                <div className="p-4 bg-yellow-50 rounded-lg">
-                  <div className="flex items-center justify-between mb-3">
-                    <h4 className="font-medium text-gray-900">Cloud Migration Project</h4>
-                    <span className="px-2 py-1 bg-yellow-500 text-white text-xs rounded">On Hold</span>
-                  </div>
-                  <p className="text-xs text-gray-600 mb-3">
-                    Migration of legacy systems to cloud infrastructure. Waiting for security compliance approval and budget allocation for Q1 2024. Infrastructure planning completed.
-                  </p>
-                  <div className="grid grid-cols-2 gap-4 text-sm text-gray-600 mb-3">
-                    <div>
-                      <span className="text-blue-600 font-medium">Progress</span>
-                      <div className="text-gray-900 font-semibold">25%</div>
-                    </div>
-                    <div>
-                      <span className="text-green-600 font-medium">Timeline</span>
-                      <div className="text-gray-900 font-semibold">8 weeks</div>
-                    </div>
-                    <div>
-                      <span className="text-purple-600 font-medium">Budget</span>
-                      <div className="text-gray-900 font-semibold">$450K</div>
-                    </div>
-                    <div>
-                      <span className="text-orange-600 font-medium">Status</span>
-                      <div className="text-gray-900 font-semibold">Approval</div>
-                    </div>
-                  </div>
-                  <div className="text-xs text-gray-400">Last updated: 1 day ago</div>
-                </div>
-
-                {/* API Integration */}
-                <div className="p-4 bg-green-50 rounded-lg">
-                  <div className="flex items-center justify-between mb-3">
-                    <h4 className="font-medium text-gray-900">Third-party API Integration</h4>
-                    <span className="px-2 py-1 bg-green-500 text-white text-xs rounded">Active</span>
-                  </div>
-                  <p className="text-xs text-gray-600 mb-3">
-                    Integration with external payment gateways, CRM systems, and analytics platforms. Phase 1 completed successfully, moving to Phase 2 implementation.
-                  </p>
-                  <div className="grid grid-cols-2 gap-4 text-sm text-gray-600 mb-3">
-                    <div>
-                      <span className="text-blue-600 font-medium">Progress</span>
-                      <div className="text-gray-900 font-semibold">85%</div>
-                    </div>
-                    <div>
-                      <span className="text-green-600 font-medium">Timeline</span>
-                      <div className="text-gray-900 font-semibold">1 week</div>
-                    </div>
-                    <div>
-                      <span className="text-purple-600 font-medium">Budget</span>
-                      <div className="text-gray-900 font-semibold">$95K</div>
-                    </div>
-                    <div>
-                      <span className="text-orange-600 font-medium">Status</span>
-                      <div className="text-gray-900 font-semibold">Testing</div>
-                    </div>
-                  </div>
-                  <div className="text-xs text-gray-400">Last updated: 30 minutes ago</div>
-                </div>
-
-                {/* Security Audit */}
-                <div className="p-4 bg-red-50 rounded-lg">
-                  <div className="flex items-center justify-between mb-3">
-                    <h4 className="font-medium text-gray-900">Security Audit & Compliance</h4>
-                    <span className="px-2 py-1 bg-red-500 text-white text-xs rounded">Critical</span>
-                  </div>
-                  <p className="text-xs text-gray-600 mb-3">
-                    Comprehensive security audit and compliance review for SOC 2 certification. External auditors identified 3 critical issues requiring immediate attention.
+                    Initiative to improve cash flow through better inventory management, accounts receivable optimization, and strategic payment terms negotiation.
                   </p>
                   <div className="grid grid-cols-2 gap-4 text-sm text-gray-600 mb-3">
                     <div>
@@ -542,36 +432,126 @@ export default function DashboardOverview() {
                       <div className="text-gray-900 font-semibold">40%</div>
                     </div>
                     <div>
-                      <span className="text-green-600 font-medium">Timeline</span>
-                      <div className="text-gray-900 font-semibold">3 weeks</div>
+                      <span className="text-green-600 font-medium">Improvement</span>
+                      <div className="text-gray-900 font-semibold">$250K</div>
                     </div>
                     <div>
                       <span className="text-purple-600 font-medium">Budget</span>
-                      <div className="text-gray-900 font-semibold">$75K</div>
+                      <div className="text-gray-900 font-semibold">$30K</div>
                     </div>
                     <div>
-                      <span className="text-orange-600 font-medium">Status</span>
-                      <div className="text-gray-900 font-semibold">Remediation</div>
+                      <span className="text-orange-600 font-medium">Timeline</span>
+                      <div className="text-gray-900 font-semibold">Q1 2025</div>
+                    </div>
+                  </div>
+                  <div className="text-xs text-gray-400">Last updated: 2 hours ago</div>
+                </div>
+
+                {/* ERP System Implementation */}
+                <div className="p-4 bg-purple-50 rounded-lg border-l-4 border-purple-500">
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="font-medium text-gray-900">ERP System Upgrade</h4>
+                    <span className="px-2 py-1 bg-purple-500 text-white text-xs rounded">Planning</span>
+                  </div>
+                  <p className="text-xs text-gray-600 mb-3">
+                    Upgrade to modern ERP system for improved financial reporting, automation, and real-time analytics. Phase 1 requirements gathering completed.
+                  </p>
+                  <div className="grid grid-cols-2 gap-4 text-sm text-gray-600 mb-3">
+                    <div>
+                      <span className="text-blue-600 font-medium">Progress</span>
+                      <div className="text-gray-900 font-semibold">25%</div>
+                    </div>
+                    <div>
+                      <span className="text-green-600 font-medium">Investment</span>
+                      <div className="text-gray-900 font-semibold">$500K</div>
+                    </div>
+                    <div>
+                      <span className="text-purple-600 font-medium">Budget</span>
+                      <div className="text-gray-900 font-semibold">$600K</div>
+                    </div>
+                    <div>
+                      <span className="text-orange-600 font-medium">Timeline</span>
+                      <div className="text-gray-900 font-semibold">12 months</div>
+                    </div>
+                  </div>
+                  <div className="text-xs text-gray-400">Last updated: 4 hours ago</div>
+                </div>
+
+                {/* Tax Planning & Compliance */}
+                <div className="p-4 bg-orange-50 rounded-lg border-l-4 border-orange-500">
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="font-medium text-gray-900">Tax Strategy Optimization</h4>
+                    <span className="px-2 py-1 bg-orange-500 text-white text-xs rounded">Review</span>
+                  </div>
+                  <p className="text-xs text-gray-600 mb-3">
+                    Comprehensive tax planning initiative focusing on R&D credits, international tax optimization, and transfer pricing strategies for 2025.
+                  </p>
+                  <div className="grid grid-cols-2 gap-4 text-sm text-gray-600 mb-3">
+                    <div>
+                      <span className="text-blue-600 font-medium">Progress</span>
+                      <div className="text-gray-900 font-semibold">80%</div>
+                    </div>
+                    <div>
+                      <span className="text-green-600 font-medium">Savings</span>
+                      <div className="text-gray-900 font-semibold">$120K</div>
+                    </div>
+                    <div>
+                      <span className="text-purple-600 font-medium">Budget</span>
+                      <div className="text-gray-900 font-semibold">$25K</div>
+                    </div>
+                    <div>
+                      <span className="text-orange-600 font-medium">Timeline</span>
+                      <div className="text-gray-900 font-semibold">Q2 2025</div>
                     </div>
                   </div>
                   <div className="text-xs text-gray-400">Last updated: 6 hours ago</div>
+                </div>
+
+                {/* Financial Risk Assessment */}
+                <div className="p-4 bg-red-50 rounded-lg border-l-4 border-red-500">
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="font-medium text-gray-900">Risk Management Framework</h4>
+                    <span className="px-2 py-1 bg-red-500 text-white text-xs rounded">Critical</span>
+                  </div>
+                  <p className="text-xs text-gray-600 mb-3">
+                    Enterprise risk management system implementation including financial risk modeling, stress testing, and compliance monitoring frameworks.
+                  </p>
+                  <div className="grid grid-cols-2 gap-4 text-sm text-gray-600 mb-3">
+                    <div>
+                      <span className="text-blue-600 font-medium">Progress</span>
+                      <div className="text-gray-900 font-semibold">55%</div>
+                    </div>
+                    <div>
+                      <span className="text-green-600 font-medium">Investment</span>
+                      <div className="text-gray-900 font-semibold">$200K</div>
+                    </div>
+                    <div>
+                      <span className="text-purple-600 font-medium">Budget</span>
+                      <div className="text-gray-900 font-semibold">$180K</div>
+                    </div>
+                    <div>
+                      <span className="text-orange-600 font-medium">Timeline</span>
+                      <div className="text-gray-900 font-semibold">Q3 2025</div>
+                    </div>
+                  </div>
+                  <div className="text-xs text-gray-400">Last updated: 8 hours ago</div>
                 </div>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* Budget Distribution by Department */}
+        {/* Budget vs Actual by Category */}
         <Card>
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle>Budget Distribution by Department</CardTitle>
+              <CardTitle>Budget vs Actual by Category</CardTitle>
               <div className="flex space-x-2">
                 <select className="text-sm border border-gray-200 rounded px-2 py-1">
-                  <option>All</option>
+                  <option>Q1 2025</option>
                 </select>
                 <select className="text-sm border border-gray-200 rounded px-2 py-1">
-                  <option>Today</option>
+                  <option>Percentage</option>
                 </select>
               </div>
             </div>
@@ -581,7 +561,7 @@ export default function DashboardOverview() {
               <ResponsiveContainer width="100%" height={200}>
                 <PieChart>
                   <Pie
-                    data={departmentData}
+                    data={expenseCategoryData}
                     cx="50%"
                     cy="50%"
                     innerRadius={60}
@@ -589,26 +569,291 @@ export default function DashboardOverview() {
                     paddingAngle={5}
                     dataKey="value"
                   >
-                    {departmentData.map((entry, index) => (
+                    {expenseCategoryData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={entry.color} />
                     ))}
                   </Pie>
                   <Tooltip />
                 </PieChart>
               </ResponsiveContainer>
-              
+
               {/* Legend */}
-              <div className="mt-4 grid grid-cols-2 gap-2 text-sm">
-                {departmentData.map((item, index) => (
+              <div className="mt-4 grid grid-cols-1 gap-2 text-sm">
+                {expenseCategoryData.map((item, index) => (
                   <div key={index} className="flex items-center space-x-2">
-                    <div 
-                      className="w-3 h-3 rounded-full" 
+                    <div
+                      className="w-3 h-3 rounded-full"
                       style={{ backgroundColor: item.color }}
                     ></div>
                     <span className="text-gray-600">{item.name}</span>
-                    <span className="text-gray-900 font-medium ml-auto">$3.0M</span>
+                    <span className="text-gray-900 font-medium ml-auto">
+                      ${item.name === 'Cost of Goods Sold' ? '1.05M' :
+                        item.name === 'Operating Expenses' ? '525K' :
+                        item.name === 'Marketing & Sales' ? '420K' :
+                        item.name === 'Research & Development' ? '315K' : '105K'}
+                    </span>
                   </div>
                 ))}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Financial Tables Section */}
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 lg:gap-6">
+        {/* Revenue Breakdown Table */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Revenue Breakdown by Product Line</CardTitle>
+            <CardDescription>Detailed revenue analysis for Q1 2025</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b">
+                    <th className="text-left py-2 font-medium text-gray-900">Product Line</th>
+                    <th className="text-right py-2 font-medium text-gray-900">Jan</th>
+                    <th className="text-right py-2 font-medium text-gray-900">Feb</th>
+                    <th className="text-right py-2 font-medium text-gray-900">Mar</th>
+                    <th className="text-right py-2 font-medium text-gray-900">Q1 Total</th>
+                    <th className="text-right py-2 font-medium text-gray-900">Growth</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="border-b">
+                    <td className="py-2 text-gray-900">Enterprise Software</td>
+                    <td className="py-2 text-right text-gray-600">$180K</td>
+                    <td className="py-2 text-right text-gray-600">$210K</td>
+                    <td className="py-2 text-right text-gray-600">$195K</td>
+                    <td className="py-2 text-right text-gray-900 font-medium">$585K</td>
+                    <td className="py-2 text-right text-green-600">+8.3%</td>
+                  </tr>
+                  <tr className="border-b">
+                    <td className="py-2 text-gray-900">SaaS Subscriptions</td>
+                    <td className="py-2 text-right text-gray-600">$120K</td>
+                    <td className="py-2 text-right text-gray-600">$135K</td>
+                    <td className="py-2 text-right text-gray-600">$150K</td>
+                    <td className="py-2 text-right text-gray-900 font-medium">$405K</td>
+                    <td className="py-2 text-right text-green-600">+25.0%</td>
+                  </tr>
+                  <tr className="border-b">
+                    <td className="py-2 text-gray-900">Professional Services</td>
+                    <td className="py-2 text-right text-gray-600">$85K</td>
+                    <td className="py-2 text-right text-gray-600">$95K</td>
+                    <td className="py-2 text-right text-gray-600">$110K</td>
+                    <td className="py-2 text-right text-gray-900 font-medium">$290K</td>
+                    <td className="py-2 text-right text-green-600">+29.4%</td>
+                  </tr>
+                  <tr className="border-b">
+                    <td className="py-2 text-gray-900">Support & Maintenance</td>
+                    <td className="py-2 text-right text-gray-600">$65K</td>
+                    <td className="py-2 text-right text-gray-600">$80K</td>
+                    <td className="py-2 text-right text-gray-600">$75K</td>
+                    <td className="py-2 text-right text-gray-900 font-medium">$220K</td>
+                    <td className="py-2 text-right text-green-600">+15.4%</td>
+                  </tr>
+                  <tr className="border-b font-medium">
+                    <td className="py-2 text-gray-900">Total Revenue</td>
+                    <td className="py-2 text-right text-gray-900">$450K</td>
+                    <td className="py-2 text-right text-gray-900">$520K</td>
+                    <td className="py-2 text-right text-gray-900">$530K</td>
+                    <td className="py-2 text-right text-gray-900">$1.5M</td>
+                    <td className="py-2 text-right text-green-600">+17.6%</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Cash Flow Summary Table */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Cash Flow Summary</CardTitle>
+            <CardDescription>Operating cash flow analysis for Q1 2025</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b">
+                      <th className="text-left py-2 font-medium text-gray-900">Category</th>
+                      <th className="text-right py-2 font-medium text-gray-900">Budget</th>
+                      <th className="text-right py-2 font-medium text-gray-900">Actual</th>
+                      <th className="text-right py-2 font-medium text-gray-900">Variance</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr className="border-b">
+                      <td className="py-2 text-gray-900">Cash from Operations</td>
+                      <td className="py-2 text-right text-gray-600">$680K</td>
+                      <td className="py-2 text-right text-green-600 font-medium">$750K</td>
+                      <td className="py-2 text-right text-green-600">+$70K</td>
+                    </tr>
+                    <tr className="border-b">
+                      <td className="py-2 text-gray-900">Cash from Investing</td>
+                      <td className="py-2 text-right text-gray-600">-$150K</td>
+                      <td className="py-2 text-right text-red-600 font-medium">-$180K</td>
+                      <td className="py-2 text-right text-red-600">-$30K</td>
+                    </tr>
+                    <tr className="border-b">
+                      <td className="py-2 text-gray-900">Cash from Financing</td>
+                      <td className="py-2 text-right text-gray-600">-$50K</td>
+                      <td className="py-2 text-right text-green-600 font-medium">-$25K</td>
+                      <td className="py-2 text-right text-green-600">+$25K</td>
+                    </tr>
+                    <tr className="border-b font-medium bg-gray-50">
+                      <td className="py-2 text-gray-900">Net Cash Flow</td>
+                      <td className="py-2 text-right text-gray-900">$480K</td>
+                      <td className="py-2 text-right text-green-600 font-bold">$545K</td>
+                      <td className="py-2 text-right text-green-600">+$65K</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Cash Position Indicators */}
+              <div className="grid grid-cols-3 gap-4 pt-4 border-t">
+                <div className="text-center">
+                  <div className="text-lg font-bold text-gray-900">$2.3M</div>
+                  <div className="text-xs text-gray-500">Opening Balance</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-lg font-bold text-green-600">$545K</div>
+                  <div className="text-xs text-gray-500">Net Cash Flow</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-lg font-bold text-blue-600">$2.8M</div>
+                  <div className="text-xs text-gray-500">Closing Balance</div>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Financial Ratios Section */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <Card>
+          <CardContent className="p-4">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-blue-600">30.0%</div>
+              <div className="text-sm text-gray-500">Net Profit Margin</div>
+              <div className="text-xs text-green-600 mt-1">+2.1% vs Q4</div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-4">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-green-600">2.8x</div>
+              <div className="text-sm text-gray-500">Current Ratio</div>
+              <div className="text-xs text-green-600 mt-1">+0.2 vs Q4</div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-4">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-purple-600">45 days</div>
+              <div className="text-sm text-gray-500">DSO</div>
+              <div className="text-xs text-red-600 mt-1">+5 days vs Q4</div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-4">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-orange-600">1.2x</div>
+              <div className="text-sm text-gray-500">Debt-to-Equity</div>
+              <div className="text-xs text-green-600 mt-1">-0.1 vs Q4</div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Forecasting Section */}
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 lg:gap-6">
+        {/* Revenue Forecast */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Revenue Forecast</CardTitle>
+            <CardDescription>12-month revenue projection with confidence intervals</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="h-48 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg flex items-center justify-center">
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-blue-600">$4.2M</div>
+                  <div className="text-sm text-gray-500">Projected Q4 Revenue</div>
+                  <div className="text-xs text-green-600 mt-1">+18% vs Q3</div>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex justify-between items-center text-sm">
+                  <span className="text-gray-600">Conservative Scenario</span>
+                  <span className="font-medium">$3.8M</span>
+                </div>
+                <div className="flex justify-between items-center text-sm">
+                  <span className="text-gray-600">Base Case</span>
+                  <span className="font-medium text-blue-600">$4.2M</span>
+                </div>
+                <div className="flex justify-between items-center text-sm">
+                  <span className="text-gray-600">Optimistic Scenario</span>
+                  <span className="font-medium">$4.8M</span>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Key Financial Metrics Forecast */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Financial Metrics Forecast</CardTitle>
+            <CardDescription>Key performance indicators for next quarter</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="text-center p-3 bg-green-50 rounded-lg">
+                  <div className="text-lg font-bold text-green-600">32.5%</div>
+                  <div className="text-xs text-gray-500">Net Margin</div>
+                  <div className="text-xs text-green-600">+1.5%</div>
+                </div>
+                <div className="text-center p-3 bg-blue-50 rounded-lg">
+                  <div className="text-lg font-bold text-blue-600">2.9x</div>
+                  <div className="text-xs text-gray-500">Current Ratio</div>
+                  <div className="text-xs text-green-600">+0.1x</div>
+                </div>
+                <div className="text-center p-3 bg-purple-50 rounded-lg">
+                  <div className="text-lg font-bold text-purple-600">38 days</div>
+                  <div className="text-xs text-gray-500">DSO</div>
+                  <div className="text-xs text-red-600">+3 days</div>
+                </div>
+                <div className="text-center p-3 bg-orange-50 rounded-lg">
+                  <div className="text-lg font-bold text-orange-600">1.1x</div>
+                  <div className="text-xs text-gray-500">Debt-to-Equity</div>
+                  <div className="text-xs text-green-600">-0.1x</div>
+                </div>
+              </div>
+
+              <div className="text-xs text-gray-500 border-t pt-3">
+                <div className="flex justify-between">
+                  <span>Risk Level:</span>
+                  <span className="text-green-600 font-medium">Low</span>
+                </div>
+                <div className="flex justify-between mt-1">
+                  <span>Confidence:</span>
+                  <span className="text-blue-600 font-medium">85%</span>
+                </div>
               </div>
             </div>
           </CardContent>

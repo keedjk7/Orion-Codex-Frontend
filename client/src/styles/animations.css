@@ -58,4 +58,120 @@
       left: 100%;
     }
   }
+
+  /* Sidebar Animations */
+  @keyframes sidebarSlideIn {
+    from {
+      transform: translateX(-100%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes sidebarSlideOut {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-100%);
+    }
+  }
+
+  @keyframes sidebarWidthExpand {
+    from {
+      width: 4rem; /* 64px */
+    }
+    to {
+      width: 16rem; /* 256px */
+    }
+  }
+
+  @keyframes sidebarWidthCollapse {
+    from {
+      width: 16rem; /* 256px */
+    }
+    to {
+      width: 4rem; /* 64px */
+    }
+  }
+
+  /* Sidebar utility classes */
+  .sidebar-slide-in {
+    animation: sidebarSlideIn 0.3s ease-in-out;
+  }
+
+  .sidebar-slide-out {
+    animation: sidebarSlideOut 0.3s ease-in-out;
+  }
+
+  .sidebar-item-hover {
+    @apply relative;
+  }
+
+  .sidebar-item-hover::before {
+    content: '';
+    position: absolute;
+    left: 100%;
+    top: 0;
+    bottom: 0;
+    width: 0;
+    background: rgba(59, 130, 246, 0.1);
+    transition: width 0.2s ease;
+    z-index: 10;
+  }
+
+  .sidebar-item-hover:hover::before {
+    width: 16rem;
+  }
+
+  /* Enhanced sidebar tooltip */
+  .sidebar-tooltip {
+    position: relative;
+  }
+
+  .sidebar-tooltip::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    left: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 50;
+    margin-left: 0.5rem;
+  }
+
+  .sidebar-tooltip:hover::after {
+    opacity: 1;
+  }
+
+  /* Smooth content transitions */
+  .main-content-shift {
+    transition: margin-left 0.3s ease-in-out;
+  }
+
+  .main-content-expanded {
+    margin-left: 0;
+  }
+
+  .main-content-collapsed {
+    margin-left: 4rem; /* 64px */
+  }
+
+  /* Sidebar hover effects */
+  .sidebar-collapsed {
+    width: 4rem; /* 64px */
+  }
+
+  .sidebar-expanded {
+    width: 16rem; /* 256px */
+  }
 }

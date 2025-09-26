@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useKeycloak } from '@/contexts/KeycloakContext';
+import { cn } from '@/lib/utils';
 import DashboardSidebar from '@/components/DashboardSidebar';
 import DashboardHeader from '@/components/DashboardHeader';
 import DashboardOverview from '@/components/DashboardOverview';
@@ -75,6 +76,35 @@ const Settings = () => (
   </div>
 );
 
+// New Finance-focused Components
+const CashFlow = () => (
+  <div className="p-6">
+    <h2 className="text-2xl font-bold mb-4">Cash Flow Management</h2>
+    <p className="text-gray-600">Cash flow analysis, liquidity management, and working capital optimization tools will be displayed here.</p>
+  </div>
+);
+
+const RiskManagement = () => (
+  <div className="p-6">
+    <h2 className="text-2xl font-bold mb-4">Financial Risk Management</h2>
+    <p className="text-gray-600">Risk assessment, mitigation strategies, and financial risk modeling tools will be displayed here.</p>
+  </div>
+);
+
+const StrategicPlanning = () => (
+  <div className="p-6">
+    <h2 className="text-2xl font-bold mb-4">Strategic Financial Planning</h2>
+    <p className="text-gray-600">Long-term financial planning, scenario modeling, and strategic investment analysis will be displayed here.</p>
+  </div>
+);
+
+const ComplianceAudit = () => (
+  <div className="p-6">
+    <h2 className="text-2xl font-bold mb-4">Compliance & Audit Management</h2>
+    <p className="text-gray-600">Compliance monitoring, audit trails, and regulatory reporting tools will be displayed here.</p>
+  </div>
+);
+
 const tabComponents = {
   overview: DashboardOverview,
   financial: FinancialAnalysis,
@@ -82,38 +112,38 @@ const tabComponents = {
   forecasting: Forecasting,
   reporting: Reporting,
   analytics: Analytics,
-  models: TM1Models,
-  calculations: Calculations,
-  calendar: PlanningCalendar,
-  users: UserManagement,
+  cashflow: CashFlow,
+  risk: RiskManagement,
+  planning: StrategicPlanning,
+  compliance: ComplianceAudit,
   settings: Settings,
 };
 
 const tabTitles = {
-  overview: 'Dashboard Overview',
-  financial: 'Financial Analysis',
-  budgets: 'Budget Planning',
-  forecasting: 'Forecasting',
-  reporting: 'Reports',
-  analytics: 'Analytics',
-  models: 'TM1 Models',
-  calculations: 'Calculations',
-  calendar: 'Planning Calendar',
-  users: 'User Management',
+  overview: 'Financial Overview',
+  financial: 'P&L Analysis',
+  budgets: 'Budget Management',
+  forecasting: 'Financial Forecasting',
+  reporting: 'Financial Reports',
+  analytics: 'Financial Analytics',
+  cashflow: 'Cash Flow',
+  risk: 'Risk Management',
+  planning: 'Strategic Planning',
+  compliance: 'Compliance & Audit',
   settings: 'Settings',
 };
 
 const tabSubtitles = {
-  overview: 'Real-time insights and key performance indicators',
-  financial: 'Comprehensive financial analysis and reporting',
+  overview: 'Real-time financial insights and key performance indicators',
+  financial: 'Comprehensive P&L analysis and financial reporting',
   budgets: 'Budget planning and allocation management',
-  forecasting: 'Predictive modeling and forecasting tools',
+  forecasting: 'Financial forecasting and predictive modeling',
   reporting: 'Financial reports and business intelligence',
-  analytics: 'Advanced analytics and data visualization',
-  models: 'TM1 model management and configuration',
-  calculations: 'Calculation engines and business rules',
-  calendar: 'Planning calendar and workflow management',
-  users: 'User access control and permissions',
+  analytics: 'Advanced financial analytics and data visualization',
+  cashflow: 'Cash flow management and liquidity analysis',
+  risk: 'Financial risk assessment and management',
+  planning: 'Strategic financial planning and scenario modeling',
+  compliance: 'Compliance monitoring and audit management',
   settings: 'System configuration and preferences',
 };
 
@@ -121,6 +151,7 @@ export default function Dashboard() {
   const { authenticated } = useKeycloak();
   const [activeTab, setActiveTab] = useState('overview');
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   if (!authenticated) {
     return (
@@ -140,25 +171,34 @@ export default function Dashboard() {
     setSidebarOpen(false); // Close sidebar on mobile when tab changes
   };
 
+  const handleSidebarCollapse = (collapsed: boolean) => {
+    setSidebarCollapsed(collapsed);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 flex">
       {/* Sidebar */}
-      <DashboardSidebar 
-        activeTab={activeTab} 
+      <DashboardSidebar
+        activeTab={activeTab}
         onTabChange={handleTabChange}
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
+        isCollapsed={sidebarCollapsed}
+        onCollapseToggle={handleSidebarCollapse}
       />
-      
+
       {/* Main Content */}
-      <div className="flex-1 flex flex-col lg:ml-0">
+      <div className={cn(
+        "flex-1 flex flex-col transition-all duration-300 ease-in-out",
+        sidebarCollapsed ? "lg:ml-16 main-content-collapsed" : "lg:ml-0 main-content-expanded"
+      )}>
         {/* Header */}
-        <DashboardHeader 
+        <DashboardHeader
           title={tabTitles[activeTab as keyof typeof tabTitles]}
           subtitle={tabSubtitles[activeTab as keyof typeof tabSubtitles]}
           onMenuClick={() => setSidebarOpen(true)}
         />
-        
+
         {/* Content */}
         <main className="flex-1 p-4 lg:p-6 overflow-auto">
           <ActiveComponent />
