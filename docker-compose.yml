@@ -97,6 +97,41 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.orion-frontend.rule=Host(`localhost`)"
       - "traefik.http.services.orion-frontend.loadbalancer.server.port=3000"
+    profiles:
+      - production
+
+  # Frontend Development Server (Hot Reload)
+  frontend-dev:
+    build:
+      context: .
+      dockerfile: client/Dockerfile.dev
+    container_name: orion-frontend-dev
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./client:/app/client
+      - ./attached_assets:/app/attached_assets
+      - ./components.json:/app/components.json
+      - ./tailwind.config.ts:/app/tailwind.config.ts
+      - ./tsconfig.json:/app/tsconfig.json
+      - ./vite.config.ts:/app/vite.config.ts
+      - ./postcss.config.js:/app/postcss.config.js
+      - ./package.json:/app/package.json
+      - ./package-lock.json:/app/package-lock.json
+      - /app/node_modules
+    environment:
+      - VITE_KEYCLOAK_URL=http://localhost:8080
+      - VITE_KEYCLOAK_REALM=orion
+      - VITE_KEYCLOAK_CLIENT_ID=orion-client
+      - NODE_ENV=development
+    depends_on:
+      keycloak:
+        condition: service_healthy
+    networks:
+      - orion-network
+    restart: unless-stopped
+    profiles:
+      - development
 
 volumes:
   postgres_data:

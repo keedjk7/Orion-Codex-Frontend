@@ -12,8 +12,8 @@ COPY package*.json ./
 # Install all dependencies (including dev dependencies)
 RUN npm install
 
-# Copy source code
-COPY . .
+# Set working directory to client for development
+WORKDIR /app/client
 
 # Expose Vite dev server port
 EXPOSE 5173
@@ -23,4 +23,4 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD curl -f http://localhost:5173/ || exit 1
 
 # Start development server with hot reload
-CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
+CMD ["sh", "-c", "cd .. && npm run dev -- --host 0.0.0.0"]

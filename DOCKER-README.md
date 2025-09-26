@@ -30,17 +30,24 @@ VITE_KEYCLOAK_REALM=orion
 VITE_KEYCLOAK_CLIENT_ID=orion-client
 ```
 
-### 3. Start Frontend Development
+### 3. Choose Your Mode
 
+**Production Mode (Containerized Frontend):**
 ```bash
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
+docker-compose --profile production up -d
 ```
+Visit: `http://localhost:3000`
 
+**Development Mode (Hot Reload):**
+```bash
+docker-compose --profile development up -d
+```
 Visit: `http://localhost:5173`
+
+**All Services (Both modes + Keycloak):**
+```bash
+docker-compose up -d
+```
 
 ## 🔧 Services
 
