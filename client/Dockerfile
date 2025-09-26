@@ -49,7 +49,7 @@ RUN cd .. && npm run build
 FROM nginx:alpine as production
 
 # Copy built application  
-COPY --from=build /app/dist /usr/share/nginx/html
+COPY --from=build /app/dist/public /usr/share/nginx/html
 
 # Copy nginx configuration
 COPY client/nginx.conf /etc/nginx/conf.d/default.conf
