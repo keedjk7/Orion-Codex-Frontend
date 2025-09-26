@@ -1,42 +1,52 @@
-# Build stage
-FROM node:18-alpine as build
+# Multi-stage Dockerfile for both development and production
+FROM node:18-alpine as base
 
 WORKDIR /app
+
+# Install curl for health checks
+RUN apk add --no-cache curl
 
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
+# Install all dependencies
 RUN npm install
 
-# Copy client source code
+# Copy source code and assets
 COPY client/ ./client/
-
-# Copy attached assets
 COPY attached_assets/ ./attached_assets/
-
-# Copy other necessary files
 COPY components.json ./
 COPY tailwind.config.ts ./
 COPY tsconfig.json ./
 COPY vite.config.ts ./
 COPY postcss.config.js ./
 
-# Set working directory to client
-WORKDIR /app/client
-
-# Build the application with environment variables
+# Build argument to determine mode
+ARG BUILD_MODE=production
 ARG VITE_KEYCLOAK_URL=http://localhost:8080
 ARG VITE_KEYCLOAK_REALM=orion
 ARG VITE_KEYCLOAK_CLIENT_ID=orion-client
+
+# Set environment variables
 ENV VITE_KEYCLOAK_URL=$VITE_KEYCLOAK_URL
 ENV VITE_KEYCLOAK_REALM=$VITE_KEYCLOAK_REALM
 ENV VITE_KEYCLOAK_CLIENT_ID=$VITE_KEYCLOAK_CLIENT_ID
 
+# Development stage
+FROM base as development
+WORKDIR /app/client
+EXPOSE 5173
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:5173/ || exit 1
+CMD ["sh", "-c", "cd .. && npm run dev -- --host 0.0.0.0"]
+
+# Build stage for production
+FROM base as build
+WORKDIR /app/client
 RUN cd .. && npm run build
 
 # Production stage
-FROM nginx:alpine
+FROM nginx:alpine as production
 
 # Copy built application  
 COPY --from=build /app/dist /usr/share/nginx/html
@@ -62,7 +72,7 @@ EXPOSE 3000
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD curl -f http://localhost:3000/ || exit 1
+  CMD curl -f http://localhost:3000/health || exit 1
 
 # Start nginx
 CMD ["nginx", "-g", "daemon off;"]

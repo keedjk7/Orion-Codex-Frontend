@@ -67,11 +67,12 @@ services:
       timeout: 5s
       retries: 5
 
-  # Frontend Application (Orion App)
+  # Frontend Application (Production Mode)
   frontend:
     build:
       context: .
       dockerfile: client/Dockerfile
+      target: production
       args:
         - VITE_KEYCLOAK_URL=http://keycloak:8080
         - VITE_KEYCLOAK_REALM=orion
@@ -104,7 +105,12 @@ services:
   frontend-dev:
     build:
       context: .
-      dockerfile: client/Dockerfile.dev
+      dockerfile: client/Dockerfile
+      target: development
+      args:
+        - VITE_KEYCLOAK_URL=http://localhost:8080
+        - VITE_KEYCLOAK_REALM=orion
+        - VITE_KEYCLOAK_CLIENT_ID=orion-client
     container_name: orion-frontend-dev
     ports:
       - "5173:5173"
