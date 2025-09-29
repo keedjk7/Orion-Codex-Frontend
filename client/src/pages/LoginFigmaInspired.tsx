@@ -22,7 +22,7 @@ export default function LoginFigmaInspired() {
   // Redirect if already authenticated
   useEffect(() => {
     if (authenticated) {
-      setLocation('/dashboard');
+      setLocation('/home');
     }
   }, [authenticated, setLocation]);
 
@@ -46,7 +46,7 @@ export default function LoginFigmaInspired() {
     try {
       const result = await directLogin(email, password);
       if (result.success) {
-        setLocation('/dashboard');
+        setLocation('/home');
       } else {
         setLoginError(result.error || 'An error occurred during login');
       }

@@ -335,12 +335,23 @@ export default function HomePage() {
   };
 
   const handleTabChange = (tab: string) => {
-    if (tab === 'dashboard') {
-      // Navigate to dashboard page
-      window.location.href = '/dashboard';
+    if (tab === 'home') {
+      // Already on home page
       return;
     }
-    // For other tabs, you can add logic here if needed
+    
+    // Navigate to different dashboard routes
+    switch (tab) {
+      case 'ce-dashboard':
+        window.location.href = '/ce-dashboard';
+        break;
+      case 'fn-dashboard':
+        window.location.href = '/fn-dashboard';
+        break;
+      default:
+        // For other tabs, you can add logic here if needed
+        break;
+    }
   };
 
   const handleSidebarCollapse = (collapsed: boolean) => {
@@ -1112,7 +1123,7 @@ export default function HomePage() {
                     <tbody>
                       {/* PLANNING PREPARATION Section */}
                       <tr className="bg-gradient-to-r from-blue-100 to-blue-50 border-l-4 border-blue-500">
-                        <td colSpan="6" className="py-3 px-6 font-bold text-blue-900 text-sm uppercase tracking-wide">
+                        <td colSpan={6} className="py-3 px-6 font-bold text-blue-900 text-sm uppercase tracking-wide">
                           <div className="flex items-center">
                             <svg className="w-5 h-5 mr-3 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
                               <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"/>
@@ -1518,7 +1529,7 @@ export default function HomePage() {
                       
                       {/* OPERATIONAL PLANNING Section */}
                       <tr className="bg-gradient-to-r from-orange-100 to-orange-50 border-l-4 border-orange-500">
-                        <td colSpan="6" className="py-3 px-6 font-bold text-orange-900 text-sm uppercase tracking-wide">
+                        <td colSpan={6} className="py-3 px-6 font-bold text-orange-900 text-sm uppercase tracking-wide">
                           <div className="flex items-center">
                             <svg className="w-5 h-5 mr-3 text-orange-600" fill="currentColor" viewBox="0 0 20 20">
                               <path fillRule="evenodd" d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clipRule="evenodd"/>
@@ -1678,7 +1689,7 @@ export default function HomePage() {
                       
                       {/* OPERATIONAL APPROVALS Section */}
                       <tr className="bg-gradient-to-r from-green-100 to-green-50 border-l-4 border-green-500">
-                        <td colSpan="6" className="py-3 px-6 font-bold text-green-900 text-sm uppercase tracking-wide">
+                        <td colSpan={6} className="py-3 px-6 font-bold text-green-900 text-sm uppercase tracking-wide">
                           <div className="flex items-center">
                             <svg className="w-5 h-5 mr-3 text-green-600" fill="currentColor" viewBox="0 0 20 20">
                               <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/>
