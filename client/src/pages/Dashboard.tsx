@@ -167,6 +167,11 @@ export default function Dashboard() {
   const ActiveComponent = tabComponents[activeTab as keyof typeof tabComponents];
 
   const handleTabChange = (tab: string) => {
+    if (tab === 'home') {
+      // Navigate to home page
+      window.location.href = '/home';
+      return;
+    }
     setActiveTab(tab);
     setSidebarOpen(false); // Close sidebar on mobile when tab changes
   };

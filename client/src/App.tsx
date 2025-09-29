@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { KeycloakProvider } from "@/contexts/KeycloakContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Home from "@/pages/Home";
+import HomePage from "@/pages/HomePage";
 import LoginFigmaInspired from "@/pages/LoginFigmaInspired";
 import Dashboard from "@/pages/Dashboard";
 
@@ -13,6 +14,11 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
+      <Route path="/home">
+        <ProtectedRoute>
+          <HomePage />
+        </ProtectedRoute>
+      </Route>
       <Route path="/login" component={LoginFigmaInspired} />
       <Route path="/dashboard">
         <ProtectedRoute>

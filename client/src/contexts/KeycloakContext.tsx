@@ -91,6 +91,10 @@ export const KeycloakProvider: React.FC<KeycloakProviderProps> = ({ children }) 
           setToken(keycloak.token || null);
           if (keycloak.tokenParsed) {
             setUser(keycloak.tokenParsed);
+            // Redirect to home page after successful authentication
+            setTimeout(() => {
+              window.location.href = '/home';
+            }, 100);
           }
         };
 
@@ -115,7 +119,7 @@ export const KeycloakProvider: React.FC<KeycloakProviderProps> = ({ children }) 
   const handleLogin = useCallback(() => {
     if (keycloak && typeof keycloak.login === 'function') {
       keycloak.login({
-        redirectUri: window.location.href, // Return to current page after login
+        redirectUri: `${window.location.origin}/home`, // Redirect to home page after login
       });
     } else {
       console.error('Keycloak instance not available for login');
@@ -132,15 +136,19 @@ export const KeycloakProvider: React.FC<KeycloakProviderProps> = ({ children }) 
         setToken(keycloak.token || null);
         if (keycloak.tokenParsed) {
           setUser(keycloak.tokenParsed);
+          // Redirect to home page after successful authentication
+          setTimeout(() => {
+            window.location.href = '/home';
+          }, 100);
         }
         return { success: true };
       } else {
         return { success: false, error: result.error };
       }
     } catch (error) {
-      return { 
-        success: false, 
-        error: error instanceof Error ? error.message : 'An error occurred during login' 
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'An error occurred during login'
       };
     }
   }, []);

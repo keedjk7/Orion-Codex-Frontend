@@ -64,7 +64,7 @@ export default keycloak;
 // Helper functions
 export const login = () => {
   return keycloak.login({
-    redirectUri: window.location.href, // Return to current page after login
+    redirectUri: `${window.location.origin}/home`, // Redirect to home page after login
   });
 };
 

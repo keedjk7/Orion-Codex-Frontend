@@ -13,10 +13,29 @@ import {
   Target,
   DollarSign,
   Calendar,
+  Home,
   X,
   ChevronLeft,
   ChevronRight
 } from 'lucide-react';
+
+// Custom scrollbar styles for sidebar
+const sidebarScrollbarStyles = `
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: #f8fafc;
+    border-radius: 3px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+  }
+`;
 
 interface SidebarProps {
   activeTab: string;
@@ -28,6 +47,7 @@ interface SidebarProps {
 }
 
 const menuItems = [
+  { id: 'home', label: 'Home', icon: Home },
   { id: 'overview', label: 'Financial Overview', icon: LayoutDashboard },
   { id: 'financial', label: 'P&L Analysis', icon: DollarSign },
   { id: 'budgets', label: 'Budget Management', icon: Target },
@@ -74,6 +94,9 @@ export default function DashboardSidebar({
 
   return (
     <>
+      {/* Custom Scrollbar Styles */}
+      <style dangerouslySetInnerHTML={{ __html: sidebarScrollbarStyles }} />
+      
       {/* Mobile Overlay */}
       {isOpen && (
         <div
@@ -85,7 +108,7 @@ export default function DashboardSidebar({
       {/* Sidebar */}
       <div
         className={cn(
-          "fixed lg:static inset-y-0 left-0 z-50 bg-white border-r border-gray-200 h-full flex flex-col transition-all duration-300 ease-in-out lg:translate-x-0 group",
+          "fixed lg:sticky inset-y-0 left-0 z-50 bg-white border-r border-gray-200 h-screen lg:h-screen flex flex-col transition-all duration-300 ease-in-out lg:translate-x-0 group lg:top-0",
           isOpen ? "translate-x-0 sidebar-slide-in" : "-translate-x-full sidebar-slide-out",
           shouldExpand ? "w-64 sidebar-expanded" : "w-16 sidebar-collapsed"
         )}
@@ -134,34 +157,36 @@ export default function DashboardSidebar({
         </div>
 
         {/* Navigation Menu */}
-        <nav className="flex-1 p-2 space-y-1">
-          {menuItems.map((item) => {
-            const Icon = item.icon;
-            return (
-              <Button
-                key={item.id}
-                variant={activeTab === item.id ? "default" : "ghost"}
-                className={cn(
-                  "w-full justify-start text-left font-normal transition-all duration-200",
-                  activeTab === item.id
-                    ? "bg-blue-50 text-blue-700 border-blue-200"
-                    : "text-gray-600 hover:text-gray-900 hover:bg-gray-50",
-                  shouldExpand ? "px-3" : "px-2 justify-center",
-                  !shouldExpand && "sidebar-tooltip"
-                )}
-                onClick={() => onTabChange(item.id)}
-                data-tooltip={item.label}
-                title=""
-              >
-                <Icon className={cn("h-4 w-4 flex-shrink-0", shouldExpand ? "mr-3" : "mr-0")} />
-                {shouldExpand && (
-                  <span className="truncate transition-opacity duration-200 opacity-100">
-                    {item.label}
-                  </span>
-                )}
-              </Button>
-            );
-          })}
+        <nav className="flex-1 p-2 overflow-y-auto overflow-x-hidden custom-scrollbar">
+          <div className="space-y-1">
+            {menuItems.map((item) => {
+              const Icon = item.icon;
+              return (
+                <Button
+                  key={item.id}
+                  variant={activeTab === item.id ? "default" : "ghost"}
+                  className={cn(
+                    "w-full justify-start text-left font-normal transition-all duration-200",
+                    activeTab === item.id
+                      ? "bg-blue-50 text-blue-700 border-blue-200"
+                      : "text-gray-600 hover:text-gray-900 hover:bg-gray-50",
+                    shouldExpand ? "px-3" : "px-2 justify-center",
+                    !shouldExpand && "sidebar-tooltip"
+                  )}
+                  onClick={() => onTabChange(item.id)}
+                  data-tooltip={item.label}
+                  title=""
+                >
+                  <Icon className={cn("h-4 w-4 flex-shrink-0", shouldExpand ? "mr-3" : "mr-0")} />
+                  {shouldExpand && (
+                    <span className="truncate transition-opacity duration-200 opacity-100">
+                      {item.label}
+                    </span>
+                  )}
+                </Button>
+              );
+            })}
+          </div>
         </nav>
 
         {/* Footer */}
