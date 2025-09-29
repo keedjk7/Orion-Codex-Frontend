@@ -16,7 +16,9 @@ import {
   Home,
   X,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react';
 
 // Custom scrollbar styles for sidebar
@@ -37,6 +39,14 @@ const sidebarScrollbarStyles = `
   }
 `;
 
+interface MenuItem {
+  id: string;
+  label: string;
+  icon: any;
+  isGroup?: boolean;
+  children?: MenuItem[];
+}
+
 interface SidebarProps {
   activeTab: string;
   onTabChange: (tab: string) => void;
@@ -46,9 +56,18 @@ interface SidebarProps {
   onCollapseToggle?: (collapsed: boolean) => void;
 }
 
-const menuItems = [
+const menuItems: MenuItem[] = [
   { id: 'home', label: 'Home', icon: Home },
-  { id: 'overview', label: 'Financial Overview', icon: LayoutDashboard },
+  { 
+    id: 'dashboards', 
+    label: 'Dashboards', 
+    icon: BarChart3,
+    isGroup: true,
+    children: [
+      { id: 'ce-dashboard', label: 'CE Dashboard', icon: BarChart3 },
+      { id: 'fn-dashboard', label: 'FN Dashboard', icon: TrendingUp },
+    ]
+  },
   { id: 'financial', label: 'P&L Analysis', icon: DollarSign },
   { id: 'budgets', label: 'Budget Management', icon: Target },
   { id: 'forecasting', label: 'Financial Forecasting', icon: TrendingUp },
@@ -71,6 +90,7 @@ export default function DashboardSidebar({
 }: SidebarProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [internalCollapsed, setInternalCollapsed] = useState(false);
+  const [expandedGroups, setExpandedGroups] = useState<string[]>(['dashboards']);
 
   // Use external collapsed state if provided, otherwise use internal
   const isCollapsed = externalCollapsed ?? internalCollapsed;
@@ -90,6 +110,18 @@ export default function DashboardSidebar({
 
   const handleMouseLeave = () => {
     setIsHovered(false);
+  };
+
+  const toggleGroup = (groupId: string) => {
+    setExpandedGroups(prev => 
+      prev.includes(groupId) 
+        ? prev.filter(id => id !== groupId)
+        : [...prev, groupId]
+    );
+  };
+
+  const isGroupExpanded = (groupId: string) => {
+    return expandedGroups.includes(groupId);
   };
 
   return (
@@ -161,6 +193,82 @@ export default function DashboardSidebar({
           <div className="space-y-1">
             {menuItems.map((item) => {
               const Icon = item.icon;
+              
+              // Handle group items
+              if (item.isGroup && item.children) {
+                const isExpanded = isGroupExpanded(item.id);
+                const hasActiveChild = item.children.some(child => child.id === activeTab);
+                
+                return (
+                  <div key={item.id}>
+                    {/* Group Header */}
+                    <Button
+                      variant={hasActiveChild ? "default" : "ghost"}
+                      className={cn(
+                        "w-full justify-start text-left font-normal transition-all duration-200",
+                        hasActiveChild
+                          ? "bg-blue-50 text-blue-700 border-blue-200"
+                          : "text-gray-600 hover:text-gray-900 hover:bg-gray-50",
+                        shouldExpand ? "px-3" : "px-2 justify-center",
+                        !shouldExpand && "sidebar-tooltip"
+                      )}
+                      onClick={() => {
+                        if (shouldExpand) {
+                          toggleGroup(item.id);
+                        } else {
+                          onTabChange(item.children?.[0]?.id || item.id);
+                        }
+                      }}
+                      data-tooltip={item.label}
+                      title=""
+                    >
+                      <Icon className={cn("h-4 w-4 flex-shrink-0", shouldExpand ? "mr-3" : "mr-0")} />
+                      {shouldExpand && (
+                        <>
+                          <span className="truncate transition-opacity duration-200 opacity-100 flex-1">
+                            {item.label}
+                          </span>
+                          {isExpanded ? (
+                            <ChevronUp className="h-4 w-4 ml-2" />
+                          ) : (
+                            <ChevronDown className="h-4 w-4 ml-2" />
+                          )}
+                        </>
+                      )}
+                    </Button>
+                    
+                    {/* Group Children */}
+                    {shouldExpand && isExpanded && (
+                      <div className="ml-6 mt-1 space-y-1">
+                        {item.children.map((child) => {
+                          const ChildIcon = child.icon;
+                          return (
+                            <Button
+                              key={child.id}
+                              variant={activeTab === child.id ? "default" : "ghost"}
+                              className={cn(
+                                "w-full justify-start text-left font-normal transition-all duration-200",
+                                activeTab === child.id
+                                  ? "bg-blue-50 text-blue-700 border-blue-200"
+                                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50",
+                                "px-3"
+                              )}
+                              onClick={() => onTabChange(child.id)}
+                            >
+                              <ChildIcon className="h-4 w-4 flex-shrink-0 mr-3" />
+                              <span className="truncate transition-opacity duration-200 opacity-100">
+                                {child.label}
+                              </span>
+                            </Button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                );
+              }
+              
+              // Handle regular items
               return (
                 <Button
                   key={item.id}

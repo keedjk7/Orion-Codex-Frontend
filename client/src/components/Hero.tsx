@@ -2,11 +2,19 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { BarChart3, DollarSign, TrendingUp, CheckCircle, MessageSquare, Bot, PieChart } from "lucide-react";
 import heroBackground from "@assets/generated_images/Gradient_mesh_hero_background_83768b02.png";
+import { useKeycloak } from "@/contexts/KeycloakContext";
 
 export default function Hero() {
+  const { authenticated } = useKeycloak();
+
   const handleGetStartedClick = () => {
-    // Navigate to login page (now using figma design)
-    window.location.href = '/login';
+    if (authenticated) {
+      // If user is already logged in, go to home page
+      window.location.href = '/home';
+    } else {
+      // If not logged in, go to login page
+      window.location.href = '/login';
+    }
   };
 
   return (
