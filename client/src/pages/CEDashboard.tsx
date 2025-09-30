@@ -359,92 +359,60 @@ export default function CEDashboard() {
           </CardContent>
         </Card>
 
-        {/* Total Revenue for Q1 2025 */}
-        <Card className="shadow-xl border-0 bg-gradient-to-br from-white to-blue-50 hover:shadow-2xl transition-all duration-300">
-          <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-gray-100 pb-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <CardTitle className="flex items-center space-x-3 text-gray-800">
-                  <div className="p-2 bg-blue-100 rounded-lg">
-                    <DollarSign className="h-5 w-5 text-blue-600" />
-                  </div>
-                  <span className="text-lg font-bold">Total Revenue for Q1, 2025</span>
-                </CardTitle>
-              </div>
-              <div className="flex space-x-2">
-                <select className="text-sm border border-gray-300 rounded-lg px-3 py-2 bg-white shadow-sm hover:border-blue-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all">
-                  <option>Q1/2025</option>
-                </select>
-              </div>
-            </div>
+        {/* Ask AI Section */}
+        <Card className="shadow-xl border-0 bg-gradient-to-br from-white to-purple-50 hover:shadow-2xl transition-all duration-300">
+          <CardHeader className="bg-gradient-to-r from-purple-50 to-indigo-50 border-b">
+            <CardTitle className="text-base font-bold text-gray-900 flex items-center">
+              <span className="text-xl mr-2">✨</span>
+              Ask AI
+            </CardTitle>
           </CardHeader>
-          <CardContent className="pt-0">
-            <div className="space-y-6">
-              {/* Total Revenue Display with Icon */}
-              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-100">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="text-sm font-semibold text-blue-600 mb-2 uppercase tracking-wide">Total Revenue</div>
-                    <div className="text-4xl font-bold text-gray-900">฿3,000,000</div>
-                  </div>
-                  <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
-                    <DollarSign className="w-8 h-8 text-white" />
-                  </div>
+          <CardContent className="pt-6">
+            <div className="space-y-4">
+              {/* Total Revenue Card */}
+              <div className="bg-gradient-to-br from-purple-50 to-indigo-100 rounded-xl p-6 text-center">
+                <div className="text-sm font-semibold text-purple-600 mb-2">Total Revenue</div>
+                <div className="text-4xl font-bold text-gray-900 mb-3">฿3,000,000</div>
+                <div className="w-16 h-16 mx-auto bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full flex items-center justify-center shadow-lg">
+                  <DollarSign className="w-8 h-8 text-white" />
                 </div>
               </div>
 
-              {/* Revenue Breakdown */}
-              <div className="grid grid-cols-3 gap-4">
-                <div className="bg-white border border-gray-200 rounded-xl p-5 text-center shadow-md hover:shadow-lg transition-all duration-200 hover:-translate-y-1">
-                  <div className="text-sm font-medium text-gray-500 mb-2">Jan, 2025</div>
-                  <div className="text-2xl font-bold text-gray-900">฿1,000,000</div>
-                  <div className="mt-2 w-full h-1 bg-gradient-to-r from-blue-400 to-blue-500 rounded-full"></div>
+              {/* Monthly Breakdown */}
+              <div className="grid grid-cols-3 gap-2">
+                <div className="bg-white border border-purple-200 rounded-lg p-3 text-center hover:border-purple-300 transition-colors">
+                  <div className="text-xs font-medium text-gray-500 mb-1">Jan, 2025</div>
+                  <div className="text-lg font-bold text-gray-900">฿1,000,000</div>
                 </div>
-                <div className="bg-white border border-gray-200 rounded-xl p-5 text-center shadow-md hover:shadow-lg transition-all duration-200 hover:-translate-y-1">
-                  <div className="text-sm font-medium text-gray-500 mb-2">Feb, 2025</div>
-                  <div className="text-2xl font-bold text-gray-900">฿1,000,000</div>
-                  <div className="mt-2 w-full h-1 bg-gradient-to-r from-purple-400 to-purple-500 rounded-full"></div>
+                <div className="bg-white border border-purple-200 rounded-lg p-3 text-center hover:border-purple-300 transition-colors">
+                  <div className="text-xs font-medium text-gray-500 mb-1">Feb, 2025</div>
+                  <div className="text-lg font-bold text-gray-900">฿1,000,000</div>
                 </div>
-                <div className="bg-white border border-gray-200 rounded-xl p-5 text-center shadow-md hover:shadow-lg transition-all duration-200 hover:-translate-y-1">
-                  <div className="text-sm font-medium text-gray-500 mb-2">Mar, 2025</div>
-                  <div className="text-2xl font-bold text-gray-900">฿1,000,000</div>
-                  <div className="mt-2 w-full h-1 bg-gradient-to-r from-indigo-400 to-indigo-500 rounded-full"></div>
+                <div className="bg-white border border-purple-200 rounded-lg p-3 text-center hover:border-purple-300 transition-colors">
+                  <div className="text-xs font-medium text-gray-500 mb-1">Mar, 2025</div>
+                  <div className="text-lg font-bold text-gray-900">฿1,000,000</div>
                 </div>
               </div>
 
-              {/* AI Insight Input */}
+              {/* Ask AI Input */}
               <form onSubmit={handleAiInsightSubmit} className="relative">
-                <div className="bg-gradient-to-r from-gray-50 to-blue-50 rounded-xl p-1 border border-gray-200">
-                  <input
-                    type="text"
-                    value={aiInsightQuery}
-                    onChange={(e) => setAiInsightQuery(e.target.value)}
-                    placeholder="Ask AI for insights..."
-                    className="w-full px-4 py-3 pr-24 bg-white border-0 rounded-lg text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm transition-all"
-                  />
-                  <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex space-x-1">
-                    <button 
-                      type="button"
-                      className="p-2 hover:bg-blue-50 rounded-lg transition-colors group"
-                      title="Add attachment"
-                    >
-                      <span className="text-gray-400 group-hover:text-blue-600 text-sm font-bold">+</span>
-                    </button>
-                    <button 
-                      type="button"
-                      className="p-2 hover:bg-blue-50 rounded-lg transition-colors group"
-                      title="View charts"
-                    >
-                      <BarChart3 className="w-4 h-4 text-gray-400 group-hover:text-blue-600" />
-                    </button>
-                    <button 
-                      type="submit"
-                      className="p-2 bg-blue-500 hover:bg-blue-600 rounded-lg transition-colors"
-                      title="Send query"
-                    >
-                      <ArrowUpRight className="w-4 h-4 text-white" />
-                    </button>
-                  </div>
+                <input
+                  type="text"
+                  value={aiInsightQuery}
+                  onChange={(e) => setAiInsightQuery(e.target.value)}
+                  placeholder="Ask AI..."
+                  className="w-full px-4 py-3 pr-12 bg-white border border-purple-200 rounded-lg text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 shadow-sm hover:border-purple-300 transition-colors"
+                />
+                <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex space-x-1">
+                  <button type="button" className="p-1.5 hover:bg-purple-50 rounded transition-colors" title="Attach">
+                    <span className="text-gray-400 text-sm font-bold">+</span>
+                  </button>
+                  <button type="button" className="p-1.5 hover:bg-purple-50 rounded transition-colors" title="Image">
+                    <span className="text-gray-400 text-sm">🖼</span>
+                  </button>
+                  <button type="button" className="p-1.5 hover:bg-purple-50 rounded transition-colors" title="Voice">
+                    <span className="text-gray-400 text-sm">🎤</span>
+                  </button>
                 </div>
               </form>
             </div>
