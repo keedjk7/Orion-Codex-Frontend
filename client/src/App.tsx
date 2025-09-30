@@ -10,6 +10,7 @@ import HomePage from "@/pages/HomePage";
 import LoginFigmaInspired from "@/pages/LoginFigmaInspired";
 import CEDashboardPage from "@/pages/CEDashboardPage";
 import FNDashboardPage from "@/pages/FNDashboardPage";
+import InteractiveFeaturesDemo from "@/pages/InteractiveFeaturesDemo";
 
 function Router() {
   return (
@@ -31,6 +32,7 @@ function Router() {
           <FNDashboardPage />
         </ProtectedRoute>
       </Route>
+      <Route path="/demo" component={InteractiveFeaturesDemo} />
       <Route component={Home} />
     </Switch>
   );
