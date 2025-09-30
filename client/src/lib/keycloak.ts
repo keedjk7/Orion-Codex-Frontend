@@ -124,7 +124,7 @@ export const directLogin = async (username: string, password: string) => {
     
     // Trigger callback events asynchronously to avoid blocking
     if (keycloak.onAuthSuccess) {
-      setTimeout(() => keycloak.onAuthSuccess(), 0);
+      setTimeout(() => keycloak.onAuthSuccess?.(), 0);
     }
     
     return {
