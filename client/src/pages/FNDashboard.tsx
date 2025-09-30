@@ -136,6 +136,8 @@ const totalRevenueData = [
 export default function FNDashboard() {
   const { user } = useKeycloak();
   const [aiInsightQuery, setAiInsightQuery] = React.useState('');
+  const [selectedQuarter, setSelectedQuarter] = React.useState('Q1 2025');
+  const [selectedCategory, setSelectedCategory] = React.useState('All Categories');
   
   const getUserDisplayName = () => {
     if (user?.name) return user.name;
@@ -155,6 +157,39 @@ export default function FNDashboard() {
     }
   };
 
+  // Performance data by quarter
+  const performanceDataByQuarter: {[key: string]: any[]} = {
+    'Q1 2025': [
+      { month: 'Jan 2025', Actual: 950000, LE: 980000, Budget: 1000000 },
+      { month: 'Feb 2025', Actual: 1080000, LE: 1050000, Budget: 1000000 },
+      { month: 'Mar 2025', Actual: 1120000, LE: 1100000, Budget: 1000000 }
+    ],
+    'Q4 2024': [
+      { month: 'Oct 2024', Actual: 920000, LE: 950000, Budget: 1000000 },
+      { month: 'Nov 2024', Actual: 980000, LE: 990000, Budget: 1000000 },
+      { month: 'Dec 2024', Actual: 1050000, LE: 1030000, Budget: 1000000 }
+    ],
+    'Q3 2024': [
+      { month: 'Jul 2024', Actual: 880000, LE: 920000, Budget: 1000000 },
+      { month: 'Aug 2024', Actual: 940000, LE: 960000, Budget: 1000000 },
+      { month: 'Sep 2024', Actual: 990000, LE: 1000000, Budget: 1000000 }
+    ],
+    'Q2 2024': [
+      { month: 'Apr 2024', Actual: 850000, LE: 900000, Budget: 1000000 },
+      { month: 'May 2024', Actual: 920000, LE: 940000, Budget: 1000000 },
+      { month: 'Jun 2024', Actual: 980000, LE: 990000, Budget: 1000000 }
+    ]
+  };
+
+  const currentData = performanceDataByQuarter[selectedQuarter] || performanceDataByQuarter['Q1 2025'];
+  
+  // Calculate totals
+  const totalActual = currentData.reduce((sum, item) => sum + item.Actual, 0);
+  const totalLE = currentData.reduce((sum, item) => sum + item.LE, 0);
+  const totalBudget = currentData.reduce((sum, item) => sum + item.Budget, 0);
+  const actualVsBudgetPercent = ((totalActual - totalBudget) / totalBudget * 100).toFixed(1);
+  const leVsBudgetPercent = ((totalLE - totalBudget) / totalBudget * 100).toFixed(1);
+
   return (
     <div className="space-y-8">
       {/* Header Section with Enhanced Gradient Background */}
@@ -167,7 +202,7 @@ export default function FNDashboard() {
         </div>
         
         <div className="relative z-10 flex items-center justify-between">
-          <div>
+        <div>
             <h1 className="text-5xl font-bold mb-3 bg-clip-text text-transparent bg-gradient-to-r from-white to-emerald-100">
               FN Dashboard
             </h1>
@@ -182,11 +217,11 @@ export default function FNDashboard() {
                 <span className="text-sm font-medium text-white">Last updated: 20/12/26 12:07</span>
               </div>
             </div>
-          </div>
+        </div>
           <div className="flex flex-col items-end space-y-3">
             <Badge variant="secondary" className="bg-white/20 text-white border-white/30 backdrop-blur-md hover:bg-white/30 transition-all">
               Version: 2024.1.6
-            </Badge>
+          </Badge>
             <div className="flex space-x-2">
               <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm hover:bg-white/30 transition-all cursor-pointer">
                 <BarChart3 className="w-5 h-5 text-white" />
@@ -195,7 +230,7 @@ export default function FNDashboard() {
                 <TrendingUp className="w-5 h-5 text-white" />
               </div>
             </div>
-          </div>
+        </div>
         </div>
         
         {/* Enhanced Decorative Elements */}
@@ -246,19 +281,20 @@ export default function FNDashboard() {
                   </div>
                   
                   <div className="space-y-3">
-                    <div className="flex items-baseline space-x-2">
-                      <div className="text-4xl font-bold text-gray-900 group-hover:scale-105 transition-transform duration-200">
-                        {kpi.value}
-                      </div>
-                      {kpi.change && (
-                        <div className={`flex items-center text-sm px-2 py-1 rounded-full shadow-sm ${
-                          isPositive ? 'text-green-700 bg-gradient-to-r from-green-100 to-green-200' : 'text-red-700 bg-gradient-to-r from-red-100 to-red-200'
-                        }`}>
-                          {isPositive ? <ArrowUpRight className="h-3 w-3 mr-1" /> : <ArrowDownRight className="h-3 w-3 mr-1" />}
-                          {kpi.change}
-                        </div>
-                      )}
+                    <div className="text-4xl font-bold text-gray-900 group-hover:scale-105 transition-transform duration-200">
+                      {kpi.value}
                     </div>
+                    
+                    {kpi.change && (
+                      <div className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-lg font-semibold text-xs ${
+                        isPositive 
+                          ? 'text-green-700 bg-green-100 border border-green-200' 
+                          : 'text-red-700 bg-red-100 border border-red-200'
+                      }`}>
+                        {isPositive ? <ArrowUpRight className="h-3.5 w-3.5" /> : <ArrowDownRight className="h-3.5 w-3.5" />}
+                        <span>{kpi.change}</span>
+                      </div>
+                    )}
                     
                     {/* Mini Progress Bar */}
                     <div className="w-full h-1 bg-gray-100 rounded-full overflow-hidden">
@@ -293,268 +329,478 @@ export default function FNDashboard() {
         })}
       </div>
 
-      {/* Charts Row 1 */}
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 lg:gap-6">
-        {/* LE Achievement */}
-        <Card className="shadow-xl border-0 bg-gradient-to-br from-white to-gray-50 hover:shadow-2xl transition-all duration-300">
-          <CardHeader className="bg-gradient-to-r from-emerald-50 to-teal-50 border-b border-gray-100">
+      {/* Charts Row - 3 Column Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
+        {/* YTD Actual vs Budget */}
+        <Card className="shadow-xl border-0 bg-white hover:shadow-2xl transition-all duration-300">
+          <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b">
+            <CardTitle className="text-base font-bold text-gray-900">YTD Actual vs Budget</CardTitle>
+          </CardHeader>
+           <CardContent className="pt-6 pb-8">
+             <div className="space-y-2.5">
+               {[
+                 { name: 'Revenue', actual: 1343, budget: 1357, aboveBudget: false },
+                 { name: 'COGS', actual: 1357, budget: 1343, aboveBudget: true },
+                 { name: 'Gross Profit - 1', actual: 1276, budget: 1162, aboveBudget: true },
+                 { name: 'Unallocated Cost', actual: 1277, budget: 1343, aboveBudget: false },
+                 { name: 'Gross Profit - 2', actual: 1317, budget: 1249, aboveBudget: true },
+                 { name: 'SG&A', actual: 1277, budget: 1142, aboveBudget: true },
+                 { name: 'EBIT', actual: 1307, budget: 1110, aboveBudget: true },
+                 { name: 'Net Profit Margin', actual: 1307, budget: 1110, aboveBudget: true }
+               ].map((item, index) => {
+                 const maxValue = 1500;
+                 const percentage = Math.max(item.actual, item.budget) / maxValue * 100;
+                 const actualWidth = (item.actual / Math.max(item.actual, item.budget)) * 100;
+                 const budgetPosition = (item.budget / Math.max(item.actual, item.budget)) * 100;
+                 return (
+                   <div key={index} className="py-1.5">
+                     <div className="flex items-center gap-3">
+                       <div className="w-32 text-right text-xs text-gray-700 font-semibold">{item.name}</div>
+                       <div className="flex-1 relative h-6">
+                         <div className="absolute inset-0 bg-gray-100"></div>
+                         <div 
+                           className={`absolute top-0 left-0 h-full transition-all duration-500 ease-out ${
+                             item.aboveBudget 
+                               ? 'bg-rose-400' 
+                               : 'bg-teal-400'
+                           }`}
+                           style={{ width: `${actualWidth}%` }}
+                         >
+                         </div>
+                         <div 
+                           className="absolute top-0 h-full w-0.5 bg-gray-900 z-10"
+                           style={{ left: `${budgetPosition}%` }}
+                         >
+                         </div>
+                       </div>
+                       <div className="w-14 text-xs text-gray-900 font-bold text-right">{item.actual}</div>
+                     </div>
+                   </div>
+                 );
+               })}
+              </div>
+             <div className="flex items-center justify-center gap-4 pt-4 mt-4 border-t border-gray-200">
+               <div className="flex items-center gap-1.5">
+                 <div className="w-3 h-3 rounded-sm bg-rose-400"></div>
+                 <span className="text-xs font-medium text-gray-600">Above Budget</span>
+               </div>
+               <div className="flex items-center gap-1.5">
+                 <div className="w-3 h-3 rounded-sm bg-teal-400"></div>
+                 <span className="text-xs font-medium text-gray-600">Below Budget</span>
+               </div>
+               <div className="flex items-center gap-1.5">
+                 <div className="w-0.5 h-3 bg-gray-900"></div>
+                 <span className="text-xs font-medium text-gray-600">Budget</span>
+               </div>
+             </div>
+           </CardContent>
+        </Card>
+
+        {/* Budget Achievement */}
+        <Card className="shadow-xl border-0 bg-white hover:shadow-2xl transition-all duration-300">
+          <CardHeader className="bg-gradient-to-r from-emerald-50 to-teal-50 border-b">
+            <CardTitle className="text-base font-bold text-gray-900">Budget Achievement</CardTitle>
+          </CardHeader>
+           <CardContent className="pt-6 pb-8">
+             <div className="space-y-2.5">
+               {[
+                 { name: 'Revenue', value: -3, isAbove: false },
+                 { name: 'COGS', value: -6, isAbove: false },
+                 { name: 'Gross Profit - 1', value: 110, isAbove: true },
+                 { name: 'Unallocated Cost', value: 95, isAbove: false },
+                 { name: 'Gross Profit - 2', value: 105, isAbove: true },
+                 { name: 'SG&A', value: 121, isAbove: true },
+                 { name: 'EBIT', value: 118, isAbove: true },
+                 { name: 'Net Profit Margin', value: 118, isAbove: true }
+               ].map((item, index) => {
+                 return (
+                   <div key={index} className="py-1.5">
+                     <div className="flex items-center gap-3">
+                       <div className="w-32 text-right text-xs text-gray-700 font-semibold">{item.name}</div>
+                       <div className="flex-1 relative h-6">
+                         <div className="absolute inset-0 bg-gray-100"></div>
+                         <div 
+                           className={`absolute top-0 left-0 h-full transition-all duration-500 ease-out ${
+                             item.isAbove 
+                               ? 'bg-rose-400' 
+                               : 'bg-teal-400'
+                           }`}
+                           style={{ width: `${Math.min(Math.abs(item.value), 100)}%` }}
+                         >
+                         </div>
+                       </div>
+                       <div className="w-14 text-xs text-gray-900 font-bold text-right">{item.value}%</div>
+                     </div>
+                   </div>
+                 );
+               })}
+             </div>
+             <div className="flex items-center justify-center gap-4 pt-4 mt-4 border-t border-gray-200">
+               <div className="flex items-center gap-1.5">
+                 <div className="w-3 h-3 rounded-sm bg-rose-400"></div>
+                 <span className="text-xs font-medium text-gray-600">Above Budget</span>
+               </div>
+               <div className="flex items-center gap-1.5">
+                 <div className="w-3 h-3 rounded-sm bg-teal-400"></div>
+                 <span className="text-xs font-medium text-gray-600">Below Budget</span>
+               </div>
+             </div>
+           </CardContent>
+        </Card>
+
+        {/* Change (%) */}
+        <Card className="shadow-xl border-0 bg-white hover:shadow-2xl transition-all duration-300">
+          <CardHeader className="bg-gradient-to-r from-purple-50 to-pink-50 border-b">
+            <CardTitle className="text-base font-bold text-gray-900">Change (%)</CardTitle>
+          </CardHeader>
+           <CardContent className="pt-6 pb-8">
+             <div className="space-y-2.5">
+               {[
+                 { name: 'Revenue', value: 2 },
+                 { name: 'COGS', value: -6 },
+                 { name: 'Gross Profit - 1', value: 19 },
+                 { name: 'Unallocated Cost', value: -17 },
+                 { name: 'Gross Profit - 2', value: 16 },
+                 { name: 'SG&A', value: 9 },
+                 { name: 'EBIT', value: 4 },
+                 { name: 'Net Profit Margin', value: 4 }
+               ].map((item, index) => {
+                 const isPositive = item.value >= 0;
+                 return (
+                   <div key={index} className="py-1.5">
+                     <div className="flex items-center gap-3">
+                       <div className="w-32 text-right text-xs text-gray-700 font-semibold">{item.name}</div>
+                       <div className="flex-1 flex items-center justify-end pr-4">
+                         <div className={`px-6 py-1 rounded font-bold text-xs min-w-[70px] text-center ${
+                           isPositive 
+                             ? 'bg-green-100 text-green-700' 
+                             : 'bg-red-100 text-red-700'
+                         }`}>
+                           {item.value > 0 ? '+' : ''}{item.value}%
+                         </div>
+                       </div>
+                     </div>
+                   </div>
+                 );
+              })}
+            </div>
+           </CardContent>
+        </Card>
+      </div>
+
+      {/* Charts Row 3 - Ask AI & Performance by Month */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
+        {/* Ask AI Section */}
+        <Card className="shadow-xl border-0 bg-gradient-to-br from-white via-emerald-50/30 to-teal-50/50 hover:shadow-2xl transition-all duration-300 group relative overflow-hidden">
+          {/* Decorative gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-teal-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          
+          <CardHeader className="bg-gradient-to-r from-emerald-50 via-teal-50 to-cyan-50 border-b border-emerald-100 relative">
             <div className="flex items-center justify-between">
-              <div>
-                <CardTitle className="flex items-center space-x-3 text-gray-800">
-                  <div className="p-2 bg-emerald-100 rounded-lg">
-                    <BarChart3 className="h-5 w-5 text-emerald-600" />
-                  </div>
-                  <span className="text-lg font-bold">LE Achievement</span>
-                  <Info className="h-4 w-4 text-gray-400 hover:text-gray-600 transition-colors" />
-                </CardTitle>
-              </div>
-              <div className="flex space-x-2">
-                <select className="text-sm border border-gray-300 rounded-lg px-3 py-2 bg-white shadow-sm hover:border-emerald-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all">
-                  <option>All</option>
-                </select>
-                <select className="text-sm border border-gray-300 rounded-lg px-3 py-2 bg-white shadow-sm hover:border-emerald-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all">
-                  <option>Today</option>
-                </select>
-              </div>
+              <CardTitle className="text-base font-bold text-gray-900 flex items-center gap-2">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-md">
+                  <span className="text-lg">✨</span>
+                </div>
+                <span className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">Ask AI</span>
+              </CardTitle>
+              <div className="px-2 py-1 bg-emerald-100 text-emerald-700 text-xs font-semibold rounded-full">Q1 2025</div>
             </div>
           </CardHeader>
-          <CardContent className="p-6">
-            <div className="flex items-center space-x-8">
-              {/* Donut Chart Container */}
-              <div className="relative flex-shrink-0" style={{ width: '200px', height: '200px' }}>
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={leAchievementData}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={60}
-                      outerRadius={90}
-                      paddingAngle={2}
-                      dataKey="value"
-                      startAngle={0}
-                      endAngle={360}
-                    >
-                      {leAchievementData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                      ))}
-                    </Pie>
-                  </PieChart>
-                </ResponsiveContainer>
-                {/* Center Text - Perfectly Centered */}
-                <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center pointer-events-none">
-                  <div className="text-center">
-                    <div className="text-3xl font-bold text-gray-900 leading-none">98%</div>
+          
+          <CardContent className="pt-6 relative z-10">
+            <div className="space-y-5">
+              {/* Total Revenue Card - Enhanced */}
+              <div className="relative rounded-xl overflow-hidden group/card">
+                <div className="absolute inset-0 bg-gradient-to-br from-emerald-400 via-teal-500 to-cyan-500 opacity-90"></div>
+                <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDQwIDAgTCAwIDAgMCA0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLW9wYWNpdHk9IjAuMSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] opacity-30"></div>
+                
+                <div className="relative p-6 text-center">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full mb-3">
+                    <div className="w-2 h-2 rounded-full bg-white animate-pulse"></div>
+                    <span className="text-xs font-semibold text-white">Total Revenue</span>
+                  </div>
+                  <div className="text-5xl font-bold text-white mb-4 tracking-tight drop-shadow-lg">฿3,000,000</div>
+                  <div className="flex items-center justify-center gap-2 text-white/90">
+                    <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center shadow-lg group-hover/card:scale-110 transition-transform duration-300">
+                      <DollarSign className="w-6 h-6 text-white" />
+                    </div>
                   </div>
                 </div>
               </div>
 
-              {/* Legend */}
-              <div className="flex-1 space-y-3">
-                {leAchievementData.map((item, index) => (
-                  <div key={index} className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <div 
-                        className="w-3 h-3 rounded-full flex-shrink-0" 
-                        style={{ backgroundColor: COLORS[index] }}
-                      ></div>
-                      <span className="text-sm font-medium text-gray-700">{item.name}</span>
-                    </div>
-                    <span className="text-sm font-semibold text-gray-900">
-                      ${(item.value / 1000000).toFixed(0)},000,000
-                    </span>
+              {/* Monthly Breakdown - Enhanced */}
+              <div className="grid grid-cols-3 gap-2.5">
+                {[
+                  { month: 'Jan', amount: '1,000,000', color: 'from-emerald-400 to-emerald-500' },
+                  { month: 'Feb', amount: '1,000,000', color: 'from-teal-400 to-teal-500' },
+                  { month: 'Mar', amount: '1,000,000', color: 'from-cyan-400 to-cyan-500' }
+                ].map((item, idx) => (
+                  <div key={idx} className="bg-white border-2 border-emerald-100 rounded-xl p-3 text-center hover:border-emerald-300 hover:shadow-lg transition-all duration-200 group/month">
+                    <div className="text-xs font-semibold text-emerald-600 mb-1.5">{item.month}, 2025</div>
+                    <div className="text-base font-bold text-gray-900 mb-2">฿{item.amount}</div>
+                    <div className={`h-1.5 bg-gradient-to-r ${item.color} rounded-full transform group-hover/month:scale-x-105 transition-transform duration-200`}></div>
                   </div>
                 ))}
               </div>
-            </div>
-          </CardContent>
-        </Card>
 
-        {/* Total Revenue for Q1 2025 */}
-        <Card className="shadow-xl border-0 bg-gradient-to-br from-white to-emerald-50 hover:shadow-2xl transition-all duration-300">
-          <CardHeader className="bg-gradient-to-r from-emerald-50 to-teal-50 border-b border-gray-100 pb-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <CardTitle className="flex items-center space-x-3 text-gray-800">
-                  <div className="p-2 bg-emerald-100 rounded-lg">
-                    <DollarSign className="h-5 w-5 text-emerald-600" />
-                  </div>
-                  <span className="text-lg font-bold">Total Revenue for Q1, 2025</span>
-                </CardTitle>
-              </div>
-              <div className="flex space-x-2">
-                <select className="text-sm border border-gray-300 rounded-lg px-3 py-2 bg-white shadow-sm hover:border-emerald-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all">
-                  <option>Q1/2025</option>
-                </select>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <div className="space-y-6">
-              {/* Total Revenue Display with Icon */}
-              <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl p-6 border border-emerald-100">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="text-sm font-semibold text-emerald-600 mb-2 uppercase tracking-wide">Total Revenue</div>
-                    <div className="text-4xl font-bold text-gray-900">฿3,000,000</div>
-                  </div>
-                  <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center shadow-lg">
-                    <DollarSign className="w-8 h-8 text-white" />
-                  </div>
-                </div>
-              </div>
-
-              {/* Revenue Breakdown */}
-              <div className="grid grid-cols-3 gap-4">
-                <div className="bg-white border border-gray-200 rounded-xl p-5 text-center shadow-md hover:shadow-lg transition-all duration-200 hover:-translate-y-1">
-                  <div className="text-sm font-medium text-gray-500 mb-2">Jan, 2025</div>
-                  <div className="text-2xl font-bold text-gray-900">฿1,000,000</div>
-                  <div className="mt-2 w-full h-1 bg-gradient-to-r from-emerald-400 to-emerald-500 rounded-full"></div>
-                </div>
-                <div className="bg-white border border-gray-200 rounded-xl p-5 text-center shadow-md hover:shadow-lg transition-all duration-200 hover:-translate-y-1">
-                  <div className="text-sm font-medium text-gray-500 mb-2">Feb, 2025</div>
-                  <div className="text-2xl font-bold text-gray-900">฿1,000,000</div>
-                  <div className="mt-2 w-full h-1 bg-gradient-to-r from-teal-400 to-teal-500 rounded-full"></div>
-                </div>
-                <div className="bg-white border border-gray-200 rounded-xl p-5 text-center shadow-md hover:shadow-lg transition-all duration-200 hover:-translate-y-1">
-                  <div className="text-sm font-medium text-gray-500 mb-2">Mar, 2025</div>
-                  <div className="text-2xl font-bold text-gray-900">฿1,000,000</div>
-                  <div className="mt-2 w-full h-1 bg-gradient-to-r from-cyan-400 to-cyan-500 rounded-full"></div>
-                </div>
-              </div>
-
-              {/* AI Insight Input */}
+              {/* Ask AI Input - Enhanced */}
               <form onSubmit={handleAiInsightSubmit} className="relative">
-                <div className="bg-gradient-to-r from-gray-50 to-emerald-50 rounded-xl p-1 border border-gray-200">
+                <div className="relative">
                   <input
                     type="text"
                     value={aiInsightQuery}
                     onChange={(e) => setAiInsightQuery(e.target.value)}
-                    placeholder="Ask AI for insights..."
-                    className="w-full px-4 py-3 pr-24 bg-white border-0 rounded-lg text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 shadow-sm transition-all"
+                    placeholder="Ask AI about your finances..."
+                    className="w-full px-4 py-3.5 pr-14 bg-white border-2 border-emerald-200 rounded-xl text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-emerald-400 shadow-sm hover:border-emerald-300 transition-all"
                   />
-                  <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex space-x-1">
-                    <button 
-                      type="button"
-                      className="p-2 hover:bg-emerald-50 rounded-lg transition-colors group"
-                      title="Add attachment"
-                    >
-                      <span className="text-gray-400 group-hover:text-emerald-600 text-sm font-bold">+</span>
+                  <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center gap-1">
+                    <button type="button" className="p-2 hover:bg-emerald-50 rounded-lg transition-colors group/btn" title="Attach">
+                      <span className="text-gray-400 group-hover/btn:text-emerald-600 text-xs font-bold">+</span>
                     </button>
-                    <button 
-                      type="button"
-                      className="p-2 hover:bg-emerald-50 rounded-lg transition-colors group"
-                      title="View charts"
-                    >
-                      <BarChart3 className="w-4 h-4 text-gray-400 group-hover:text-emerald-600" />
+                    <button type="button" className="p-2 hover:bg-emerald-50 rounded-lg transition-colors group/btn" title="Image">
+                      <span className="text-gray-400 group-hover/btn:text-emerald-600 text-xs">🖼</span>
                     </button>
-                    <button 
-                      type="submit"
-                      className="p-2 bg-emerald-500 hover:bg-emerald-600 rounded-lg transition-colors"
-                      title="Send query"
-                    >
-                      <ArrowUpRight className="w-4 h-4 text-white" />
+                    <button type="button" className="p-2 hover:bg-emerald-50 rounded-lg transition-colors group/btn" title="Voice">
+                      <span className="text-gray-400 group-hover/btn:text-emerald-600 text-xs">🎤</span>
                     </button>
                   </div>
                 </div>
               </form>
+
+              {/* Quick Stats */}
+              <div className="grid grid-cols-2 gap-2 pt-2">
+                <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-lg p-3 border border-emerald-100">
+                  <div className="flex items-center gap-2 mb-1">
+                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
+                    <span className="text-xs font-medium text-gray-600">Avg/Month</span>
+                  </div>
+                  <div className="text-lg font-bold text-gray-900">฿1.0M</div>
+                </div>
+                <div className="bg-gradient-to-br from-teal-50 to-cyan-50 rounded-lg p-3 border border-teal-100">
+                  <div className="flex items-center gap-2 mb-1">
+                    <div className="w-1.5 h-1.5 rounded-full bg-teal-500"></div>
+                    <span className="text-xs font-medium text-gray-600">Growth</span>
+                  </div>
+                  <div className="text-lg font-bold text-green-600">+12%</div>
+                </div>
+              </div>
             </div>
           </CardContent>
         </Card>
-      </div>
 
-      {/* Charts Row 2 */}
-      <div className="grid grid-cols-1 gap-4 lg:gap-6">
-        {/* YTD Actual by CE Chart - Full Width */}
-        <Card className="shadow-xl border-0 bg-gradient-to-br from-white to-emerald-50 hover:shadow-2xl transition-all duration-300">
-          <CardHeader className="bg-gradient-to-r from-emerald-50 to-teal-50 border-b border-gray-100">
-            <div className="flex items-center justify-between">
+         {/* Performance by Month - Spans 2 columns */}
+         <Card className="lg:col-span-2 shadow-xl border-0 bg-white hover:shadow-2xl transition-all duration-300 group">
+           <CardHeader className="bg-gradient-to-r from-purple-50 via-pink-50 to-purple-50 border-b relative overflow-hidden">
+             {/* Animated background */}
+             <div className="absolute inset-0 bg-gradient-to-r from-purple-100/0 via-purple-100/50 to-purple-100/0 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000"></div>
+             
+             <div className="flex items-center justify-between relative z-10">
+               <div className="flex items-center gap-3">
+                 <div className="p-2 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg shadow-lg">
+                   <BarChart3 className="w-5 h-5 text-white" />
+      </div>
               <div>
-                <CardTitle className="flex items-center space-x-3 text-gray-800">
-                  <div className="p-2 bg-emerald-100 rounded-lg">
-                    <TrendingUp className="h-5 w-5 text-emerald-600" />
-                  </div>
-                  <div>
-                    <span className="text-lg font-bold">YTD Actual by CE</span>
-                    <CardDescription className="text-sm text-gray-600 mt-1">Year-to-date performance by cost element</CardDescription>
-                  </div>
-                </CardTitle>
+                   <CardTitle className="text-base font-bold text-gray-900 flex items-center gap-2">
+                     Performance by Month ({selectedQuarter})
+                     <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white border-0 text-xs">Live</Badge>
+                   </CardTitle>
+                   <CardDescription className="text-xs text-gray-600 mt-1">Comparison of Actual, Latest Estimate, and Budget</CardDescription>
+                 </div>
               </div>
               <div className="flex space-x-2">
-                <select className="text-sm border border-gray-300 rounded-lg px-3 py-2 bg-white shadow-sm hover:border-emerald-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all">
-                  <option>All</option>
+                 <select 
+                   value={selectedQuarter}
+                   onChange={(e) => setSelectedQuarter(e.target.value)}
+                   className="text-xs border border-gray-300 rounded-lg px-3 py-1.5 bg-white shadow-sm hover:border-purple-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all cursor-pointer"
+                 >
+                   <option>Q1 2025</option>
+                   <option>Q4 2024</option>
+                   <option>Q3 2024</option>
+                   <option>Q2 2024</option>
                 </select>
-                <select className="text-sm border border-gray-300 rounded-lg px-3 py-2 bg-white shadow-sm hover:border-emerald-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all">
-                  <option>Today</option>
+                 <select 
+                   value={selectedCategory}
+                   onChange={(e) => setSelectedCategory(e.target.value)}
+                   className="text-xs border border-gray-300 rounded-lg px-3 py-1.5 bg-white shadow-sm hover:border-purple-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all cursor-pointer"
+                 >
+                   <option>All Categories</option>
+                   <option>Revenue Only</option>
+                   <option>Cost Only</option>
                 </select>
               </div>
             </div>
           </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={350}>
-              <LineChart data={ytdActualData} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+           <CardContent className="pt-6">
+            <ResponsiveContainer width="100%" height={320}>
+               <BarChart 
+                 data={currentData}
+                 margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+                 barGap={8}
+                 barCategoryGap="20%"
+               >
+                 <defs>
+                   <linearGradient id="actualGradient" x1="0" y1="0" x2="0" y2="1">
+                     <stop offset="0%" stopColor="#4f46e5" stopOpacity={0.9}/>
+                     <stop offset="100%" stopColor="#4338ca" stopOpacity={0.9}/>
+                   </linearGradient>
+                   <linearGradient id="leGradient" x1="0" y1="0" x2="0" y2="1">
+                     <stop offset="0%" stopColor="#8b5cf6" stopOpacity={0.9}/>
+                     <stop offset="100%" stopColor="#7c3aed" stopOpacity={0.9}/>
+                   </linearGradient>
+                   <linearGradient id="budgetGradient" x1="0" y1="0" x2="0" y2="1">
+                     <stop offset="0%" stopColor="#06b6d4" stopOpacity={0.9}/>
+                     <stop offset="100%" stopColor="#0891b2" stopOpacity={0.9}/>
+                   </linearGradient>
+                 </defs>
+                 <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" vertical={false} />
                 <XAxis
                   dataKey="month"
                   axisLine={false}
                   tickLine={false}
-                  tick={{ fontSize: 12, fill: '#666' }}
+                   tick={{ fontSize: 11, fill: '#666', fontWeight: 500 }}
+                   dy={10}
                 />
                 <YAxis
                   axisLine={false}
                   tickLine={false}
-                  tick={{ fontSize: 12, fill: '#666' }}
-                  tickFormatter={(value) => `$${(value / 1000).toFixed(0)}K`}
+                   tick={{ fontSize: 11, fill: '#666' }}
+                   tickFormatter={(value) => `฿${(value / 1000).toFixed(0)}K`}
+                   width={60}
                 />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: 'white',
-                    border: '1px solid #e5e7eb',
-                    borderRadius: '8px',
-                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
-                  }}
-                  formatter={(value) => [`$${(value as number / 1000).toFixed(0)}K`]}
-                />
-                <Legend 
-                  verticalAlign="bottom" 
-                  height={36}
-                  iconType="circle"
-                  wrapperStyle={{ paddingTop: '20px' }}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="Technology"
-                  stroke="#8b5cf6"
-                  strokeWidth={2}
-                  dot={false}
-                  name="Technology"
-                />
-                <Line
-                  type="monotone"
-                  dataKey="Marketing"
-                  stroke="#06d6a0"
-                  strokeWidth={2}
-                  dot={false}
-                  name="Marketing"
-                />
-                <Line
-                  type="monotone"
-                  dataKey="Operations"
-                  stroke="#3b82f6"
-                  strokeWidth={2}
-                  dot={false}
-                  name="Operations"
-                />
-                <Line
-                  type="monotone"
-                  dataKey="Sales"
-                  stroke="#f59e0b"
-                  strokeWidth={2}
-                  dot={false}
-                  name="Sales"
-                />
-              </LineChart>
+                     backgroundColor: 'rgba(0, 0, 0, 0.9)',
+                     border: 'none',
+                     borderRadius: '12px',
+                     padding: '12px 16px',
+                     boxShadow: '0 10px 25px rgba(0,0,0,0.3)'
+                   }}
+                   labelStyle={{ color: 'white', fontWeight: 'bold', marginBottom: '8px' }}
+                   itemStyle={{ color: 'white', padding: '4px 0' }}
+                   formatter={(value) => [`฿${(value as number).toLocaleString()}`, '']}
+                   cursor={{ fill: 'rgba(79, 70, 229, 0.1)' }}
+                 />
+                 <Legend 
+                   verticalAlign="bottom"
+                   height={50}
+                   iconType="circle"
+                   wrapperStyle={{ 
+                     fontSize: '12px', 
+                     fontWeight: 600,
+                     paddingTop: '20px'
+                   }}
+                   formatter={(value) => {
+                     const labels: {[key: string]: string} = {
+                       'Actual': '🎯 Actual',
+                       'LE': '📊 Latest Estimate',
+                       'Budget': '💰 Budget'
+                     };
+                     return labels[value] || value;
+                   }}
+                 />
+                 <Bar 
+                   dataKey="Actual" 
+                   fill="url(#actualGradient)" 
+                   name="Actual" 
+                   radius={[8, 8, 0, 0]}
+                   maxBarSize={50}
+                 />
+                 <Bar 
+                   dataKey="LE" 
+                   fill="url(#leGradient)" 
+                   name="LE" 
+                   radius={[8, 8, 0, 0]}
+                   maxBarSize={50}
+                 />
+                 <Bar 
+                   dataKey="Budget" 
+                   fill="url(#budgetGradient)" 
+                   name="Budget" 
+                   radius={[8, 8, 0, 0]}
+                   maxBarSize={50}
+                 />
+              </BarChart>
             </ResponsiveContainer>
+             
+             {/* Summary Stats with Animation */}
+             <div className="grid grid-cols-3 gap-4 mt-6 pt-6 border-t border-gray-200">
+               <div className="group text-center p-5 bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-xl hover:shadow-lg transition-all duration-300 hover:scale-105 relative overflow-hidden">
+                 <div className="absolute inset-0 bg-gradient-to-br from-indigo-400/0 to-indigo-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                 <div className="relative z-10">
+                   <div className="flex items-center justify-center gap-1 mb-2">
+                     <Target className="w-3 h-3 text-indigo-600" />
+                     <div className="text-xs font-semibold text-indigo-600">Total Actual</div>
+                   </div>
+                   <div className="text-3xl font-bold text-gray-900 mb-1">฿{(totalActual / 1000000).toFixed(2)}M</div>
+                   <div className={`flex items-center justify-center gap-1 text-xs font-semibold ${parseFloat(actualVsBudgetPercent) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                     {parseFloat(actualVsBudgetPercent) >= 0 ? (
+                       <ArrowUpRight className="w-3 h-3" />
+                     ) : (
+                       <ArrowDownRight className="w-3 h-3" />
+                     )}
+                     {actualVsBudgetPercent}% vs Budget
+                   </div>
+                 </div>
+               </div>
+               
+               <div className="group text-center p-5 bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl hover:shadow-lg transition-all duration-300 hover:scale-105 relative overflow-hidden">
+                 <div className="absolute inset-0 bg-gradient-to-br from-purple-400/0 to-purple-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                 <div className="relative z-10">
+                   <div className="flex items-center justify-center gap-1 mb-2">
+                     <TrendingUp className="w-3 h-3 text-purple-600" />
+                     <div className="text-xs font-semibold text-purple-600">Total LE</div>
+                   </div>
+                   <div className="text-3xl font-bold text-gray-900 mb-1">฿{(totalLE / 1000000).toFixed(2)}M</div>
+                   <div className={`flex items-center justify-center gap-1 text-xs font-semibold ${parseFloat(leVsBudgetPercent) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                     {parseFloat(leVsBudgetPercent) >= 0 ? (
+                       <ArrowUpRight className="w-3 h-3" />
+                     ) : (
+                       <ArrowDownRight className="w-3 h-3" />
+                     )}
+                     {leVsBudgetPercent}% vs Budget
+                   </div>
+                 </div>
+               </div>
+               
+               <div className="group text-center p-5 bg-gradient-to-br from-cyan-50 to-cyan-100 rounded-xl hover:shadow-lg transition-all duration-300 hover:scale-105 relative overflow-hidden">
+                 <div className="absolute inset-0 bg-gradient-to-br from-cyan-400/0 to-cyan-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                 <div className="relative z-10">
+                   <div className="flex items-center justify-center gap-1 mb-2">
+                     <DollarSign className="w-3 h-3 text-cyan-600" />
+                     <div className="text-xs font-semibold text-cyan-600">Total Budget</div>
+                   </div>
+                   <div className="text-3xl font-bold text-gray-900 mb-1">฿{(totalBudget / 1000000).toFixed(2)}M</div>
+                   <div className="flex items-center justify-center gap-1 text-xs text-gray-600 font-semibold">
+                     <div className="w-2 h-2 bg-cyan-500 rounded-full animate-pulse"></div>
+                     Baseline Target
+                   </div>
+                 </div>
+               </div>
+             </div>
+             
+             {/* Trend Indicator */}
+             <div className="mt-6 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200">
+               <div className="flex items-center justify-between">
+                 <div className="flex items-center gap-3">
+                   <div className="p-2 bg-green-500 rounded-lg">
+                     <TrendingUp className="w-5 h-5 text-white" />
+                   </div>
+                   <div>
+                     <div className="text-sm font-bold text-gray-900">Performance Trend</div>
+                     <div className="text-xs text-gray-600">Quarter-over-Quarter Growth</div>
+                   </div>
+                 </div>
+                 <div className="text-right">
+                   <div className="text-2xl font-bold text-green-600">
+                     {selectedQuarter === 'Q1 2025' ? '+8.2%' : 
+                      selectedQuarter === 'Q4 2024' ? '+6.5%' : 
+                      selectedQuarter === 'Q3 2024' ? '+4.1%' : 
+                      '+2.8%'}
+                   </div>
+                   <div className="text-xs text-gray-600">vs Previous Quarter</div>
+                 </div>
+               </div>
+             </div>
           </CardContent>
         </Card>
       </div>
