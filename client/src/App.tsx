@@ -8,7 +8,9 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import Home from "@/pages/Home";
 import HomePage from "@/pages/HomePage";
 import LoginFigmaInspired from "@/pages/LoginFigmaInspired";
-import Dashboard from "@/pages/Dashboard";
+import CEDashboardPage from "@/pages/CEDashboardPage";
+import FNDashboardPage from "@/pages/FNDashboardPage";
+import InteractiveFeaturesDemo from "@/pages/InteractiveFeaturesDemo";
 
 function Router() {
   return (
@@ -20,11 +22,17 @@ function Router() {
         </ProtectedRoute>
       </Route>
       <Route path="/login" component={LoginFigmaInspired} />
-      <Route path="/dashboard">
+      <Route path="/ce-dashboard">
         <ProtectedRoute>
-          <Dashboard />
+          <CEDashboardPage />
         </ProtectedRoute>
       </Route>
+      <Route path="/fn-dashboard">
+        <ProtectedRoute>
+          <FNDashboardPage />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/demo" component={InteractiveFeaturesDemo} />
       <Route component={Home} />
     </Switch>
   );

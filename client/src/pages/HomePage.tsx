@@ -335,12 +335,23 @@ export default function HomePage() {
   };
 
   const handleTabChange = (tab: string) => {
-    if (tab === 'dashboard') {
-      // Navigate to dashboard page
-      window.location.href = '/dashboard';
+    if (tab === 'home') {
+      // Already on home page
       return;
     }
-    // For other tabs, you can add logic here if needed
+    
+    // Navigate to different dashboard routes
+    switch (tab) {
+      case 'ce-dashboard':
+        window.location.href = '/ce-dashboard';
+        break;
+      case 'fn-dashboard':
+        window.location.href = '/fn-dashboard';
+        break;
+      default:
+        // For other tabs, you can add logic here if needed
+        break;
+    }
   };
 
   const handleSidebarCollapse = (collapsed: boolean) => {
@@ -377,44 +388,31 @@ export default function HomePage() {
         {/* Content */}
         <main className="flex-1 p-4 lg:p-6 overflow-auto">
           <div className="space-y-6">
-            {/* Hero Section with Greeting */}
-            <div className="relative bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 rounded-2xl p-8 text-white overflow-hidden">
-              {/* Background Pattern */}
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-400/20 to-transparent"></div>
-              <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-32 translate-x-32"></div>
-              <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full translate-y-24 -translate-x-24"></div>
+            {/* Hero Section with Enhanced Gradient Background */}
+            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-indigo-600 via-violet-600 to-purple-700 p-10 lg:p-12 text-white shadow-xl">
+              <div className="absolute inset-0 bg-black/10"></div>
+              {/* Animated Background Pattern */}
+              <div className="absolute inset-0 opacity-10">
+                <div className="absolute top-10 left-10 w-20 h-20 border-2 border-white rounded-full animate-ping"></div>
+                <div className="absolute bottom-20 right-20 w-16 h-16 border-2 border-white rounded-full animate-ping" style={{ animationDelay: '1s' }}></div>
+              </div>
 
               <div className="relative z-10">
                 {/* Greeting */}
-                <div className="text-center mb-8">
-                  <h1 className="text-3xl lg:text-4xl font-bold mb-2">
+                <div className="text-center">
+                  <h1 className="text-5xl lg:text-6xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white to-purple-100">
                     Hello, {getUserDisplayName()}
                   </h1>
-                  <p className="text-blue-100 text-lg">
+                  <p className="text-purple-100 text-lg lg:text-xl font-medium">
                     Welcome back to your dashboard
                   </p>
                 </div>
-
-                {/* Search Bar */}
-                <div className="max-w-2xl mx-auto">
-                  <div className="relative">
-                    <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-                    <input
-                      type="text"
-                      placeholder="Ask AI..."
-                      className="w-full pl-12 pr-16 py-4 bg-white rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-white/50 shadow-lg"
-                    />
-                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex space-x-2">
-                      <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-                        <span className="text-gray-400">⌘</span>
-                      </button>
-                      <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-                        <span className="text-gray-400">↵</span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
               </div>
+              
+              {/* Enhanced Decorative Elements */}
+              <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-white/5 to-transparent rounded-full -translate-y-48 translate-x-48 blur-3xl"></div>
+              <div className="absolute bottom-0 left-0 w-72 h-72 bg-gradient-to-tr from-white/5 to-transparent rounded-full translate-y-36 -translate-x-36 blur-3xl"></div>
+              <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-white/3 rounded-full -translate-x-1/2 -translate-y-1/2 blur-2xl"></div>
             </div>
 
             {/* KPI Cards */}
@@ -422,10 +420,17 @@ export default function HomePage() {
               {kpiData.map((kpi, index) => {
                 const Icon = kpi.icon;
                 const colorClasses = {
-                  blue: 'text-blue-600',
-                  green: 'text-green-600',
-                  purple: 'text-purple-600',
-                  red: 'text-red-600'
+                  blue: 'from-blue-500 to-blue-600',
+                  green: 'from-green-500 to-green-600',
+                  purple: 'from-purple-500 to-purple-600',
+                  red: 'from-red-500 to-red-600'
+                };
+
+                const iconColorClasses = {
+                  blue: 'text-blue-600 bg-blue-50',
+                  green: 'text-green-600 bg-green-50',
+                  purple: 'text-purple-600 bg-purple-50',
+                  red: 'text-red-600 bg-red-50'
                 };
 
                 const renderMiniChart = () => {
@@ -433,12 +438,33 @@ export default function HomePage() {
                     const barColor = kpi.title === 'Net Sales' ? '#3b82f6' : '#ef4444';
                     return (
                       <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={kpi.chartData} margin={{ top: 2, right: 2, left: 2, bottom: 2 }}>
+                        <BarChart data={kpi.chartData} margin={{ top: 10, right: 10, left: 10, bottom: 20 }}>
+                          <XAxis 
+                            dataKey="period" 
+                            axisLine={false}
+                            tickLine={false}
+                            tick={{ fontSize: 10, fill: '#9ca3af' }}
+                            dy={5}
+                          />
+                          <Tooltip 
+                            contentStyle={{
+                              backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                              border: 'none',
+                              borderRadius: '8px',
+                              padding: '8px 12px',
+                              color: 'white',
+                              fontSize: '12px',
+                              fontWeight: 'bold'
+                            }}
+                            cursor={{ fill: 'rgba(0, 0, 0, 0.05)' }}
+                            formatter={(value: any) => [value, kpi.title]}
+                          />
                           <Bar 
                             dataKey="value" 
                             fill={barColor} 
-                            radius={[1, 1, 0, 0]}
+                            radius={[4, 4, 0, 0]}
                             stroke="none"
+                            maxBarSize={40}
                           />
                         </BarChart>
                       </ResponsiveContainer>
@@ -446,14 +472,34 @@ export default function HomePage() {
                   } else if (kpi.chartType === 'line') {
                     return (
                       <ResponsiveContainer width="100%" height="100%">
-                        <LineChart data={kpi.chartData} margin={{ top: 2, right: 2, left: 2, bottom: 2 }}>
+                        <LineChart data={kpi.chartData} margin={{ top: 10, right: 10, left: 10, bottom: 20 }}>
+                          <XAxis 
+                            dataKey="period" 
+                            axisLine={false}
+                            tickLine={false}
+                            tick={{ fontSize: 10, fill: '#9ca3af' }}
+                            dy={5}
+                          />
+                          <Tooltip 
+                            contentStyle={{
+                              backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                              border: 'none',
+                              borderRadius: '8px',
+                              padding: '8px 12px',
+                              color: 'white',
+                              fontSize: '12px',
+                              fontWeight: 'bold'
+                            }}
+                            cursor={{ stroke: '#10b981', strokeWidth: 1, strokeDasharray: '3 3' }}
+                            formatter={(value: any) => [value, kpi.title]}
+                          />
                           <Line 
                             type="monotone" 
                             dataKey="value" 
                             stroke="#10b981" 
                             strokeWidth={2}
-                            dot={{ fill: '#10b981', strokeWidth: 0, r: 2 }}
-                            activeDot={{ r: 3, stroke: '#10b981', strokeWidth: 2 }}
+                            dot={{ fill: '#10b981', strokeWidth: 0, r: 4 }}
+                            activeDot={{ r: 5, stroke: '#10b981', strokeWidth: 2 }}
                             connectNulls={false}
                           />
                         </LineChart>
@@ -462,14 +508,34 @@ export default function HomePage() {
                   } else if (kpi.chartType === 'dot') {
                     return (
                       <ResponsiveContainer width="100%" height="100%">
-                        <LineChart data={kpi.chartData} margin={{ top: 2, right: 2, left: 2, bottom: 2 }}>
+                        <LineChart data={kpi.chartData} margin={{ top: 10, right: 10, left: 10, bottom: 20 }}>
+                          <XAxis 
+                            dataKey="period" 
+                            axisLine={false}
+                            tickLine={false}
+                            tick={{ fontSize: 10, fill: '#9ca3af' }}
+                            dy={5}
+                          />
+                          <Tooltip 
+                            contentStyle={{
+                              backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                              border: 'none',
+                              borderRadius: '8px',
+                              padding: '8px 12px',
+                              color: 'white',
+                              fontSize: '12px',
+                              fontWeight: 'bold'
+                            }}
+                            cursor={{ stroke: '#8b5cf6', strokeWidth: 1, strokeDasharray: '3 3' }}
+                            formatter={(value: any) => [value, kpi.title]}
+                          />
                           <Line 
                             type="monotone" 
                             dataKey="value" 
                             stroke="transparent" 
                             strokeWidth={0}
-                            dot={{ fill: '#8b5cf6', strokeWidth: 0, r: 4 }}
-                            activeDot={{ r: 5, stroke: '#8b5cf6', strokeWidth: 2 }}
+                            dot={{ fill: '#8b5cf6', strokeWidth: 0, r: 6 }}
+                            activeDot={{ r: 7, stroke: '#8b5cf6', strokeWidth: 2 }}
                           />
                         </LineChart>
                       </ResponsiveContainer>
@@ -479,28 +545,31 @@ export default function HomePage() {
                 };
 
                 return (
-                  <Card key={index} className="hover:shadow-lg transition-shadow bg-white">
-                    <CardContent className="p-4">
-                      <div className="flex items-start justify-between mb-3">
-                        <div className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                  <Card key={index} className="group hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 bg-white border-0 shadow-lg overflow-hidden">
+                    <div className={`h-1 bg-gradient-to-r ${colorClasses[kpi.color as keyof typeof colorClasses]}`}></div>
+                    <CardContent className="p-5">
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
                           {kpi.title}
                         </div>
-                        <Icon className={`h-4 w-4 ${colorClasses[kpi.color as keyof typeof colorClasses]}`} />
+                        <div className={`p-2 rounded-lg ${iconColorClasses[kpi.color as keyof typeof iconColorClasses]}`}>
+                          <Icon className="h-4 w-4" />
+                        </div>
                       </div>
 
                       <div className="mb-4">
-                        <div className="text-2xl font-bold text-gray-900 mb-1">
+                        <div className="text-3xl font-bold text-gray-900 mb-2">
                       {kpi.value}
                     </div>
-                        <div className={`text-xs flex items-center font-medium ${
+                        <div className={`text-sm flex items-center font-semibold ${
                       kpi.change.includes('+') ? 'text-green-600' : 'text-red-600'
                     }`}>
-                          {kpi.change.includes('+') ? <ArrowUp className="h-3 w-3 mr-1" /> : <ArrowDown className="h-3 w-3 mr-1" />}
+                          {kpi.change.includes('+') ? <ArrowUp className="h-4 w-4 mr-1" /> : <ArrowDown className="h-4 w-4 mr-1" />}
                       {kpi.change}
                     </div>
                   </div>
 
-                      <div className="h-12 w-full">
+                      <div className="h-24 w-full mt-2">
                         {renderMiniChart()}
                       </div>
                     </CardContent>
@@ -512,9 +581,9 @@ export default function HomePage() {
             {/* Financial Performance Overview */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Combined Sales & Customer Chart */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Revenue & Customer Analytics</CardTitle>
+              <Card className="shadow-xl border-0 hover:shadow-2xl transition-shadow duration-300">
+                <CardHeader className="border-b bg-gradient-to-r from-blue-50 to-indigo-50">
+                  <CardTitle className="text-xl font-bold text-gray-900">Revenue & Customer Analytics</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-6">
@@ -606,9 +675,9 @@ export default function HomePage() {
               </Card>
 
               {/* Profitability & Expenses Chart */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Profitability Analysis</CardTitle>
+              <Card className="shadow-xl border-0 hover:shadow-2xl transition-shadow duration-300">
+                <CardHeader className="border-b bg-gradient-to-r from-purple-50 to-pink-50">
+                  <CardTitle className="text-xl font-bold text-gray-900">Profitability Analysis</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-6">
@@ -688,175 +757,195 @@ export default function HomePage() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6" style={{ minHeight: '600px' }}>
               {/* Main Financial Table */}
               <div className="lg:col-span-2">
-                <Card className="h-full flex flex-col">
-                  <CardHeader className="flex-shrink-0">
+                <Card className="h-full flex flex-col shadow-xl border-0">
+                  <CardHeader className="flex-shrink-0 border-b bg-gradient-to-r from-slate-50 to-gray-50">
                     <div className="flex items-center justify-between">
                       <div>
-                        <CardTitle>Financial Summary</CardTitle>
-                        <CardDescription>Performance comparison across key metrics</CardDescription>
+                        <CardTitle className="text-xl font-bold text-gray-900">Financial Summary</CardTitle>
+                        <CardDescription className="text-gray-600 mt-1">Performance comparison across key metrics</CardDescription>
                       </div>
                     </div>
                   </CardHeader>
-                  <CardContent className="flex-1 flex flex-col justify-center">
+                  <CardContent className="flex-1 flex flex-col justify-center p-0">
                     <div className="overflow-x-auto">
                       <table className="w-full">
                         <thead>
-                          <tr className="border-b bg-gray-50">
-                            <th className="text-left py-3 px-4 font-semibold text-gray-900">Category</th>
-                            <th className="text-center py-3 px-4 font-semibold text-gray-900">Actual</th>
-                            <th className="text-center py-3 px-4 font-semibold text-gray-900">Latest Estimate</th>
-                            <th className="text-center py-3 px-4 font-semibold text-gray-900">% LE</th>
-                            <th className="text-center py-3 px-4 font-semibold text-gray-900">Budget</th>
-                            <th className="text-center py-3 px-4 font-semibold text-gray-900">% Budget</th>
+                          <tr className="border-b-2 border-gray-200">
+                            <th className="text-left py-4 px-6 font-bold text-gray-700 text-sm uppercase tracking-wide bg-gray-50">Category</th>
+                            <th className="text-center py-4 px-6 font-bold text-gray-700 text-sm uppercase tracking-wide bg-gray-50">Actual</th>
+                            <th className="text-center py-4 px-6 font-bold text-gray-700 text-sm uppercase tracking-wide bg-gray-50">Latest Estimate</th>
+                            <th className="text-center py-4 px-6 font-bold text-gray-700 text-sm uppercase tracking-wide bg-gray-50">% LE</th>
+                            <th className="text-center py-4 px-6 font-bold text-gray-700 text-sm uppercase tracking-wide bg-gray-50">Budget</th>
+                            <th className="text-center py-4 px-6 font-bold text-gray-700 text-sm uppercase tracking-wide bg-gray-50">% Budget</th>
                           </tr>
                         </thead>
                         <tbody>
-                          <tr className="border-b border-gray-200 hover:bg-blue-50 transition-colors duration-200">
-                            <td className="py-4 px-6 font-medium text-gray-900">
+                          <tr className="border-b border-gray-100 hover:bg-gradient-to-r hover:from-blue-50/50 hover:to-transparent transition-all duration-200">
+                            <td className="py-5 px-6">
                               <div className="flex items-center">
-                                <div className="w-2 h-2 bg-red-500 rounded-full mr-3"></div>
-                                Net Sales
+                                <div className="w-3 h-3 bg-red-500 rounded-full mr-3"></div>
+                                <span className="font-semibold text-gray-900">Net Sales</span>
                               </div>
                             </td>
-                            <td className="py-4 px-6 text-center">
-                              <div className="inline-flex items-center px-3 py-2 bg-gradient-to-r from-slate-50 to-slate-100 border border-slate-200 text-slate-800 text-sm font-bold rounded-lg shadow-sm">
+                            <td className="py-5 px-6 text-center">
+                              <div className="inline-flex items-center px-4 py-2 bg-gradient-to-br from-slate-50 to-slate-100 border border-slate-200 text-slate-900 text-sm font-bold rounded-xl shadow-sm hover:shadow-md transition-shadow">
                                 <svg className="w-4 h-4 mr-2 text-slate-600" fill="currentColor" viewBox="0 0 20 20">
                                   <path fillRule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd"/>
                                 </svg>
                                 <span className="font-mono">$1,625.00</span>
                               </div>
                             </td>
-                            <td className="py-4 px-6 text-center">
-                              <span className="inline-flex items-center px-2 py-1 bg-blue-100 text-blue-700 text-sm font-medium rounded">$1,740.00</span>
+                            <td className="py-5 px-6 text-center">
+                              <span className="inline-flex items-center px-4 py-2 bg-blue-50 text-blue-700 text-sm font-semibold rounded-lg border border-blue-200">$1,740.00</span>
                             </td>
-                            <td className="py-4 px-6 text-center">
-                              <span className="inline-flex items-center px-2 py-1 bg-red-100 text-red-700 text-sm font-semibold rounded-full">
-                                <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <td className="py-5 px-6 text-center">
+                              <span className="inline-flex items-center px-3 py-1.5 bg-red-50 text-red-700 text-sm font-bold rounded-full border border-red-200">
+                                <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                   <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd"/>
                                 </svg>
                                 -13%
                               </span>
                             </td>
-                            <td className="py-4 px-6 text-center">
-                              <div className="inline-flex items-center px-3 py-2 bg-gradient-to-r from-slate-50 to-slate-100 border border-slate-200 text-slate-800 text-sm font-bold rounded-lg shadow-sm">
+                            <td className="py-5 px-6 text-center">
+                              <div className="inline-flex items-center px-4 py-2 bg-gradient-to-br from-slate-50 to-slate-100 border border-slate-200 text-slate-900 text-sm font-bold rounded-xl shadow-sm hover:shadow-md transition-shadow">
                                 <svg className="w-4 h-4 mr-2 text-slate-600" fill="currentColor" viewBox="0 0 20 20">
                                   <path fillRule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd"/>
                                 </svg>
                                 <span className="font-mono">$123.00</span>
                               </div>
                             </td>
-                            <td className="py-4 px-6 text-center">
-                              <span className="inline-flex items-center px-2 py-1 bg-green-100 text-green-700 text-sm font-semibold rounded-full">
-                                <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <td className="py-5 px-6 text-center">
+                              <span className="inline-flex items-center px-3 py-1.5 bg-green-50 text-green-700 text-sm font-bold rounded-full border border-green-200">
+                                <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                   <path fillRule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clipRule="evenodd"/>
                                 </svg>
                                 1.2%
                               </span>
                             </td>
                           </tr>
-                          <tr className="border-b border-gray-200 hover:bg-blue-50 transition-colors duration-200">
-                            <td className="py-4 px-6 font-medium text-gray-900">
+                          <tr className="border-b border-gray-100 hover:bg-gradient-to-r hover:from-green-50/50 hover:to-transparent transition-all duration-200">
+                            <td className="py-5 px-6">
                               <div className="flex items-center">
-                                <div className="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
-                                New Customer
+                                <div className="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
+                                <span className="font-semibold text-gray-900">New Customer</span>
                               </div>
                             </td>
-                            <td className="py-4 px-6 text-center">
-                              <div className="inline-flex items-center px-3 py-2 bg-gradient-to-r from-slate-50 to-slate-100 border border-slate-200 text-slate-800 text-sm font-bold rounded-lg shadow-sm">
+                            <td className="py-5 px-6 text-center">
+                              <div className="inline-flex items-center px-4 py-2 bg-gradient-to-br from-slate-50 to-slate-100 border border-slate-200 text-slate-900 text-sm font-bold rounded-xl shadow-sm hover:shadow-md transition-shadow">
                                 <svg className="w-4 h-4 mr-2 text-slate-600" fill="currentColor" viewBox="0 0 20 20">
                                   <path fillRule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd"/>
                                 </svg>
                                 <span className="font-mono">$1,680.00</span>
                               </div>
                             </td>
-                            <td className="py-4 px-6 text-center">
-                              <span className="inline-flex items-center px-2 py-1 bg-blue-100 text-blue-700 text-sm font-medium rounded">$1,740.00</span>
+                            <td className="py-5 px-6 text-center">
+                              <span className="inline-flex items-center px-4 py-2 bg-blue-50 text-blue-700 text-sm font-semibold rounded-lg border border-blue-200">$1,740.00</span>
                             </td>
-                            <td className="py-4 px-6 text-center">
-                              <span className="inline-flex items-center px-2 py-1 bg-green-100 text-green-700 text-sm font-semibold rounded-full">
-                                <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <td className="py-5 px-6 text-center">
+                              <span className="inline-flex items-center px-3 py-1.5 bg-green-50 text-green-700 text-sm font-bold rounded-full border border-green-200">
+                                <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                   <path fillRule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clipRule="evenodd"/>
                                 </svg>
                                 2%
                               </span>
                             </td>
-                            <td className="py-4 px-6 text-center">
-                              <div className="inline-flex items-center px-3 py-2 bg-gradient-to-r from-slate-50 to-slate-100 border border-slate-200 text-slate-800 text-sm font-bold rounded-lg shadow-sm">
+                            <td className="py-5 px-6 text-center">
+                              <div className="inline-flex items-center px-4 py-2 bg-gradient-to-br from-slate-50 to-slate-100 border border-slate-200 text-slate-900 text-sm font-bold rounded-xl shadow-sm hover:shadow-md transition-shadow">
                                 <svg className="w-4 h-4 mr-2 text-slate-600" fill="currentColor" viewBox="0 0 20 20">
                                   <path fillRule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd"/>
                                 </svg>
                                 <span className="font-mono">$55.00</span>
                               </div>
                             </td>
-                            <td className="py-4 px-6 text-center">
-                              <span className="inline-flex items-center px-2 py-1 bg-green-100 text-green-700 text-sm font-semibold rounded-full">
-                                <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <td className="py-5 px-6 text-center">
+                              <span className="inline-flex items-center px-3 py-1.5 bg-green-50 text-green-700 text-sm font-bold rounded-full border border-green-200">
+                                <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                   <path fillRule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clipRule="evenodd"/>
                                 </svg>
                                 3.1%
                               </span>
                             </td>
                           </tr>
-                          <tr className="border-b border-gray-200 hover:bg-blue-50 transition-colors duration-200">
-                            <td className="py-4 px-6 font-medium text-gray-900">
+                          <tr className="border-b border-gray-100 hover:bg-gradient-to-r hover:from-purple-50/50 hover:to-transparent transition-all duration-200">
+                            <td className="py-5 px-6">
                               <div className="flex items-center">
-                                <div className="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
-                                Gross Profit
+                                <div className="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
+                                <span className="font-semibold text-gray-900">Gross Profit</span>
                               </div>
                             </td>
-                            <td className="py-4 px-6 text-center">
-                              <span className="inline-flex items-center px-2 py-1 bg-gray-100 text-gray-700 text-sm font-medium rounded">$1,640.00</span>
+                            <td className="py-5 px-6 text-center">
+                              <div className="inline-flex items-center px-4 py-2 bg-gradient-to-br from-slate-50 to-slate-100 border border-slate-200 text-slate-900 text-sm font-bold rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                                <svg className="w-4 h-4 mr-2 text-slate-600" fill="currentColor" viewBox="0 0 20 20">
+                                  <path fillRule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd"/>
+                                </svg>
+                                <span className="font-mono">$1,640.00</span>
+                              </div>
                             </td>
-                            <td className="py-4 px-6 text-center">
-                              <span className="inline-flex items-center px-2 py-1 bg-blue-100 text-blue-700 text-sm font-medium rounded">$1,740.00</span>
+                            <td className="py-5 px-6 text-center">
+                              <span className="inline-flex items-center px-4 py-2 bg-blue-50 text-blue-700 text-sm font-semibold rounded-lg border border-blue-200">$1,740.00</span>
                             </td>
-                            <td className="py-4 px-6 text-center">
-                              <span className="inline-flex items-center px-2 py-1 bg-green-100 text-green-700 text-sm font-semibold rounded-full">
-                                <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <td className="py-5 px-6 text-center">
+                              <span className="inline-flex items-center px-3 py-1.5 bg-green-50 text-green-700 text-sm font-bold rounded-full border border-green-200">
+                                <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                   <path fillRule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clipRule="evenodd"/>
                                 </svg>
                                 1%
                               </span>
                             </td>
-                            <td className="py-4 px-6 text-center">
-                              <span className="inline-flex items-center px-2 py-1 bg-gray-100 text-gray-700 text-sm font-medium rounded">$97.00</span>
+                            <td className="py-5 px-6 text-center">
+                              <div className="inline-flex items-center px-4 py-2 bg-gradient-to-br from-slate-50 to-slate-100 border border-slate-200 text-slate-900 text-sm font-bold rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                                <svg className="w-4 h-4 mr-2 text-slate-600" fill="currentColor" viewBox="0 0 20 20">
+                                  <path fillRule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd"/>
+                                </svg>
+                                <span className="font-mono">$97.00</span>
+                              </div>
                             </td>
-                            <td className="py-4 px-6 text-center">
-                              <span className="inline-flex items-center px-2 py-1 bg-green-100 text-green-700 text-sm font-semibold rounded-full">
-                                <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <td className="py-5 px-6 text-center">
+                              <span className="inline-flex items-center px-3 py-1.5 bg-green-50 text-green-700 text-sm font-bold rounded-full border border-green-200">
+                                <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                   <path fillRule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clipRule="evenodd"/>
                                 </svg>
                                 5.8%
                               </span>
                             </td>
                           </tr>
-                          <tr className="border-b border-gray-200 hover:bg-blue-50 transition-colors duration-200">
-                            <td className="py-4 px-6 font-medium text-gray-900">
+                          <tr className="hover:bg-gradient-to-r hover:from-red-50/50 hover:to-transparent transition-all duration-200">
+                            <td className="py-5 px-6">
                               <div className="flex items-center">
-                                <div className="w-2 h-2 bg-red-500 rounded-full mr-3"></div>
-                                Operating Expenses
+                                <div className="w-3 h-3 bg-red-500 rounded-full mr-3"></div>
+                                <span className="font-semibold text-gray-900">Operating Expenses</span>
                               </div>
                             </td>
-                            <td className="py-4 px-6 text-center">
-                              <span className="inline-flex items-center px-2 py-1 bg-gray-100 text-gray-700 text-sm font-medium rounded">$1,640.00</span>
+                            <td className="py-5 px-6 text-center">
+                              <div className="inline-flex items-center px-4 py-2 bg-gradient-to-br from-slate-50 to-slate-100 border border-slate-200 text-slate-900 text-sm font-bold rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                                <svg className="w-4 h-4 mr-2 text-slate-600" fill="currentColor" viewBox="0 0 20 20">
+                                  <path fillRule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd"/>
+                                </svg>
+                                <span className="font-mono">$1,640.00</span>
+                              </div>
                             </td>
-                            <td className="py-4 px-6 text-center">
-                              <span className="inline-flex items-center px-2 py-1 bg-blue-100 text-blue-700 text-sm font-medium rounded">$1,740.00</span>
+                            <td className="py-5 px-6 text-center">
+                              <span className="inline-flex items-center px-4 py-2 bg-blue-50 text-blue-700 text-sm font-semibold rounded-lg border border-blue-200">$1,740.00</span>
                             </td>
-                            <td className="py-4 px-6 text-center">
-                              <span className="inline-flex items-center px-2 py-1 bg-red-100 text-red-700 text-sm font-semibold rounded-full">
-                                <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <td className="py-5 px-6 text-center">
+                              <span className="inline-flex items-center px-3 py-1.5 bg-red-50 text-red-700 text-sm font-bold rounded-full border border-red-200">
+                                <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                   <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd"/>
                                 </svg>
                                 -6%
                               </span>
                             </td>
-                            <td className="py-4 px-6 text-center">
-                              <span className="inline-flex items-center px-2 py-1 bg-gray-100 text-gray-700 text-sm font-medium rounded">$97.00</span>
+                            <td className="py-5 px-6 text-center">
+                              <div className="inline-flex items-center px-4 py-2 bg-gradient-to-br from-slate-50 to-slate-100 border border-slate-200 text-slate-900 text-sm font-bold rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                                <svg className="w-4 h-4 mr-2 text-slate-600" fill="currentColor" viewBox="0 0 20 20">
+                                  <path fillRule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd"/>
+                                </svg>
+                                <span className="font-mono">$97.00</span>
+                              </div>
                             </td>
-                            <td className="py-4 px-6 text-center">
-                              <span className="inline-flex items-center px-2 py-1 bg-green-100 text-green-700 text-sm font-semibold rounded-full">
-                                <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <td className="py-5 px-6 text-center">
+                              <span className="inline-flex items-center px-3 py-1.5 bg-green-50 text-green-700 text-sm font-bold rounded-full border border-green-200">
+                                <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                   <path fillRule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clipRule="evenodd"/>
                                 </svg>
                                 5.8%
@@ -872,10 +961,10 @@ export default function HomePage() {
 
               {/* AI Insight Sidebar */}
               <div className="lg:col-span-1">
-                <Card className="h-full flex flex-col">
-                  <CardHeader className="flex-shrink-0 pb-3">
-                    <CardTitle>AI Growth Analysis</CardTitle>
-                    <CardDescription>LOB Performance & Market Insights</CardDescription>
+                <Card className="h-full flex flex-col shadow-xl border-0">
+                  <CardHeader className="flex-shrink-0 pb-3 border-b bg-gradient-to-r from-green-50 to-emerald-50">
+                    <CardTitle className="text-xl font-bold text-gray-900">AI Growth Analysis</CardTitle>
+                    <CardDescription className="text-gray-600 mt-1">LOB Performance & Market Insights</CardDescription>
                   </CardHeader>
                   <CardContent className="flex-1 overflow-hidden p-0">
                       <div 
@@ -970,16 +1059,16 @@ export default function HomePage() {
                   </div>
 
             {/* Growth Rate Analysis by LOB */}
-            <Card>
-              <CardHeader>
+            <Card className="shadow-xl border-0">
+              <CardHeader className="border-b bg-gradient-to-r from-amber-50 to-orange-50">
                 <div className="flex items-center justify-between">
                   <div>
-                    <CardTitle>Growth Rate Analysis by Line of Business</CardTitle>
-                    <CardDescription>Comprehensive performance across all 6 business segments</CardDescription>
+                    <CardTitle className="text-xl font-bold text-gray-900">Growth Rate Analysis by Line of Business</CardTitle>
+                    <CardDescription className="text-gray-600 mt-1">Comprehensive performance across all 6 business segments</CardDescription>
                   </div>
-                  <div className="text-right">
+                  <div className="text-right bg-white px-4 py-2 rounded-lg shadow-sm">
                     <div className="text-2xl font-bold text-green-600">+22.5%</div>
-                    <div className="text-sm text-gray-500">Avg Growth</div>
+                    <div className="text-sm text-gray-500 font-medium">Avg Growth</div>
                   </div>
                 </div>
               </CardHeader>
@@ -1031,23 +1120,23 @@ export default function HomePage() {
             </Card>
 
             {/* Project Planning Tasks */}
-            <Card className="shadow-lg">
-              <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-blue-100">
+            <Card className="shadow-xl border-0">
+              <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b">
                 <div className="flex items-center justify-between">
                   <div>
                     <CardTitle className="text-xl font-bold text-gray-900 flex items-center">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full mr-3"></div>
+                      <div className="w-3 h-3 bg-blue-500 rounded-full mr-3 animate-pulse"></div>
                       Project Planning Tasks
                     </CardTitle>
-                    <CardDescription className="text-gray-600 mt-1">
+                    <CardDescription className="text-gray-600 mt-1 font-medium">
                       Comprehensive tracking of planning preparation and operational approvals
                     </CardDescription>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <div className="px-3 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full">
+                    <div className="px-4 py-2 bg-green-500 text-white text-sm font-bold rounded-lg shadow-md">
                       5/11 Completed
                     </div>
-                    <div className="px-3 py-1 bg-yellow-100 text-yellow-800 text-xs font-semibold rounded-full">
+                    <div className="px-4 py-2 bg-yellow-500 text-white text-sm font-bold rounded-lg shadow-md">
                       6 In Progress
                     </div>
                   </div>
@@ -1112,7 +1201,7 @@ export default function HomePage() {
                     <tbody>
                       {/* PLANNING PREPARATION Section */}
                       <tr className="bg-gradient-to-r from-blue-100 to-blue-50 border-l-4 border-blue-500">
-                        <td colSpan="6" className="py-3 px-6 font-bold text-blue-900 text-sm uppercase tracking-wide">
+                        <td colSpan={6} className="py-3 px-6 font-bold text-blue-900 text-sm uppercase tracking-wide">
                           <div className="flex items-center">
                             <svg className="w-5 h-5 mr-3 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
                               <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"/>
@@ -1518,7 +1607,7 @@ export default function HomePage() {
                       
                       {/* OPERATIONAL PLANNING Section */}
                       <tr className="bg-gradient-to-r from-orange-100 to-orange-50 border-l-4 border-orange-500">
-                        <td colSpan="6" className="py-3 px-6 font-bold text-orange-900 text-sm uppercase tracking-wide">
+                        <td colSpan={6} className="py-3 px-6 font-bold text-orange-900 text-sm uppercase tracking-wide">
                           <div className="flex items-center">
                             <svg className="w-5 h-5 mr-3 text-orange-600" fill="currentColor" viewBox="0 0 20 20">
                               <path fillRule="evenodd" d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clipRule="evenodd"/>
@@ -1678,7 +1767,7 @@ export default function HomePage() {
                       
                       {/* OPERATIONAL APPROVALS Section */}
                       <tr className="bg-gradient-to-r from-green-100 to-green-50 border-l-4 border-green-500">
-                        <td colSpan="6" className="py-3 px-6 font-bold text-green-900 text-sm uppercase tracking-wide">
+                        <td colSpan={6} className="py-3 px-6 font-bold text-green-900 text-sm uppercase tracking-wide">
                           <div className="flex items-center">
                             <svg className="w-5 h-5 mr-3 text-green-600" fill="currentColor" viewBox="0 0 20 20">
                               <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/>
