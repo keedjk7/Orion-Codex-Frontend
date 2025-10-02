@@ -322,22 +322,22 @@ export default function FileUpload() {
     }
 
     if ((dataType === 'actual' || dataType === 'fix-asset') && !selectedYear) {
-      toast({
+        toast({
         title: "Year Required",
         description: "Please select a year for Actual or Fixed Asset data",
-        variant: "destructive",
-      });
-      return;
-    }
+          variant: "destructive",
+        });
+        return;
+      }
 
     setIsUploading(true);
 
     // Create uploaded files from selected files
     const newUploadedFiles: UploadedFile[] = selectedFiles.map((file) => ({
-      file,
+        file,
       dataType,
       status: "uploading" as UploadStatus,
-      progress: 0,
+        progress: 0,
       id: Math.random().toString(36).substr(2, 9),
       companyId: selectedCompany?.id,
       companyName: selectedCompany?.fullName,
@@ -418,13 +418,13 @@ export default function FileUpload() {
       console.error('Upload error:', error);
       
       // Update status to error for all files
-      setUploadedFiles(prev => 
-        prev.map(f => 
+    setUploadedFiles(prev =>
+      prev.map(f =>
           newUploadedFiles.some(nf => nf.id === f.id)
             ? { ...f, status: "error" as UploadStatus, progress: 100, error: "Network error" }
-            : f
-        )
-      );
+          : f
+      )
+    );
 
       toast({
         title: "Connection Error",
@@ -721,8 +721,8 @@ export default function FileUpload() {
                 </Button>
               </div>
                 </div>
-              ))}
-              </div>
+                  ))}
+                </div>
           )}
 
           {/* Upload Button */}
@@ -804,8 +804,8 @@ export default function FileUpload() {
                               <span>•</span>
                               <span>{uploadedFile.recordsProcessed} records</span>
                             </>
-                          )}
-                        </div>
+                      )}
+                    </div>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
@@ -831,7 +831,7 @@ export default function FileUpload() {
                           <X className="w-4 h-4" />
                       </Button>
                     )}
-                    </div>
+                  </div>
                   </div>
                   
                   {uploadedFile.status === "uploading" && (

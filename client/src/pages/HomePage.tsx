@@ -391,51 +391,24 @@ export default function HomePage() {
         />
 
         {/* Content */}
-        <main className="flex-1 p-4 lg:p-6 overflow-auto">
+        <main className="flex-1 p-4 lg:p-6 overflow-auto bg-gray-100">
           <div className="space-y-6">
-            {/* Hero Section with Enhanced Gradient Background */}
-            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-indigo-600 via-violet-600 to-purple-700 p-10 lg:p-12 text-white shadow-xl">
-              <div className="absolute inset-0 bg-black/10"></div>
-              {/* Animated Background Pattern */}
-              <div className="absolute inset-0 opacity-10">
-                <div className="absolute top-10 left-10 w-20 h-20 border-2 border-white rounded-full animate-ping"></div>
-                <div className="absolute bottom-20 right-20 w-16 h-16 border-2 border-white rounded-full animate-ping" style={{ animationDelay: '1s' }}></div>
-              </div>
-
-              <div className="relative z-10">
-                {/* Greeting */}
-                <div className="text-center">
-                  <h1 className="text-5xl lg:text-6xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white to-purple-100">
-                    Hello, {getUserDisplayName()}
-                  </h1>
-                  <p className="text-purple-100 text-lg lg:text-xl font-medium">
-                    Welcome back to your dashboard
-                  </p>
-                </div>
-              </div>
-              
-              {/* Enhanced Decorative Elements */}
-              <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-white/5 to-transparent rounded-full -translate-y-48 translate-x-48 blur-3xl"></div>
-              <div className="absolute bottom-0 left-0 w-72 h-72 bg-gradient-to-tr from-white/5 to-transparent rounded-full translate-y-36 -translate-x-36 blur-3xl"></div>
-              <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-white/3 rounded-full -translate-x-1/2 -translate-y-1/2 blur-2xl"></div>
-            </div>
-
             {/* KPI Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {kpiData.map((kpi, index) => {
                 const Icon = kpi.icon;
-                const colorClasses = {
-                  blue: 'from-blue-500 to-blue-600',
-                  green: 'from-green-500 to-green-600',
-                  purple: 'from-purple-500 to-purple-600',
-                  red: 'from-red-500 to-red-600'
+                const iconColorClasses = {
+                  blue: 'bg-blue-500',
+                  green: 'bg-green-500',
+                  purple: 'bg-purple-500',
+                  red: 'bg-red-500'
                 };
 
-                const iconColorClasses = {
-                  blue: 'text-blue-600 bg-blue-50',
-                  green: 'text-green-600 bg-green-50',
-                  purple: 'text-purple-600 bg-purple-50',
-                  red: 'text-red-600 bg-red-50'
+                const borderColorClasses = {
+                  blue: 'border-blue-100',
+                  green: 'border-green-100',
+                  purple: 'border-purple-100',
+                  red: 'border-red-100'
                 };
 
                 const renderMiniChart = () => {
@@ -550,32 +523,22 @@ export default function HomePage() {
                 };
 
                 return (
-                  <Card key={index} className="group hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 bg-white border-0 shadow-lg overflow-hidden">
-                    <div className={`h-1 bg-gradient-to-r ${colorClasses[kpi.color as keyof typeof colorClasses]}`}></div>
-                    <CardContent className="p-5">
-                      <div className="flex items-start justify-between mb-4">
-                        <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                          {kpi.title}
+                  <Card key={index} className={borderColorClasses[kpi.color as keyof typeof borderColorClasses]}>
+                    <CardContent className="pt-6">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-xs font-medium text-gray-600">{kpi.title}</p>
+                          <p className="text-3xl font-bold text-gray-900 my-1">{kpi.value}</p>
+                          <div className={`text-sm flex items-center font-medium ${
+                            kpi.change.includes('+') ? 'text-green-600' : 'text-red-600'
+                          }`}>
+                            {kpi.change.includes('+') ? <ArrowUp className="h-3 w-3 mr-1" /> : <ArrowDown className="h-3 w-3 mr-1" />}
+                            {kpi.change}
+                          </div>
                         </div>
-                        <div className={`p-2 rounded-lg ${iconColorClasses[kpi.color as keyof typeof iconColorClasses]}`}>
-                          <Icon className="h-4 w-4" />
+                        <div className={`h-12 w-12 rounded-full flex items-center justify-center flex-shrink-0 ${iconColorClasses[kpi.color as keyof typeof iconColorClasses]}`}>
+                          <Icon className="h-6 w-6 text-white" />
                         </div>
-                      </div>
-
-                      <div className="mb-4">
-                        <div className="text-3xl font-bold text-gray-900 mb-2">
-                      {kpi.value}
-                    </div>
-                        <div className={`text-sm flex items-center font-semibold ${
-                      kpi.change.includes('+') ? 'text-green-600' : 'text-red-600'
-                    }`}>
-                          {kpi.change.includes('+') ? <ArrowUp className="h-4 w-4 mr-1" /> : <ArrowDown className="h-4 w-4 mr-1" />}
-                      {kpi.change}
-                    </div>
-                  </div>
-
-                      <div className="h-24 w-full mt-2">
-                        {renderMiniChart()}
                       </div>
                     </CardContent>
                   </Card>
@@ -586,9 +549,9 @@ export default function HomePage() {
             {/* Financial Performance Overview */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Combined Sales & Customer Chart */}
-              <Card className="shadow-xl border-0 hover:shadow-2xl transition-shadow duration-300">
-                <CardHeader className="border-b bg-gradient-to-r from-blue-50 to-indigo-50">
-                  <CardTitle className="text-xl font-bold text-gray-900">Revenue & Customer Analytics</CardTitle>
+              <Card>
+                <CardHeader className="border-b">
+                  <CardTitle className="text-lg font-semibold">Revenue & Customer Analytics</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-6">
@@ -785,7 +748,7 @@ export default function HomePage() {
                           </tr>
                         </thead>
                         <tbody>
-                          <tr className="border-b border-gray-100 hover:bg-gradient-to-r hover:from-blue-50/50 hover:to-transparent transition-all duration-200">
+                          <tr className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
                             <td className="py-5 px-6">
                               <div className="flex items-center">
                                 <div className="w-3 h-3 bg-red-500 rounded-full mr-3"></div>
@@ -828,7 +791,7 @@ export default function HomePage() {
                               </span>
                             </td>
                           </tr>
-                          <tr className="border-b border-gray-100 hover:bg-gradient-to-r hover:from-green-50/50 hover:to-transparent transition-all duration-200">
+                          <tr className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
                             <td className="py-5 px-6">
                               <div className="flex items-center">
                                 <div className="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
@@ -871,7 +834,7 @@ export default function HomePage() {
                               </span>
                             </td>
                           </tr>
-                          <tr className="border-b border-gray-100 hover:bg-gradient-to-r hover:from-purple-50/50 hover:to-transparent transition-all duration-200">
+                          <tr className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
                             <td className="py-5 px-6">
                               <div className="flex items-center">
                                 <div className="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
@@ -914,7 +877,7 @@ export default function HomePage() {
                               </span>
                             </td>
                           </tr>
-                          <tr className="hover:bg-gradient-to-r hover:from-red-50/50 hover:to-transparent transition-all duration-200">
+                          <tr className="hover:bg-gray-50 transition-colors">
                             <td className="py-5 px-6">
                               <div className="flex items-center">
                                 <div className="w-3 h-3 bg-red-500 rounded-full mr-3"></div>

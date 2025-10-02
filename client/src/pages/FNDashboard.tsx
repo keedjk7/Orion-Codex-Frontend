@@ -192,135 +192,67 @@ export default function FNDashboard() {
 
   return (
     <div className="space-y-8">
-      {/* Header Section with Enhanced Gradient Background */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-700 p-8 text-white shadow-2xl">
-        <div className="absolute inset-0 bg-black/10"></div>
-        {/* Animated Background Pattern */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-10 left-10 w-20 h-20 border-2 border-white rounded-full animate-ping"></div>
-          <div className="absolute bottom-20 right-20 w-16 h-16 border-2 border-white rounded-full animate-ping" style={{ animationDelay: '1s' }}></div>
-        </div>
-        
-        <div className="relative z-10 flex items-center justify-between">
-        <div>
-            <h1 className="text-5xl font-bold mb-3 bg-clip-text text-transparent bg-gradient-to-r from-white to-emerald-100">
-              FN Dashboard
-            </h1>
-            <p className="text-emerald-100 text-xl mb-4">Welcome back, {getUserDisplayName()}</p>
-            <div className="flex items-center space-x-6">
-              <div className="flex items-center space-x-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2">
-                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                <span className="text-sm font-medium text-white">Live Data</span>
+      {/* Header Section */}
+      <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">FN Dashboard</h1>
+            <div className="flex items-center space-x-4 text-sm text-gray-600">
+              <div className="flex items-center space-x-2">
+                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                <span>Live Data</span>
               </div>
-              <div className="flex items-center space-x-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2">
-                <Calendar className="w-4 h-4 text-emerald-200" />
-                <span className="text-sm font-medium text-white">Last updated: 20/12/26 12:07</span>
+              <div className="flex items-center space-x-2">
+                <Calendar className="w-4 h-4" />
+                <span>Last updated: 20/12/26 12:07</span>
               </div>
             </div>
-        </div>
-          <div className="flex flex-col items-end space-y-3">
-            <Badge variant="secondary" className="bg-white/20 text-white border-white/30 backdrop-blur-md hover:bg-white/30 transition-all">
-              Version: 2024.1.6
+          </div>
+          <Badge variant="secondary" className="bg-gray-100 text-gray-700 border border-gray-200">
+            Version: 2024.1.6
           </Badge>
-            <div className="flex space-x-2">
-              <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm hover:bg-white/30 transition-all cursor-pointer">
-                <BarChart3 className="w-5 h-5 text-white" />
-              </div>
-              <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm hover:bg-white/30 transition-all cursor-pointer">
-                <TrendingUp className="w-5 h-5 text-white" />
-              </div>
-            </div>
         </div>
-        </div>
-        
-        {/* Enhanced Decorative Elements */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-white/5 to-transparent rounded-full -translate-y-48 translate-x-48 blur-3xl"></div>
-        <div className="absolute bottom-0 left-0 w-72 h-72 bg-gradient-to-tr from-white/5 to-transparent rounded-full translate-y-36 -translate-x-36 blur-3xl"></div>
-        <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-white/3 rounded-full -translate-x-1/2 -translate-y-1/2 blur-2xl"></div>
       </div>
 
       {/* KPI Cards Row - 5 cards for FN Dashboard */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 lg:gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         {kpiData.map((kpi, index) => {
           const Icon = kpi.icon;
           const isPositive = kpi.trend === 'up';
           
+          const iconBgClasses = {
+            blue: 'bg-blue-500',
+            green: 'bg-green-500',
+            purple: 'bg-purple-500',
+            teal: 'bg-teal-500',
+            orange: 'bg-orange-500'
+          };
+
+          const borderClasses = {
+            blue: 'border-blue-100',
+            green: 'border-green-100',
+            purple: 'border-purple-100',
+            teal: 'border-teal-100',
+            orange: 'border-orange-100'
+          };
+
           return (
-            <Card key={index} className="group hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 bg-white border-0 shadow-lg overflow-hidden relative">
-              <CardContent className="p-0">
-                {/* Animated Gradient Header */}
-                <div className={`h-2 relative overflow-hidden ${
-                  kpi.color === 'blue' ? 'bg-gradient-to-r from-blue-500 to-blue-600' :
-                  kpi.color === 'green' ? 'bg-gradient-to-r from-green-500 to-green-600' :
-                  kpi.color === 'purple' ? 'bg-gradient-to-r from-purple-500 to-purple-600' :
-                  kpi.color === 'teal' ? 'bg-gradient-to-r from-teal-500 to-teal-600' :
-                  'bg-gradient-to-r from-orange-500 to-orange-600'
-                }`}>
-                  <div className="absolute inset-0 bg-white/30 animate-pulse"></div>
-                </div>
-                
-                {/* Background Pattern */}
-                <div className="absolute top-0 right-0 w-32 h-32 opacity-5 transform rotate-12 group-hover:scale-110 transition-transform duration-500">
-                  <Icon className="w-full h-full" />
-                </div>
-                
-                <div className="p-6 relative z-10">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="text-xs font-bold text-gray-600 uppercase tracking-wider">
-                      {kpi.title}
-                    </div>
-                    <div className={`p-3 rounded-2xl shadow-lg ${
-                      kpi.color === 'blue' ? 'bg-gradient-to-br from-blue-50 to-blue-100 text-blue-600' :
-                      kpi.color === 'green' ? 'bg-gradient-to-br from-green-50 to-green-100 text-green-600' :
-                      kpi.color === 'purple' ? 'bg-gradient-to-br from-purple-50 to-purple-100 text-purple-600' :
-                      kpi.color === 'teal' ? 'bg-gradient-to-br from-teal-50 to-teal-100 text-teal-600' :
-                      'bg-gradient-to-br from-orange-50 to-orange-100 text-orange-600'
-                    } group-hover:scale-110 group-hover:rotate-3 transition-all duration-300`}>
-                      <Icon className="h-5 w-5" />
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-3">
-                    <div className="text-4xl font-bold text-gray-900 group-hover:scale-105 transition-transform duration-200">
-                      {kpi.value}
-                    </div>
-                    
+            <Card key={index} className={borderClasses[kpi.color as keyof typeof borderClasses]}>
+              <CardContent className="pt-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-xs font-medium text-gray-600">{kpi.title}</p>
+                    <p className="text-3xl font-bold text-gray-900 my-1">{kpi.unit}{kpi.value}</p>
                     {kpi.change && (
-                      <div className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-lg font-semibold text-xs ${
-                        isPositive 
-                          ? 'text-green-700 bg-green-100 border border-green-200' 
-                          : 'text-red-700 bg-red-100 border border-red-200'
-                      }`}>
-                        {isPositive ? <ArrowUpRight className="h-3.5 w-3.5" /> : <ArrowDownRight className="h-3.5 w-3.5" />}
-                        <span>{kpi.change}</span>
+                      <div className={`text-sm flex items-center font-medium ${isPositive ? 'text-green-600' : 'text-red-600'}`}>
+                        {isPositive ? <ArrowUpRight className="h-3 w-3 mr-1" /> : <ArrowDownRight className="h-3 w-3 mr-1" />}
+                        {kpi.change}
                       </div>
                     )}
-                    
-                    {/* Mini Progress Bar */}
-                    <div className="w-full h-1 bg-gray-100 rounded-full overflow-hidden">
-                      <div className={`h-full rounded-full animate-pulse ${
-                        kpi.color === 'blue' ? 'bg-gradient-to-r from-blue-500 to-blue-600' :
-                        kpi.color === 'green' ? 'bg-gradient-to-r from-green-500 to-green-600' :
-                        kpi.color === 'purple' ? 'bg-gradient-to-r from-purple-500 to-purple-600' :
-                        kpi.color === 'teal' ? 'bg-gradient-to-r from-teal-500 to-teal-600' :
-                        'bg-gradient-to-r from-orange-500 to-orange-600'
-                      }`} style={{ width: '75%' }}></div>
-                    </div>
-                    
-                    <div className="flex items-center justify-between">
-                      <div className="text-xs text-gray-500 font-medium">
-                        {kpi.period}
-                      </div>
-                      <div className={`text-xs font-semibold ${
-                        kpi.color === 'blue' ? 'text-blue-600' :
-                        kpi.color === 'green' ? 'text-green-600' :
-                        kpi.color === 'purple' ? 'text-purple-600' :
-                        kpi.color === 'teal' ? 'text-teal-600' :
-                        'text-orange-600'
-                      }`}>
-                        75%
-                      </div>
-                    </div>
+                    <p className="text-xs text-gray-500 mt-1">{kpi.period}</p>
+                  </div>
+                  <div className={`h-12 w-12 rounded-full flex items-center justify-center flex-shrink-0 ${iconBgClasses[kpi.color as keyof typeof iconBgClasses]}`}>
+                    <Icon className="h-6 w-6 text-white" />
                   </div>
                 </div>
               </CardContent>
@@ -330,11 +262,11 @@ export default function FNDashboard() {
       </div>
 
       {/* Charts Row - 3 Column Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* YTD Actual vs Budget */}
-        <Card className="shadow-xl border-0 bg-white hover:shadow-2xl transition-all duration-300">
-          <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b">
-            <CardTitle className="text-base font-bold text-gray-900">YTD Actual vs Budget</CardTitle>
+        <Card>
+          <CardHeader className="border-b">
+            <CardTitle className="text-lg font-semibold">YTD Actual vs Budget</CardTitle>
           </CardHeader>
            <CardContent className="pt-6 pb-8">
              <div className="space-y-2.5">
@@ -397,9 +329,9 @@ export default function FNDashboard() {
         </Card>
 
         {/* Budget Achievement */}
-        <Card className="shadow-xl border-0 bg-white hover:shadow-2xl transition-all duration-300">
-          <CardHeader className="bg-gradient-to-r from-emerald-50 to-teal-50 border-b">
-            <CardTitle className="text-base font-bold text-gray-900">Budget Achievement</CardTitle>
+        <Card>
+          <CardHeader className="border-b">
+            <CardTitle className="text-lg font-semibold">Budget Achievement</CardTitle>
           </CardHeader>
            <CardContent className="pt-6 pb-8">
              <div className="space-y-2.5">
@@ -449,9 +381,9 @@ export default function FNDashboard() {
         </Card>
 
         {/* Change (%) */}
-        <Card className="shadow-xl border-0 bg-white hover:shadow-2xl transition-all duration-300">
-          <CardHeader className="bg-gradient-to-r from-purple-50 to-pink-50 border-b">
-            <CardTitle className="text-base font-bold text-gray-900">Change (%)</CardTitle>
+        <Card>
+          <CardHeader className="border-b">
+            <CardTitle className="text-lg font-semibold">Change (%)</CardTitle>
           </CardHeader>
            <CardContent className="pt-6 pb-8">
              <div className="space-y-2.5">
@@ -489,124 +421,68 @@ export default function FNDashboard() {
       </div>
 
       {/* Charts Row 3 - Ask AI & Performance by Month */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Ask AI Section */}
-        <Card className="shadow-xl border-0 bg-gradient-to-br from-white via-emerald-50/30 to-teal-50/50 hover:shadow-2xl transition-all duration-300 group relative overflow-hidden">
-          {/* Decorative gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-teal-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-          
-          <CardHeader className="bg-gradient-to-r from-emerald-50 via-teal-50 to-cyan-50 border-b border-emerald-100 relative">
+        <Card>
+          <CardHeader className="border-b">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-base font-bold text-gray-900 flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-md">
-                  <span className="text-lg">✨</span>
-                </div>
-                <span className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">Ask AI</span>
+              <CardTitle className="text-lg font-semibold flex items-center gap-2">
+                <span>✨</span>
+                <span>Ask AI</span>
               </CardTitle>
-              <div className="px-2 py-1 bg-emerald-100 text-emerald-700 text-xs font-semibold rounded-full">Q1 2025</div>
+              <Badge variant="secondary" className="text-xs">Q1 2025</Badge>
             </div>
           </CardHeader>
           
-          <CardContent className="pt-6 relative z-10">
-            <div className="space-y-5">
-              {/* Total Revenue Card - Enhanced */}
-              <div className="relative rounded-xl overflow-hidden group/card">
-                <div className="absolute inset-0 bg-gradient-to-br from-emerald-400 via-teal-500 to-cyan-500 opacity-90"></div>
-                <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDQwIDAgTCAwIDAgMCA0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLW9wYWNpdHk9IjAuMSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] opacity-30"></div>
-                
-                <div className="relative p-6 text-center">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full mb-3">
-                    <div className="w-2 h-2 rounded-full bg-white animate-pulse"></div>
-                    <span className="text-xs font-semibold text-white">Total Revenue</span>
-                  </div>
-                  <div className="text-5xl font-bold text-white mb-4 tracking-tight drop-shadow-lg">฿3,000,000</div>
-                  <div className="flex items-center justify-center gap-2 text-white/90">
-                    <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center shadow-lg group-hover/card:scale-110 transition-transform duration-300">
-                      <DollarSign className="w-6 h-6 text-white" />
-                    </div>
-                  </div>
+          <CardContent className="pt-6">
+            <div className="space-y-4">
+              {/* Total Revenue Card */}
+              <div className="bg-purple-600 rounded-lg p-6 text-center text-white">
+                <div className="text-sm font-medium mb-2">Total Revenue</div>
+                <div className="text-4xl font-bold mb-3">฿3,000,000</div>
+                <div className="w-16 h-16 mx-auto bg-purple-700 rounded-full flex items-center justify-center">
+                  <DollarSign className="w-8 h-8" />
                 </div>
               </div>
 
-              {/* Monthly Breakdown - Enhanced */}
-              <div className="grid grid-cols-3 gap-2.5">
+              {/* Monthly Breakdown */}
+              <div className="grid grid-cols-3 gap-2">
                 {[
-                  { month: 'Jan', amount: '1,000,000', color: 'from-emerald-400 to-emerald-500' },
-                  { month: 'Feb', amount: '1,000,000', color: 'from-teal-400 to-teal-500' },
-                  { month: 'Mar', amount: '1,000,000', color: 'from-cyan-400 to-cyan-500' }
+                  { month: 'Jan', amount: '1,000,000' },
+                  { month: 'Feb', amount: '1,000,000' },
+                  { month: 'Mar', amount: '1,000,000' }
                 ].map((item, idx) => (
-                  <div key={idx} className="bg-white border-2 border-emerald-100 rounded-xl p-3 text-center hover:border-emerald-300 hover:shadow-lg transition-all duration-200 group/month">
-                    <div className="text-xs font-semibold text-emerald-600 mb-1.5">{item.month}, 2025</div>
-                    <div className="text-base font-bold text-gray-900 mb-2">฿{item.amount}</div>
-                    <div className={`h-1.5 bg-gradient-to-r ${item.color} rounded-full transform group-hover/month:scale-x-105 transition-transform duration-200`}></div>
+                  <div key={idx} className="bg-white border border-gray-200 rounded-lg p-3 text-center">
+                    <div className="text-xs font-medium text-gray-500 mb-1">{item.month}, 2025</div>
+                    <div className="text-base font-bold text-gray-900">฿{item.amount}</div>
                   </div>
                 ))}
               </div>
 
-              {/* Ask AI Input - Enhanced */}
-              <form onSubmit={handleAiInsightSubmit} className="relative">
-                <div className="relative">
-                  <input
-                    type="text"
-                    value={aiInsightQuery}
-                    onChange={(e) => setAiInsightQuery(e.target.value)}
-                    placeholder="Ask AI about your finances..."
-                    className="w-full px-4 py-3.5 pr-14 bg-white border-2 border-emerald-200 rounded-xl text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-emerald-400 shadow-sm hover:border-emerald-300 transition-all"
-                  />
-                  <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center gap-1">
-                    <button type="button" className="p-2 hover:bg-emerald-50 rounded-lg transition-colors group/btn" title="Attach">
-                      <span className="text-gray-400 group-hover/btn:text-emerald-600 text-xs font-bold">+</span>
-                    </button>
-                    <button type="button" className="p-2 hover:bg-emerald-50 rounded-lg transition-colors group/btn" title="Image">
-                      <span className="text-gray-400 group-hover/btn:text-emerald-600 text-xs">🖼</span>
-                    </button>
-                    <button type="button" className="p-2 hover:bg-emerald-50 rounded-lg transition-colors group/btn" title="Voice">
-                      <span className="text-gray-400 group-hover/btn:text-emerald-600 text-xs">🎤</span>
-                    </button>
-                  </div>
-                </div>
+              {/* Ask AI Input */}
+              <form onSubmit={handleAiInsightSubmit}>
+                <input
+                  type="text"
+                  value={aiInsightQuery}
+                  onChange={(e) => setAiInsightQuery(e.target.value)}
+                  placeholder="Ask AI..."
+                  className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                />
               </form>
-
-              {/* Quick Stats */}
-              <div className="grid grid-cols-2 gap-2 pt-2">
-                <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-lg p-3 border border-emerald-100">
-                  <div className="flex items-center gap-2 mb-1">
-                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
-                    <span className="text-xs font-medium text-gray-600">Avg/Month</span>
-                  </div>
-                  <div className="text-lg font-bold text-gray-900">฿1.0M</div>
-                </div>
-                <div className="bg-gradient-to-br from-teal-50 to-cyan-50 rounded-lg p-3 border border-teal-100">
-                  <div className="flex items-center gap-2 mb-1">
-                    <div className="w-1.5 h-1.5 rounded-full bg-teal-500"></div>
-                    <span className="text-xs font-medium text-gray-600">Growth</span>
-                  </div>
-                  <div className="text-lg font-bold text-green-600">+12%</div>
-                </div>
-              </div>
             </div>
           </CardContent>
         </Card>
 
          {/* Performance by Month - Spans 2 columns */}
-         <Card className="lg:col-span-2 shadow-xl border-0 bg-white hover:shadow-2xl transition-all duration-300 group">
-           <CardHeader className="bg-gradient-to-r from-purple-50 via-pink-50 to-purple-50 border-b relative overflow-hidden">
-             {/* Animated background */}
-             <div className="absolute inset-0 bg-gradient-to-r from-purple-100/0 via-purple-100/50 to-purple-100/0 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000"></div>
-             
-             <div className="flex items-center justify-between relative z-10">
-               <div className="flex items-center gap-3">
-                 <div className="p-2 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg shadow-lg">
-                   <BarChart3 className="w-5 h-5 text-white" />
-      </div>
-              <div>
-                   <CardTitle className="text-base font-bold text-gray-900 flex items-center gap-2">
+         <Card className="lg:col-span-2">
+           <CardHeader className="border-b">
+             <div className="flex items-center justify-between">
+               <div>
+                   <CardTitle className="text-lg font-semibold flex items-center gap-2">
                      Performance by Month ({selectedQuarter})
-                     <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white border-0 text-xs">Live</Badge>
                    </CardTitle>
-                   <CardDescription className="text-xs text-gray-600 mt-1">Comparison of Actual, Latest Estimate, and Budget</CardDescription>
+                   <CardDescription className="text-sm text-gray-600 mt-1">Comparison of Actual, Latest Estimate, and Budget</CardDescription>
                  </div>
-              </div>
               <div className="flex space-x-2">
                  <select 
                    value={selectedQuarter}
@@ -722,83 +598,28 @@ export default function FNDashboard() {
               </BarChart>
             </ResponsiveContainer>
              
-             {/* Summary Stats with Animation */}
+             {/* Summary Stats */}
              <div className="grid grid-cols-3 gap-4 mt-6 pt-6 border-t border-gray-200">
-               <div className="group text-center p-5 bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-xl hover:shadow-lg transition-all duration-300 hover:scale-105 relative overflow-hidden">
-                 <div className="absolute inset-0 bg-gradient-to-br from-indigo-400/0 to-indigo-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                 <div className="relative z-10">
-                   <div className="flex items-center justify-center gap-1 mb-2">
-                     <Target className="w-3 h-3 text-indigo-600" />
-                     <div className="text-xs font-semibold text-indigo-600">Total Actual</div>
-                   </div>
-                   <div className="text-3xl font-bold text-gray-900 mb-1">฿{(totalActual / 1000000).toFixed(2)}M</div>
-                   <div className={`flex items-center justify-center gap-1 text-xs font-semibold ${parseFloat(actualVsBudgetPercent) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                     {parseFloat(actualVsBudgetPercent) >= 0 ? (
-                       <ArrowUpRight className="w-3 h-3" />
-                     ) : (
-                       <ArrowDownRight className="w-3 h-3" />
-                     )}
-                     {actualVsBudgetPercent}% vs Budget
-                   </div>
+               <div className="text-center p-4 bg-gray-50 rounded-lg">
+                 <div className="text-xs font-medium text-gray-600 mb-2">Total Actual</div>
+                 <div className="text-2xl font-bold text-gray-900 mb-1">฿{(totalActual / 1000000).toFixed(2)}M</div>
+                 <div className={`text-xs font-medium ${parseFloat(actualVsBudgetPercent) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                   {actualVsBudgetPercent}% vs Budget
                  </div>
                </div>
                
-               <div className="group text-center p-5 bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl hover:shadow-lg transition-all duration-300 hover:scale-105 relative overflow-hidden">
-                 <div className="absolute inset-0 bg-gradient-to-br from-purple-400/0 to-purple-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                 <div className="relative z-10">
-                   <div className="flex items-center justify-center gap-1 mb-2">
-                     <TrendingUp className="w-3 h-3 text-purple-600" />
-                     <div className="text-xs font-semibold text-purple-600">Total LE</div>
-                   </div>
-                   <div className="text-3xl font-bold text-gray-900 mb-1">฿{(totalLE / 1000000).toFixed(2)}M</div>
-                   <div className={`flex items-center justify-center gap-1 text-xs font-semibold ${parseFloat(leVsBudgetPercent) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                     {parseFloat(leVsBudgetPercent) >= 0 ? (
-                       <ArrowUpRight className="w-3 h-3" />
-                     ) : (
-                       <ArrowDownRight className="w-3 h-3" />
-                     )}
-                     {leVsBudgetPercent}% vs Budget
-                   </div>
+               <div className="text-center p-4 bg-gray-50 rounded-lg">
+                 <div className="text-xs font-medium text-gray-600 mb-2">Total LE</div>
+                 <div className="text-2xl font-bold text-gray-900 mb-1">฿{(totalLE / 1000000).toFixed(2)}M</div>
+                 <div className={`text-xs font-medium ${parseFloat(leVsBudgetPercent) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                   {leVsBudgetPercent}% vs Budget
                  </div>
                </div>
                
-               <div className="group text-center p-5 bg-gradient-to-br from-cyan-50 to-cyan-100 rounded-xl hover:shadow-lg transition-all duration-300 hover:scale-105 relative overflow-hidden">
-                 <div className="absolute inset-0 bg-gradient-to-br from-cyan-400/0 to-cyan-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                 <div className="relative z-10">
-                   <div className="flex items-center justify-center gap-1 mb-2">
-                     <DollarSign className="w-3 h-3 text-cyan-600" />
-                     <div className="text-xs font-semibold text-cyan-600">Total Budget</div>
-                   </div>
-                   <div className="text-3xl font-bold text-gray-900 mb-1">฿{(totalBudget / 1000000).toFixed(2)}M</div>
-                   <div className="flex items-center justify-center gap-1 text-xs text-gray-600 font-semibold">
-                     <div className="w-2 h-2 bg-cyan-500 rounded-full animate-pulse"></div>
-                     Baseline Target
-                   </div>
-                 </div>
-               </div>
-             </div>
-             
-             {/* Trend Indicator */}
-             <div className="mt-6 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200">
-               <div className="flex items-center justify-between">
-                 <div className="flex items-center gap-3">
-                   <div className="p-2 bg-green-500 rounded-lg">
-                     <TrendingUp className="w-5 h-5 text-white" />
-                   </div>
-                   <div>
-                     <div className="text-sm font-bold text-gray-900">Performance Trend</div>
-                     <div className="text-xs text-gray-600">Quarter-over-Quarter Growth</div>
-                   </div>
-                 </div>
-                 <div className="text-right">
-                   <div className="text-2xl font-bold text-green-600">
-                     {selectedQuarter === 'Q1 2025' ? '+8.2%' : 
-                      selectedQuarter === 'Q4 2024' ? '+6.5%' : 
-                      selectedQuarter === 'Q3 2024' ? '+4.1%' : 
-                      '+2.8%'}
-                   </div>
-                   <div className="text-xs text-gray-600">vs Previous Quarter</div>
-                 </div>
+               <div className="text-center p-4 bg-gray-50 rounded-lg">
+                 <div className="text-xs font-medium text-gray-600 mb-2">Total Budget</div>
+                 <div className="text-2xl font-bold text-gray-900 mb-1">฿{(totalBudget / 1000000).toFixed(2)}M</div>
+                 <div className="text-xs text-gray-600">Baseline Target</div>
                </div>
              </div>
           </CardContent>
