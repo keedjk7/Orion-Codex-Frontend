@@ -69,11 +69,19 @@ const menuItems: MenuItem[] = [
       { id: 'fn-dashboard', label: 'FN Dashboard', icon: TrendingUp },
     ]
   },
+  { 
+    id: 'financial-reports', 
+    label: 'Financial Reports', 
+    icon: FileText,
+    isGroup: true,
+    children: [
+      { id: 'pl-report', label: 'P&L Report', icon: DollarSign },
+    ]
+  },
   { id: 'upload', label: 'File Upload', icon: Upload },
   { id: 'financial', label: 'P&L Analysis', icon: DollarSign },
   { id: 'budgets', label: 'Budget Management', icon: Target },
   { id: 'forecasting', label: 'Financial Forecasting', icon: TrendingUp },
-  { id: 'reporting', label: 'Financial Reports', icon: FileText },
   { id: 'analytics', label: 'Financial Analytics', icon: BarChart3 },
   { id: 'cashflow', label: 'Cash Flow', icon: Database },
   { id: 'risk', label: 'Risk Management', icon: Calculator },
@@ -92,7 +100,7 @@ export default function DashboardSidebar({
 }: SidebarProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [internalCollapsed, setInternalCollapsed] = useState(false);
-  const [expandedGroups, setExpandedGroups] = useState<string[]>(['dashboards']);
+  const [expandedGroups, setExpandedGroups] = useState<string[]>(['dashboards', 'financial-reports']);
 
   // Use external collapsed state if provided, otherwise use internal
   const isCollapsed = externalCollapsed ?? internalCollapsed;

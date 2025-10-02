@@ -101,3 +101,6 @@ temp/
 
 # Local Netlify folder
 .netlify
+
+# Attached assets (data files and generated images)
+attached_assets/

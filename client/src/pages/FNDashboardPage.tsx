@@ -39,6 +39,9 @@ export default function FNDashboardPage() {
       case 'fn-dashboard':
         setLocation('/fn-dashboard');
         break;
+      case 'pl-report':
+        setLocation('/pl-report');
+        break;
       case 'upload':
         setLocation('/upload');
         break;
