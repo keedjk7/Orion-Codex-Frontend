@@ -18,7 +18,8 @@ import {
   ChevronLeft,
   ChevronRight,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  Upload
 } from 'lucide-react';
 
 // Custom scrollbar styles for sidebar
@@ -68,6 +69,7 @@ const menuItems: MenuItem[] = [
       { id: 'fn-dashboard', label: 'FN Dashboard', icon: TrendingUp },
     ]
   },
+  { id: 'upload', label: 'File Upload', icon: Upload },
   { id: 'financial', label: 'P&L Analysis', icon: DollarSign },
   { id: 'budgets', label: 'Budget Management', icon: Target },
   { id: 'forecasting', label: 'Financial Forecasting', icon: TrendingUp },

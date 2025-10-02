@@ -39,8 +39,14 @@ export default function FNDashboardPage() {
       case 'fn-dashboard':
         setLocation('/fn-dashboard');
         break;
+      case 'upload':
+        setLocation('/upload');
+        break;
+      case 'home':
+        setLocation('/home');
+        break;
       default:
-        // Stay on current page for other tabs
+        // For other tabs, you can add logic here if needed
         break;
     }
     setSidebarOpen(false);

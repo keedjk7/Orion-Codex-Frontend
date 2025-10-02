@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { cn } from '@/lib/utils';
 import DashboardSidebar from '@/components/DashboardSidebar';
 import DashboardHeader from '@/components/DashboardHeader';
+import { useLocation } from 'wouter';
 
 // Custom CSS for scrollbar
 const customScrollbarStyles = `
@@ -325,6 +326,7 @@ export default function HomePage() {
   const { user } = useKeycloak();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [, setLocation] = useLocation();
 
   const getUserDisplayName = () => {
     if (user?.name) return user.name;
@@ -339,14 +341,17 @@ export default function HomePage() {
       // Already on home page
       return;
     }
-    
+
     // Navigate to different dashboard routes
     switch (tab) {
       case 'ce-dashboard':
-        window.location.href = '/ce-dashboard';
+        setLocation('/ce-dashboard');
         break;
       case 'fn-dashboard':
-        window.location.href = '/fn-dashboard';
+        setLocation('/fn-dashboard');
+        break;
+      case 'upload':
+        setLocation('/upload');
         break;
       default:
         // For other tabs, you can add logic here if needed
