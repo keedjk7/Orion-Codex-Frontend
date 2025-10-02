@@ -83,6 +83,8 @@ export default function FileUpload() {
   const [selectedYear, setSelectedYear] = useState<number | null>(null);
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [isUploading, setIsUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [showSuccess, setShowSuccess] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Generate year options (current year to current year - 3)
@@ -293,44 +295,32 @@ export default function FileUpload() {
   };
 
   const handleUpload = async () => {
+    // Clear previous error
+    setUploadError(null);
+    
     // Validation
     if (selectedFiles.length === 0) {
-      toast({
-        title: "No Files Selected",
-        description: "Please select files to upload",
-        variant: "destructive",
-      });
+      setUploadError("No files selected. Please select files to upload.");
       return;
     }
 
     if (!selectedCompany) {
-      toast({
-        title: "Company Required",
-        description: "Please select a company",
-        variant: "destructive",
-      });
+      setUploadError("Company is required. Please select a company.");
       return;
     }
 
     if (!dataType) {
-      toast({
-        title: "Data Type Required",
-        description: "Please select a data type",
-        variant: "destructive",
-      });
+      setUploadError("Data type is required. Please select a data type.");
       return;
     }
 
     if ((dataType === 'actual' || dataType === 'fix-asset') && !selectedYear) {
-        toast({
-        title: "Year Required",
-        description: "Please select a year for Actual or Fixed Asset data",
-          variant: "destructive",
-        });
+      setUploadError("Year is required for Actual or Fixed Asset data.");
         return;
       }
 
     setIsUploading(true);
+    setUploadError(null);
 
     // Create uploaded files from selected files
     const newUploadedFiles: UploadedFile[] = selectedFiles.map((file) => ({
@@ -395,23 +385,17 @@ export default function FileUpload() {
         })
       );
 
-      // Show toast for results
+      // Show results
       const successCount = mockResults.filter((r: any) => r.status === 'success').length;
       const errorCount = mockResults.filter((r: any) => r.status === 'error').length;
 
       if (successCount > 0) {
-        toast({
-          title: "Upload Successful",
-          description: `Successfully uploaded ${successCount} file${successCount > 1 ? 's' : ''}${errorCount > 0 ? `, ${errorCount} failed` : ''}`,
-        });
+        setShowSuccess(true);
+        setTimeout(() => setShowSuccess(false), 5000); // Hide after 5 seconds
       }
 
       if (errorCount > 0 && successCount === 0) {
-        toast({
-          title: "Upload Failed",
-          description: `Failed to upload ${errorCount} file${errorCount > 1 ? 's' : ''}`,
-          variant: "destructive",
-        });
+        setUploadError(`Failed to upload ${errorCount} file${errorCount > 1 ? 's' : ''}. Please check the file format and try again.`);
       }
 
     } catch (error) {
@@ -426,22 +410,23 @@ export default function FileUpload() {
       )
     );
 
-      toast({
-        title: "Connection Error",
-        description: "Unable to connect to server",
-        variant: "destructive",
-      });
+      setUploadError("Unable to connect to server. Please check your connection and try again.");
     }
 
     setIsUploading(false);
-    setSelectedFiles([]);
-    setDataType("");
-    setSelectedCompany(null);
-    setSelectedYear(null);
     
-    // Clear file input
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
+    // Reset form only on success
+    const hasSuccess = uploadedFiles.some(f => f.status === 'success');
+    if (hasSuccess) {
+      setSelectedFiles([]);
+      setDataType("");
+      setSelectedCompany(null);
+      setSelectedYear(null);
+      
+      // Clear file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     }
   };
 
@@ -453,6 +438,31 @@ export default function FileUpload() {
     (dataType === 'master-data' || (dataType === 'actual' || dataType === 'fix-asset') && selectedYear);
 
   return (
+    <>
+      {/* Loading Overlay */}
+      {isUploading && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-8 flex flex-col items-center space-y-4">
+            <div className="animate-spin rounded-full h-16 w-16 border-4 border-gray-300 border-t-blue-600"></div>
+            <p className="text-gray-700 font-medium">Uploading...</p>
+          </div>
+        </div>
+      )}
+
+      {/* Success Banner */}
+      {showSuccess && (
+        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-md">
+          <Alert className="bg-green-50 border-green-200">
+            <CheckCircle2 className="h-4 w-4 text-green-600" />
+            <AlertDescription className="text-green-800 font-medium">
+              Upload File Successfully
+              <br />
+              <span className="text-sm text-green-600">Our timestamp alerts and a notification badge.</span>
+            </AlertDescription>
+          </Alert>
+        </div>
+      )}
+
     <div className="space-y-6">
       {/* Header Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -725,6 +735,18 @@ export default function FileUpload() {
                 </div>
           )}
 
+          {/* Error Alert */}
+          {uploadError && (
+            <Alert variant="destructive" className="bg-red-50 border-red-200">
+              <AlertCircle className="h-4 w-4 text-red-600" />
+              <AlertDescription className="text-red-800">
+                <strong>Orion Total size</strong>
+                <br />
+                <span className="text-sm">{uploadError}</span>
+              </AlertDescription>
+            </Alert>
+          )}
+
           {/* Upload Button */}
           <Button 
             onClick={handleUpload} 
@@ -942,6 +964,7 @@ export default function FileUpload() {
         </CardContent>
       </Card>
       </div>
-    </div>
+      </div>
+    </>
   );
 }
