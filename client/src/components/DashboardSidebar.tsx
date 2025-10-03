@@ -2,17 +2,10 @@ import React, { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
-  LayoutDashboard,
   BarChart3,
   TrendingUp,
   FileText,
-  Settings,
-  Users,
-  Calculator,
-  Database,
-  Target,
   DollarSign,
-  Calendar,
   Home,
   X,
   ChevronLeft,
@@ -79,15 +72,6 @@ const menuItems: MenuItem[] = [
     ]
   },
   { id: 'upload', label: 'File Upload', icon: Upload },
-  { id: 'financial', label: 'P&L Analysis', icon: DollarSign },
-  { id: 'budgets', label: 'Budget Management', icon: Target },
-  { id: 'forecasting', label: 'Financial Forecasting', icon: TrendingUp },
-  { id: 'analytics', label: 'Financial Analytics', icon: BarChart3 },
-  { id: 'cashflow', label: 'Cash Flow', icon: Database },
-  { id: 'risk', label: 'Risk Management', icon: Calculator },
-  { id: 'planning', label: 'Strategic Planning', icon: Calendar },
-  { id: 'compliance', label: 'Compliance & Audit', icon: Users },
-  { id: 'settings', label: 'Settings', icon: Settings },
 ];
 
 export default function DashboardSidebar({
