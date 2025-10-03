@@ -2,23 +2,20 @@ import React, { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
-  LayoutDashboard,
   BarChart3,
   TrendingUp,
   FileText,
-  Settings,
-  Users,
-  Calculator,
-  Database,
-  Target,
   DollarSign,
-  Calendar,
   Home,
   X,
   ChevronLeft,
   ChevronRight,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  Upload,
+  Database,
+  Building2,
+  GitBranch
 } from 'lucide-react';
 
 // Custom scrollbar styles for sidebar
@@ -68,16 +65,27 @@ const menuItems: MenuItem[] = [
       { id: 'fn-dashboard', label: 'FN Dashboard', icon: TrendingUp },
     ]
   },
-  { id: 'financial', label: 'P&L Analysis', icon: DollarSign },
-  { id: 'budgets', label: 'Budget Management', icon: Target },
-  { id: 'forecasting', label: 'Financial Forecasting', icon: TrendingUp },
-  { id: 'reporting', label: 'Financial Reports', icon: FileText },
-  { id: 'analytics', label: 'Financial Analytics', icon: BarChart3 },
-  { id: 'cashflow', label: 'Cash Flow', icon: Database },
-  { id: 'risk', label: 'Risk Management', icon: Calculator },
-  { id: 'planning', label: 'Strategic Planning', icon: Calendar },
-  { id: 'compliance', label: 'Compliance & Audit', icon: Users },
-  { id: 'settings', label: 'Settings', icon: Settings },
+  { 
+    id: 'financial-reports', 
+    label: 'Financial Reports', 
+    icon: FileText,
+    isGroup: true,
+    children: [
+      { id: 'pl-report', label: 'P&L Report', icon: DollarSign },
+    ]
+  },
+  { 
+    id: 'master-data', 
+    label: 'Master Data', 
+    icon: Database,
+    isGroup: true,
+    children: [
+      { id: 'pl-account', label: 'PL Account', icon: DollarSign },
+      { id: 'company-account', label: 'Company Account', icon: Building2 },
+      { id: 'io-mapping', label: 'IO Mapping', icon: GitBranch },
+    ]
+  },
+  { id: 'upload', label: 'File Upload', icon: Upload },
 ];
 
 export default function DashboardSidebar({
@@ -90,7 +98,7 @@ export default function DashboardSidebar({
 }: SidebarProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [internalCollapsed, setInternalCollapsed] = useState(false);
-  const [expandedGroups, setExpandedGroups] = useState<string[]>(['dashboards']);
+  const [expandedGroups, setExpandedGroups] = useState<string[]>(['dashboards', 'financial-reports', 'master-data']);
 
   // Use external collapsed state if provided, otherwise use internal
   const isCollapsed = externalCollapsed ?? internalCollapsed;

@@ -10,6 +10,8 @@ import HomePage from "@/pages/HomePage";
 import LoginFigmaInspired from "@/pages/LoginFigmaInspired";
 import CEDashboardPage from "@/pages/CEDashboardPage";
 import FNDashboardPage from "@/pages/FNDashboardPage";
+import PLReportPage from "@/pages/PLReportPage";
+import FileUploadPage from "@/pages/FileUploadPage";
 import InteractiveFeaturesDemo from "@/pages/InteractiveFeaturesDemo";
 
 function Router() {
@@ -30,6 +32,16 @@ function Router() {
       <Route path="/fn-dashboard">
         <ProtectedRoute>
           <FNDashboardPage />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/pl-report">
+        <ProtectedRoute>
+          <PLReportPage />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/upload">
+        <ProtectedRoute>
+          <FileUploadPage />
         </ProtectedRoute>
       </Route>
       <Route path="/demo" component={InteractiveFeaturesDemo} />

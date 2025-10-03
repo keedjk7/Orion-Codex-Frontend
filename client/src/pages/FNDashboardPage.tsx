@@ -39,8 +39,17 @@ export default function FNDashboardPage() {
       case 'fn-dashboard':
         setLocation('/fn-dashboard');
         break;
+      case 'pl-report':
+        setLocation('/pl-report');
+        break;
+      case 'upload':
+        setLocation('/upload');
+        break;
+      case 'home':
+        setLocation('/home');
+        break;
       default:
-        // Stay on current page for other tabs
+        // For other tabs, you can add logic here if needed
         break;
     }
     setSidebarOpen(false);
@@ -75,7 +84,7 @@ export default function FNDashboardPage() {
         />
 
         {/* Content */}
-        <main className="flex-1 p-4 lg:p-6 overflow-auto">
+        <main className="flex-1 p-4 lg:p-6 overflow-auto bg-gray-100">
           <Suspense fallback={
             <div className="flex items-center justify-center h-64">
               <div className="text-center">

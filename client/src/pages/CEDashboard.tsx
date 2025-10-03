@@ -146,134 +146,67 @@ export default function CEDashboard() {
 
   return (
     <div className="space-y-8">
-      {/* Header Section with Enhanced Gradient Background */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 p-8 text-white shadow-2xl">
-        <div className="absolute inset-0 bg-black/10"></div>
-        {/* Animated Background Pattern */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-10 left-10 w-20 h-20 border-2 border-white rounded-full animate-ping"></div>
-          <div className="absolute bottom-20 right-20 w-16 h-16 border-2 border-white rounded-full animate-ping" style={{ animationDelay: '1s' }}></div>
-        </div>
-        
-        <div className="relative z-10 flex items-center justify-between">
+      {/* Header Section */}
+      <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
+        <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-5xl font-bold mb-3 bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-100">
-              CE Dashboard
-            </h1>
-            <p className="text-blue-100 text-xl mb-4">Welcome back, {getUserDisplayName()}</p>
-            <div className="flex items-center space-x-6">
-              <div className="flex items-center space-x-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2">
-                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                <span className="text-sm font-medium text-white">Live Data</span>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">CE Dashboard</h1>
+            <div className="flex items-center space-x-4 text-sm text-gray-600">
+              <div className="flex items-center space-x-2">
+                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                <span>Live Data</span>
               </div>
-              <div className="flex items-center space-x-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2">
-                <Calendar className="w-4 h-4 text-blue-200" />
-                <span className="text-sm font-medium text-white">Last updated: 20/12/26 12:07</span>
+              <div className="flex items-center space-x-2">
+                <Calendar className="w-4 h-4" />
+                <span>Last updated: 20/12/26 12:07</span>
               </div>
             </div>
           </div>
-          <div className="flex flex-col items-end space-y-3">
-            <Badge variant="secondary" className="bg-white/20 text-white border-white/30 backdrop-blur-md hover:bg-white/30 transition-all">
-              Version: 2024.1.6
-            </Badge>
-            <div className="flex space-x-2">
-              <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm hover:bg-white/30 transition-all cursor-pointer">
-                <BarChart3 className="w-5 h-5 text-white" />
-              </div>
-              <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm hover:bg-white/30 transition-all cursor-pointer">
-                <TrendingUp className="w-5 h-5 text-white" />
-              </div>
-            </div>
-          </div>
+          <Badge variant="secondary" className="bg-gray-100 text-gray-700 border border-gray-200">
+            Version: 2024.1.6
+          </Badge>
         </div>
-        
-        {/* Enhanced Decorative Elements */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-white/5 to-transparent rounded-full -translate-y-48 translate-x-48 blur-3xl"></div>
-        <div className="absolute bottom-0 left-0 w-72 h-72 bg-gradient-to-tr from-white/5 to-transparent rounded-full translate-y-36 -translate-x-36 blur-3xl"></div>
-        <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-white/3 rounded-full -translate-x-1/2 -translate-y-1/2 blur-2xl"></div>
       </div>
 
       {/* KPI Cards Row */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {kpiData.map((kpi, index) => {
           const Icon = kpi.icon;
           const isPositive = kpi.trend === 'up';
           
+          const iconBgClasses = {
+            blue: 'bg-blue-500',
+            green: 'bg-green-500',
+            purple: 'bg-purple-500',
+            teal: 'bg-teal-500',
+            orange: 'bg-orange-500'
+          };
+
+          const borderClasses = {
+            blue: 'border-blue-100',
+            green: 'border-green-100',
+            purple: 'border-purple-100',
+            teal: 'border-teal-100',
+            orange: 'border-orange-100'
+          };
+
           return (
-            <Card key={index} className="group hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 bg-white border-0 shadow-lg overflow-hidden relative">
-              <CardContent className="p-0">
-                {/* Animated Gradient Header */}
-                <div className={`h-2 relative overflow-hidden ${
-                  kpi.color === 'blue' ? 'bg-gradient-to-r from-blue-500 to-blue-600' :
-                  kpi.color === 'green' ? 'bg-gradient-to-r from-green-500 to-green-600' :
-                  kpi.color === 'purple' ? 'bg-gradient-to-r from-purple-500 to-purple-600' :
-                  kpi.color === 'teal' ? 'bg-gradient-to-r from-teal-500 to-teal-600' :
-                  'bg-gradient-to-r from-orange-500 to-orange-600'
-                }`}>
-                  <div className="absolute inset-0 bg-white/30 animate-pulse"></div>
-                </div>
-                
-                {/* Background Pattern */}
-                <div className="absolute top-0 right-0 w-32 h-32 opacity-5 transform rotate-12 group-hover:scale-110 transition-transform duration-500">
-                  <Icon className="w-full h-full" />
-                </div>
-                
-                <div className="p-6 relative z-10">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="text-xs font-bold text-gray-600 uppercase tracking-wider">
-                      {kpi.title}
-                    </div>
-                    <div className={`p-3 rounded-2xl shadow-lg ${
-                      kpi.color === 'blue' ? 'bg-gradient-to-br from-blue-50 to-blue-100 text-blue-600' :
-                      kpi.color === 'green' ? 'bg-gradient-to-br from-green-50 to-green-100 text-green-600' :
-                      kpi.color === 'purple' ? 'bg-gradient-to-br from-purple-50 to-purple-100 text-purple-600' :
-                      kpi.color === 'teal' ? 'bg-gradient-to-br from-teal-50 to-teal-100 text-teal-600' :
-                      'bg-gradient-to-br from-orange-50 to-orange-100 text-orange-600'
-                    } group-hover:scale-110 group-hover:rotate-3 transition-all duration-300`}>
-                      <Icon className="h-5 w-5" />
-                    </div>
+            <Card key={index} className={borderClasses[kpi.color as keyof typeof borderClasses]}>
+              <CardContent className="pt-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-xs font-medium text-gray-600">{kpi.title}</p>
+                    <p className="text-3xl font-bold text-gray-900 my-1">{kpi.unit}{kpi.value}</p>
+                    {kpi.change && (
+                      <div className={`text-sm flex items-center font-medium ${isPositive ? 'text-green-600' : 'text-red-600'}`}>
+                        {isPositive ? <ArrowUpRight className="h-3 w-3 mr-1" /> : <ArrowDownRight className="h-3 w-3 mr-1" />}
+                        {kpi.change}
+                      </div>
+                    )}
+                    <p className="text-xs text-gray-500 mt-1">{kpi.period}</p>
                   </div>
-                  
-                  <div className="space-y-3">
-                    <div className="flex items-baseline space-x-2">
-                      <div className="text-4xl font-bold text-gray-900 group-hover:scale-105 transition-transform duration-200">
-                        {kpi.unit}{kpi.value}
-                      </div>
-                      {kpi.change && (
-                        <div className={`flex items-center text-sm px-2 py-1 rounded-full shadow-sm ${
-                          isPositive ? 'text-green-700 bg-gradient-to-r from-green-100 to-green-200' : 'text-red-700 bg-gradient-to-r from-red-100 to-red-200'
-                        }`}>
-                          {isPositive ? <ArrowUpRight className="h-3 w-3 mr-1" /> : <ArrowDownRight className="h-3 w-3 mr-1" />}
-                          {kpi.change}
-                        </div>
-                      )}
-                    </div>
-                    
-                    {/* Mini Progress Bar */}
-                    <div className="w-full h-1 bg-gray-100 rounded-full overflow-hidden">
-                      <div className={`h-full rounded-full animate-pulse ${
-                        kpi.color === 'blue' ? 'bg-gradient-to-r from-blue-500 to-blue-600' :
-                        kpi.color === 'green' ? 'bg-gradient-to-r from-green-500 to-green-600' :
-                        kpi.color === 'purple' ? 'bg-gradient-to-r from-purple-500 to-purple-600' :
-                        kpi.color === 'teal' ? 'bg-gradient-to-r from-teal-500 to-teal-600' :
-                        'bg-gradient-to-r from-orange-500 to-orange-600'
-                      }`} style={{ width: '75%' }}></div>
-                    </div>
-                    
-                    <div className="flex items-center justify-between">
-                      <div className="text-xs text-gray-500 font-medium">
-                        {kpi.period}
-                      </div>
-                      <div className={`text-xs font-semibold ${
-                        kpi.color === 'blue' ? 'text-blue-600' :
-                        kpi.color === 'green' ? 'text-green-600' :
-                        kpi.color === 'purple' ? 'text-purple-600' :
-                        kpi.color === 'teal' ? 'text-teal-600' :
-                        'text-orange-600'
-                      }`}>
-                        75%
-                      </div>
-                    </div>
+                  <div className={`h-12 w-12 rounded-full flex items-center justify-center flex-shrink-0 ${iconBgClasses[kpi.color as keyof typeof iconBgClasses]}`}>
+                    <Icon className="h-6 w-6 text-white" />
                   </div>
                 </div>
               </CardContent>
@@ -285,18 +218,10 @@ export default function CEDashboard() {
       {/* Charts Row 1 */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 lg:gap-6">
         {/* LE Achievement */}
-        <Card className="shadow-xl border-0 bg-gradient-to-br from-white to-gray-50 hover:shadow-2xl transition-all duration-300">
-          <CardHeader className="bg-gradient-to-r from-purple-50 to-blue-50 border-b border-gray-100">
+        <Card>
+          <CardHeader className="border-b">
             <div className="flex items-center justify-between">
-              <div>
-                <CardTitle className="flex items-center space-x-3 text-gray-800">
-                  <div className="p-2 bg-purple-100 rounded-lg">
-                    <BarChart3 className="h-5 w-5 text-purple-600" />
-                  </div>
-                  <span className="text-lg font-bold">LE Achievement</span>
-                  <Info className="h-4 w-4 text-gray-400 hover:text-gray-600 transition-colors" />
-                </CardTitle>
-              </div>
+              <CardTitle className="text-lg font-semibold">LE Achievement</CardTitle>
               <div className="flex space-x-2">
                 <select className="text-sm border border-gray-300 rounded-lg px-3 py-2 bg-white shadow-sm hover:border-purple-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all">
                   <option>All</option>

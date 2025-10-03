@@ -5,10 +5,10 @@ import DashboardSidebar from '@/components/DashboardSidebar';
 import DashboardHeader from '@/components/DashboardHeader';
 import { useLocation } from 'wouter';
 
-// Lazy load CE Dashboard component
-const CEDashboard = React.lazy(() => import('./CEDashboard'));
+// Lazy load FileUpload component
+const FileUpload = React.lazy(() => import('./FileUpload'));
 
-export default function CEDashboardPage() {
+export default function FileUploadPage() {
   const { authenticated } = useKeycloak();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -63,7 +63,7 @@ export default function CEDashboardPage() {
     <div className="min-h-screen bg-gray-50 flex">
       {/* Sidebar */}
       <DashboardSidebar
-        activeTab="ce-dashboard"
+        activeTab="upload"
         onTabChange={handleTabChange}
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
@@ -78,8 +78,8 @@ export default function CEDashboardPage() {
       )}>
         {/* Header */}
         <DashboardHeader
-          title="CE Dashboard"
-          subtitle="Cost Element dashboard with performance metrics and analytics"
+          title="File Upload"
+          subtitle="Upload and manage your files securely"
           onMenuClick={() => setSidebarOpen(true)}
         />
 
@@ -89,14 +89,15 @@ export default function CEDashboardPage() {
             <div className="flex items-center justify-center h-64">
               <div className="text-center">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-                <p className="text-gray-600">Loading CE Dashboard...</p>
+                <p className="text-gray-600">Loading Upload Page...</p>
               </div>
             </div>
           }>
-            <CEDashboard />
+            <FileUpload />
           </Suspense>
         </main>
       </div>
     </div>
   );
 }
+
