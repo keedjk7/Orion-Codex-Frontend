@@ -12,7 +12,10 @@ import {
   ChevronRight,
   ChevronDown,
   ChevronUp,
-  Upload
+  Upload,
+  Database,
+  Building2,
+  GitBranch
 } from 'lucide-react';
 
 // Custom scrollbar styles for sidebar
@@ -71,6 +74,17 @@ const menuItems: MenuItem[] = [
       { id: 'pl-report', label: 'P&L Report', icon: DollarSign },
     ]
   },
+  { 
+    id: 'master-data', 
+    label: 'Master Data', 
+    icon: Database,
+    isGroup: true,
+    children: [
+      { id: 'pl-account', label: 'PL Account', icon: DollarSign },
+      { id: 'company-account', label: 'Company Account', icon: Building2 },
+      { id: 'io-mapping', label: 'IO Mapping', icon: GitBranch },
+    ]
+  },
   { id: 'upload', label: 'File Upload', icon: Upload },
 ];
 
@@ -84,7 +98,7 @@ export default function DashboardSidebar({
 }: SidebarProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [internalCollapsed, setInternalCollapsed] = useState(false);
-  const [expandedGroups, setExpandedGroups] = useState<string[]>(['dashboards', 'financial-reports']);
+  const [expandedGroups, setExpandedGroups] = useState<string[]>(['dashboards', 'financial-reports', 'master-data']);
 
   // Use external collapsed state if provided, otherwise use internal
   const isCollapsed = externalCollapsed ?? internalCollapsed;
